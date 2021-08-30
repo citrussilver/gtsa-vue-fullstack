@@ -12,8 +12,10 @@ import {
 } from '../controllers/savingsAcctTransactions.js';
 
 import {
+    createLoadSale,
     createGCashIncomeSale,
     createSelfBuyLoad,
+    createGCashAdjustment
 } from '../controllers/gcashAcctTransactions.js';
 
 const router = express.Router();
@@ -29,8 +31,10 @@ router.post('/transactions/new-sa-gcash-tr', createGCashTransaction);
 router.post('/transactions/new-sa-gcash-cash-in', createGCashCashIn);
 router.post('/transactions/new-sa-prepaid-reload', createBankPrepaidReload);
 
+router.post('/transactions/new-gc-loadsale', createLoadSale);
 router.post('/transactions/new-gc-income', createGCashIncomeSale);
-router.post('/transactions/new-gc-selfbuy', createSelfBuyLoad);
+router.post('/transactions/new-gc-selfbuyload', createSelfBuyLoad);
+router.post('/transactions/new-gc-adjustment', createGCashAdjustment);
 
 export default router;
 

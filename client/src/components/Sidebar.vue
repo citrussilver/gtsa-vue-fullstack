@@ -13,7 +13,19 @@ export default {
 </script>
 
 <style scoped>
-ul {
-  padding-left: 1.5rem;
+
+router-link {
+    text-decoration: none;
 }
+
+ul {
+  margin-left: 1.5rem;
+}
+
+@media all and (max-width: 700px) {
+  ul {
+    margin-left: 0;
+  }
+}
+
 </style>
