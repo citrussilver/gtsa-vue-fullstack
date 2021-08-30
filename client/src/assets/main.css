@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Asap+Condensed:wght@400;500&display=swap');
+
+:root {
+    --green: #00bc8c;
+    --blue-highlight: #3498db;
+    --item-color: #303030;
+    --item-header: #444444;
+}
+
+* {
+    font-family: 'Asap Condensed', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    color: #fff;
+    font-family: "Lato";
+    background-color: #222;
+}
+
+a, a:visited {
+    color: inherit;
+    text-decoration: none;   
+}
+
+.navbar, footer {
+    padding: 1rem 1rem;
+    background: #adb5bd;
+    color: black;
+}
+
+nav {
+    display: flex;
+}
+nav h1 {
+    margin: 0.5rem;
+    font-weight: 500;
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+
+#sidebar {
+    background-color: var(--item-color);
+}
+
+ul li {
+    list-style-type: none;
+    background-color: var(--item-color);
+    padding: 1rem;
+}
+
+ul li:hover {
+    background-color: var(--blue-highlight);
+}
+
+#table-style {
+    border-collapse: collapse;
+    background-color: #3b3b3b;
+}
+
+#table-style th, #table-style td {
+    padding: 1rem;
+}
+
+#table-style tr:nth-child(even) {
+    background-color: var(--item-color);
+}
+
+#table-style tr:hover {
+    background-color: var(--blue-highlight);
+    color: #000;
+}
+
+#table-style th {
+    text-align: left;
+    background-color: var(--green);
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.card-header {
+    padding: 0.75rem 1.25rem;
+    border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0;
+    border-bottom: 1px solid rgba(0,0,0,0.125);
+    background-color: var(--item-header);
+}
+
+.card-body {
+    padding: 1.25rem;
+}
