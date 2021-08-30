@@ -10,6 +10,7 @@
     "ag-grid-community": "^26.0.0",
     "ag-grid-vue3": "^26.0.0",
     "axios": "^0.21.1",
+    "bulma-toast": "^2.4.1",
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
     "vue-class-component": "^7.2.6",

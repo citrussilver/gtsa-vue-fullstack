@@ -1,15 +1,27 @@
 import {
+    insertLoadSale,
     insertGCashIncomeSale,
-    insertSelfBuyLoad
+    insertSelfBuyLoad,
+    insertGCashAdjustment
 } from '../models/gcashAcctTransactionsModel.js'
+
+export const createLoadSale = (req, res) => {
+    const data = req.body;
+    insertLoadSale(data, (err, results) => {
+        if (err){
+            res.send(err);
+        } else{
+            res.json(results);
+        }
+    });
+}
 
 export const createGCashIncomeSale = (req, res) => {
     const data = req.body;
-    console.log(data)
     insertGCashIncomeSale(data, (err, results) => {
         if (err){
             res.send(err);
-        }else{
+        } else{
             res.json(results);
         }
     });
@@ -20,8 +32,19 @@ export const createSelfBuyLoad = (req, res) => {
     insertSelfBuyLoad(data, (err, results) => {
         if (err){
             res.send(err);
-        }else{
+        } else{
             res.json(results);
         }
     });
+}
+
+export const createGCashAdjustment = (req, res) => {
+    const data = req.body;
+    insertGCashAdjustment(data, (err, results) => {
+        if(err){
+            res.send(err);
+        } else{
+            res.json(results);
+        }
+    })
 }
