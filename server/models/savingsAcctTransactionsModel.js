@@ -14,11 +14,21 @@ export const getSavingsAcctTransactions = (result) => {
 
 // Insert Bank Cash Deposit
 export const insertBankCashDeposit = (data, result) => {
-    dbConnection.query("INSERT INTO bank_cash_deposit SET ?", [data], (err, results) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", data, (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
         } else {
+
+            const deposit_data = {
+                sa_transact_id: results.insertId,
+                remarks: data.remarks,
+                amount: data.amount
+            }
+
+
+
+
             result(null, results);
         }
     });

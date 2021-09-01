@@ -106,19 +106,17 @@ export default {
         let dateTime = ref(null)
         let bankId = ref(0)
         let transactType = ref(0)
-        let currGCashBal = ref(1)
         let customer = ref('')
         let mobileNo = ref('')
         let network = ref('')
         let paymentDateTime = ref('')
-        let amount = ref(1)
         let credit = ref(1)
+        let currGCashBal = ref(1)
+        let amount = ref(1)
         let remarks = ref('')
         let location = ref('')
         
         const router = useRouter()
-
-        const componentId = ref(0)
 
         const handleChange = () => {
           console.log(`Transaction Value: ${transactType.value}`)
@@ -149,7 +147,7 @@ export default {
                 try {
                   await axios.post("http://localhost:5000/transactions/new-gc-loadsale", newData)
                   toast({
-                    message: 'Successfully added Sale / Income record.',
+                    message: 'Successfully recorded Load Sale',
                     type: 'is-info',
                     position: "top-center",
                     dismissible: true,
@@ -160,11 +158,25 @@ export default {
                   console.log(error)
                 }
 
+              } else if(transactType.value === 3) {
+                try {
+                  await axios.post("http://localhost:5000/transactions/new-gc-billspay", newData)
+                  toast({
+                    message: 'Successfully recorded Bills payment.',
+                    type: 'is-info',
+                    position: "top-center",
+                    dismissible: true,
+                    pauseOnHover: true,
+                    closeOnClick: true
+                  })
+                } catch (error) {
+                  console.log(error)
+                }
               } else if(transactType.value === 4) {
                 try {
                   await axios.post("http://localhost:5000/transactions/new-gc-income", newData)
                   toast({
-                    message: 'Successfully added Sale / Income record.',
+                    message: 'Successfully recorded Sale / Income',
                     type: 'is-info',
                     position: "top-center",
                     dismissible: true,
@@ -227,7 +239,21 @@ export default {
 
         }
 
-        return { dateTime, bankId, transactType, currGCashBal, customer, mobileNo, network, paymentDateTime, credit, amount, remarks, location, componentId, handleChange, handleSubmit }
+        return { 
+          dateTime, 
+          bankId, 
+          transactType, 
+          customer, 
+          mobileNo, 
+          network, 
+          paymentDateTime, 
+          credit, 
+          currGCashBal,
+          amount, 
+          remarks, 
+          location, 
+          handleChange, 
+          handleSubmit }
     }
 
 }

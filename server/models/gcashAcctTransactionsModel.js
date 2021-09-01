@@ -35,6 +35,31 @@ export const insertLoadSale = (data, result) => {
     });
 }
 
+export const insertGCashBillsPayment = (data, result) => {
+    dbConnection.query("INSERT INTO gcash_transactions SET ?", data, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const bills_payment_data = {
+                gcash_transact_id: results.insertId,
+                date_time: data.date_time,
+                amount: data.amount,
+                remarks: data.remarks
+            };
+
+            dbConnection.query("INSERT INTO gcash_bills_payment SET ?", bills_payment_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                }
+            });
+        }
+    });
+}
+
 // Insert GCash Sale / Income
 export const insertGCashIncomeSale = (data, result) => {
     dbConnection.query("INSERT INTO gcash_transactions SET ?", data, (err, results) => {

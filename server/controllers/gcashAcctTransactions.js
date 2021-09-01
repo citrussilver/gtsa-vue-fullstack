@@ -1,5 +1,6 @@
 import {
     insertLoadSale,
+    insertGCashBillsPayment,
     insertGCashIncomeSale,
     insertSelfBuyLoad,
     insertGCashAdjustment
@@ -8,6 +9,17 @@ import {
 export const createLoadSale = (req, res) => {
     const data = req.body;
     insertLoadSale(data, (err, results) => {
+        if (err){
+            res.send(err);
+        } else{
+            res.json(results);
+        }
+    });
+}
+
+export const createGCashBillsPayment = (req, res) => {
+    const data = req.body;
+    insertGCashBillsPayment(data, (err, results) => {
         if (err){
             res.send(err);
         } else{

@@ -25,6 +25,11 @@ export default {
 </script>
 
 <style>
+
+html {
+  background-color: #222;
+}
+
 .basic-grid {
   display: grid;
   grid-template-columns: 0.2fr 1fr;
