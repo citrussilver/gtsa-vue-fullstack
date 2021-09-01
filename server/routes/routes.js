@@ -13,6 +13,7 @@ import {
 
 import {
     createLoadSale,
+    createGCashBillsPayment,
     createGCashIncomeSale,
     createSelfBuyLoad,
     createGCashAdjustment
@@ -32,6 +33,7 @@ router.post('/transactions/new-sa-gcash-cash-in', createGCashCashIn);
 router.post('/transactions/new-sa-prepaid-reload', createBankPrepaidReload);
 
 router.post('/transactions/new-gc-loadsale', createLoadSale);
+router.post('/transactions/new-gc-billspay', createGCashBillsPayment);
 router.post('/transactions/new-gc-income', createGCashIncomeSale);
 router.post('/transactions/new-gc-selfbuyload', createSelfBuyLoad);
 router.post('/transactions/new-gc-adjustment', createGCashAdjustment);
