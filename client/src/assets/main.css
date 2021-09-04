@@ -5,6 +5,9 @@
     --blue-highlight: #3498db;
     --item-color: #303030;
     --item-header: #444444;
+    font-size: 16px;
+    --anim-duration: 2s;
+    --anim-fill-mode: forwards;
 }
 
 * {
@@ -17,6 +20,12 @@ body {
     color: #fff;
     font-family: "Lato";
     background-color: #222;
+}
+
+#flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 a, a:visited {

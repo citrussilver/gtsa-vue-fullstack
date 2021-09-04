@@ -6,7 +6,6 @@ import {
     createBankCashDeposit,
     createBankCashWithdraw,
     createBankBillsPayment,
-    createGCashTransaction,
     createGCashCashIn,
     createBankPrepaidReload
 } from '../controllers/savingsAcctTransactions.js';
@@ -28,7 +27,6 @@ router.post('/transactions/new-sa-transaction', createSavingsAcctTransaction);
 router.post('/transactions/new-sa-depo', createBankCashDeposit);
 router.post('/transactions/new-sa-wdraw', createBankCashWithdraw);
 router.post('/transactions/new-sa-billspay', createBankBillsPayment);
-router.post('/transactions/new-sa-gcash-tr', createGCashTransaction);
 router.post('/transactions/new-sa-gcash-cash-in', createGCashCashIn);
 router.post('/transactions/new-sa-prepaid-reload', createBankPrepaidReload);
 

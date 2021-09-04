@@ -3,7 +3,6 @@ import {
     insertBankCashDeposit, 
     insertBankCashWithdraw, 
     insertBankBillsPayment,
-    insertGCashTransaction,
     insertGCashCashIn,
     insertBankPrepaidReload
 } from '../models/savingsAcctTransactionsModel.js';
@@ -56,17 +55,6 @@ export const createBankCashWithdraw = (req, res) => {
 export const createBankBillsPayment = (req, res) => {
     const data = req.body;
     insertBankBillsPayment(data, (err, results) => {
-        if (err){
-            res.send(err);
-        }else{
-            res.json(results);
-        }
-    });
-}
-
-export const createGCashTransaction = (req, res) => {
-    const data = req.body;
-    insertGCashTransaction(data, (err, results) => {
         if (err){
             res.send(err);
         }else{

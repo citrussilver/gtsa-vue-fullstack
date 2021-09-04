@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <div class="list-home">
+  <div id="flex-container">
       <table id="table-style">
         <thead>
           <tr>
@@ -25,7 +24,6 @@
           </tr>
         </tbody>
       </table>
-    </div>
   </div>
 </template>
 
@@ -58,10 +56,6 @@ export default {
 }
 </script>
 
-<style>
-.list-home {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+<style scoped>
+
 </style>
