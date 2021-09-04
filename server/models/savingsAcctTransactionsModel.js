@@ -14,7 +14,15 @@ export const getSavingsAcctTransactions = (result) => {
 
 // Insert Bank Cash Deposit
 export const insertBankCashDeposit = (data, result) => {
-    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", data, (err, results) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
+        bank_id: data.bank_id,
+        date_time: data.date_time,
+        bank_transact_type_id: data.bank_transact_type_id,
+        amount: data.amount,
+        current_balance: data.current_balance,
+        remarks: data.remarks,
+        location: data.location,
+    }, (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -26,22 +34,48 @@ export const insertBankCashDeposit = (data, result) => {
                 amount: data.amount
             }
 
-
-
-
-            result(null, results);
+            dbConnection.query("INSERT INTO bank_cash_deposit SET ?", deposit_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                }
+            });
         }
     });
 }
 
 // Insert Bank Cash Withdraw
 export const insertBankCashWithdraw = (data, result) => {
-    dbConnection.query("INSERT INTO bank_cash_withdraws SET ?", [data], (err, results) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
+        bank_id: data.bank_id,
+        date_time: data.date_time,
+        bank_transact_type_id: data.bank_transact_type_id,
+        amount: data.amount,
+        current_balance: data.current_balance,
+        remarks: data.remarks,
+        location: data.location,
+    }, (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
         } else {
-            result(null, results);
+
+            const wdraw_data = {
+                sa_transact_id: results.insertId,
+                remarks: data.remarks,
+                amount: data.amount
+            }
+
+            dbConnection.query("INSERT INTO bank_cash_withdraws SET ?", wdraw_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                }
+            });
         }
     });
 }
@@ -71,19 +105,16 @@ export const insertBankBillsPayment = (data, result) => {
     });
 }
 
-export const insertGCashTransaction = (data, result) => {
-    dbConnection.query("INSERT INTO gcash_transactions SET ?", [data], (err, results) => {
-        if(err) {
-            console.log(err);
-            result(err, null);
-        } else {
-            result(null, results);
-        }
-    });
-}
-
 export const insertGCashCashIn = (data, result) => {
-    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", [data], (err, results) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
+        bank_id: data.bank_id,
+        date_time: data.date_time,
+        bank_transact_type_id: data.bank_transact_type_id,
+        amount: data.amount,
+        current_balance: data.current_balance,
+        remarks: data.remarks,
+        location: data.location,
+    }, (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -91,10 +122,10 @@ export const insertGCashCashIn = (data, result) => {
             let saTransactId = results.insertId;
 
             const cash_in_data = {
-                date_time: dateTime,
+                date_time: data.dateTime,
                 transaction_type_id: Number(2),
-                amount: amount,
-                remarks: remarks,
+                amount: data.amount,
+                remarks: data.remarks,
             };
 
             dbConnection.query("INSERT INTO gcash_transactions SET ?", cash_in_data, (err, results) => {
@@ -105,8 +136,8 @@ export const insertGCashCashIn = (data, result) => {
                     const gcash_in_data = {
                         gcash_transact_id: results.insertId,
                         sa_transact_id: saTransactId,
-                        remarks: remarks,
-                        amount: amount
+                        remarks: data.remarks,
+                        amount: data.amount
                     }
                     dbConnection.query("INSERT INTO gcash_cash_in SET ?", gcash_in_data, (err, results) => {
                         if(err) {

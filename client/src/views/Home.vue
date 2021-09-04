@@ -1,17 +1,16 @@
 <template>
   <div class="home">
-    <TransactsList />
+    Home
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import TransactsList from '../components/TransactsList'
 
 export default {
   name: 'Home',
   components: {
-    TransactsList
+    
   }
 }
 </script>

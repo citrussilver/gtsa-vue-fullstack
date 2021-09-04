@@ -2,6 +2,7 @@ import dbConnection from '../config/database.js';
 
 export const insertLoadSale = (data, result) => {
     dbConnection.query("INSERT INTO gcash_transactions SET ?",  {
+        gcash_id: data.gcash_id,
         date_time: data.date_time,
         transaction_type_id: data.transaction_type_id,
         current_gcash_balance: data.current_gcash_balance,
@@ -29,6 +30,7 @@ export const insertLoadSale = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
+                    console.log('[GCash] New Load Sale successfully posted to database')
                 }
             });
         }
@@ -54,6 +56,7 @@ export const insertGCashBillsPayment = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
+                    console.log('[GCash] New Bills payment successfully posted to database')
                 }
             });
         }
@@ -80,6 +83,7 @@ export const insertGCashIncomeSale = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
+                    console.log('[GCash] New Sale / Income successfully posted to database')
                 }
             });
         }
@@ -90,6 +94,7 @@ export const insertGCashIncomeSale = (data, result) => {
 
 export const insertSelfBuyLoad = (data, result) => {
     dbConnection.query("INSERT INTO gcash_transactions SET ?", {
+        gcash_id: data.gcash_id,
         date_time: data.date_time,
         transaction_type_id: data.transaction_type_id,
         current_gcash_balance: data.current_gcash_balance,
@@ -115,6 +120,7 @@ export const insertSelfBuyLoad = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
+                    console.log('[GCash] New Self Buy Load successfully posted to database')
                 }
             });
         }
@@ -126,6 +132,7 @@ export const insertSelfBuyLoad = (data, result) => {
 
 export const insertGCashAdjustment = (data, result) => {
     dbConnection.query("INSERT INTO gcash_transactions SET ?", {
+        gcash_id: data.gcash_id,
         date_time: data.date_time,
         transaction_type_id: data.transaction_type_id,
         current_gcash_balance: data.current_gcash_balance,
@@ -150,6 +157,7 @@ export const insertGCashAdjustment = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
+                    console.log('[GCash] New Adjustment successfully posted to database')
                 }
             });
         }
