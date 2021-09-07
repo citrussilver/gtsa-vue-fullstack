@@ -2,6 +2,7 @@ import express from 'express';
 
 import { 
     showSavingsAcctTransactions,
+    showSavingsAcct1Balance,
     createSavingsAcctTransaction,
     createBankCashDeposit,
     createBankCashWithdraw,
@@ -15,13 +16,15 @@ import {
     createGCashBillsPayment,
     createGCashIncomeSale,
     createSelfBuyLoad,
-    createGCashAdjustment
+    createGCashAdjustment,
+    createGCashSendMoney
 } from '../controllers/gcashAcctTransactions.js';
 
 const router = express.Router();
 
 // Get All Savings Account Transactions
 router.get('/transactions', showSavingsAcctTransactions);
+router.get('/sa/sa1-bal', showSavingsAcct1Balance);
 
 router.post('/transactions/new-sa-transaction', createSavingsAcctTransaction);
 router.post('/transactions/new-sa-depo', createBankCashDeposit);
@@ -35,6 +38,7 @@ router.post('/transactions/new-gc-billspay', createGCashBillsPayment);
 router.post('/transactions/new-gc-income', createGCashIncomeSale);
 router.post('/transactions/new-gc-selfbuyload', createSelfBuyLoad);
 router.post('/transactions/new-gc-adjustment', createGCashAdjustment);
+router.post('/transactions/new-gc-sendmoney', createGCashSendMoney);
 
 export default router;
 

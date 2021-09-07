@@ -12,6 +12,17 @@ export const getSavingsAcctTransactions = (result) => {
     })
 }
 
+export const getSavingsAcct1Balance = (result) => {
+    dbConnection.query('SELECT balance FROM banks WHERE bank_id = 1', (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            result(null, results);
+        }
+    })
+}
+
 // Insert Bank Cash Deposit
 export const insertBankCashDeposit = (data, result) => {
     dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {

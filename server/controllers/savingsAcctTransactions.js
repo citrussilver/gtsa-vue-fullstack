@@ -1,15 +1,26 @@
 import { 
     getSavingsAcctTransactions, 
+    getSavingsAcct1Balance, 
     insertBankCashDeposit, 
-    insertBankCashWithdraw, 
-    insertBankBillsPayment,
-    insertGCashCashIn,
+    insertBankCashWithdraw,  
+    insertBankBillsPayment, 
+    insertGCashCashIn, 
     insertBankPrepaidReload
 } from '../models/savingsAcctTransactionsModel.js';
 
 // Get All Savings Acct Transactions
 export const showSavingsAcctTransactions = (req, res) => {
     getSavingsAcctTransactions((err, results) => {
+        if(err) {
+            res.send(err);
+        } else {
+            res.json(results);
+        }
+    });
+}
+
+export const showSavingsAcct1Balance = (req, res) => {
+    getSavingsAcct1Balance((err, results) => {
         if(err) {
             res.send(err);
         } else {

@@ -30,7 +30,7 @@
                   <option value="4">Aki</option>
                 </select>
               </div>
-              <div class="form-group" v-if="formDetails.componentId === 2 && (commonProps.transactType === 5 || commonProps.transactType === 1)">
+              <div class="form-group" v-if="formDetails.componentId === 2 && (commonProps.transactType === 5 || commonProps.transactType === 1 || commonProps.transactType === 9)">
                 <label class="col-form-label white">Mobile Number</label><br>
                 <input type="number" class="form-control" style="width: 8rem;" v-model="commonProps.mobileNo">
               </div>
@@ -83,7 +83,19 @@
               <label class="control-label white">Remarks</label><br>
               <textarea class="form-control" rows="3" v-model="commonProps.remarks"/>
             </div>
-            <div class="form-group" v-if="formDetails.componentId === 1" >
+            <div class="form-group" v-if="commonProps.transactType === 9">
+              <label class="control-label white">Message</label><br>
+              <textarea class="form-control" rows="3" v-model="commonProps.message"/>
+            </div>
+            <div class="form-group" v-if="commonProps.transactType === 9">
+              <label class="control-label white">Attachment:</label><br>
+              <select class="custom-select" v-model="commonProps.attachment">
+                <option value="Photo" selected>Photo</option>
+                <option value="Video">Video</option>
+                <option value="Audio">Audio</option>
+              </select>
+            </div>
+            <div class="form-group" v-if="formDetails.componentId === 1">
               <label class="col-form-label white">Location</label><br>
               <input type="text" class="form-control" v-model="commonProps.location" required>
             </div>
@@ -117,6 +129,8 @@ export default {
              currentBalance: 1,
              amount: 1,
              remarks: '',
+             message: '',
+             attachment: '',
              location: ''
           }
         )
@@ -259,11 +273,31 @@ export default {
 
                 newGCashData.credit = commonProps.credit
                 console.log(newGCashData)
-
+                
                 try {
                   await axios.post("http://localhost:5000/transactions/new-gc-adjustment", newGCashData)
                   toast({
                     message: '[GCash] New Adjustment successfully posted to database',
+                    type: 'is-info',
+                    position: "top-center",
+                    dismissible: true,
+                    pauseOnHover: true,
+                    closeOnClick: true
+                  })
+                } catch (error) {
+                  console.log(error)
+                }
+              } else if(commonProps.transactType === 9) {
+
+                newGCashData.mobile_number = commonProps.mobileNo
+                newGCashData.message = commonProps.message
+                newGCashData.attachment = commonProps.attachment
+                console.log(newGCashData)
+                
+                try {
+                  await axios.post("http://localhost:5000/transactions/new-gc-sendmoney", newGCashData)
+                  toast({
+                    message: '[GCash] New Send Money w/ clip successfully posted to database',
                     type: 'is-info',
                     position: "top-center",
                     dismissible: true,
