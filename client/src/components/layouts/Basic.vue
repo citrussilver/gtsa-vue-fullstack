@@ -7,7 +7,7 @@
             <Sidebar />
         </aside>
         <article>
-            <slot/>
+            <slot>Main Content Here..</slot>
         </article>
     </div>
 </template>

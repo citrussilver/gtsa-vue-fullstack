@@ -1,8 +1,5 @@
 <template>
   <div>
-    <!-- <Navbar />
-    <Sidebar />
-    <router-view/> -->
     <BasicLayout>
       <router-view/>
     </BasicLayout>
@@ -10,8 +7,6 @@
 </template>
 
 <script>
-// import Navbar from './components/Navbar'
-// import Sidebar from './components/Sidebar'
 import BasicLayout from './components/layouts/Basic'
 
 export default {

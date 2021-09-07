@@ -163,3 +163,39 @@ export const insertGCashAdjustment = (data, result) => {
         }
     });
 }
+
+export const insertGCashSendMoney = (data, result) => {
+    dbConnection.query("INSERT INTO gcash_transactions SET ?", {
+        gcash_id: data.gcash_id,
+        date_time: data.date_time,
+        transaction_type_id: data.transaction_type_id,
+        current_gcash_balance: data.current_gcash_balance,
+        amount: data.amount,
+        remarks: data.remarks
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const send_money_data = {
+                gcash_transact_id: results.insertId,
+                date_time: data.date_time,
+                mobile_number: data.mobile_number,
+                amount: data.amount,
+                remarks: data.remarks,
+                message: data.message,
+                attachment: data.attachment
+            };
+
+            dbConnection.query("INSERT INTO gcash_send_money SET ?", send_money_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[GCash] New Send Money w/ clip successfully posted to database')
+                }
+            });
+        }
+    });
+}
