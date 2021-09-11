@@ -1,5 +1,27 @@
 import dbConnection from '../config/database.js';
 
+export const getGCashAcctBalance = (result) => {
+    dbConnection.query('SELECT FORMAT(balance, 2) AS balance FROM gcash_account WHERE id = 1', (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            result(null, results);
+        }
+    })
+}
+
+export const getGCashAcctBalanceNc = (result) => {
+    dbConnection.query('SELECT balance FROM gcash_account WHERE id = 1', (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            result(null, results);
+        }
+    })
+}
+
 export const insertLoadSale = (data, result) => {
     dbConnection.query("INSERT INTO gcash_transactions SET ?",  {
         gcash_id: data.gcash_id,
@@ -121,6 +143,40 @@ export const insertSelfBuyLoad = (data, result) => {
                 } else {
                     result(null, results);
                     console.log('[GCash] New Self Buy Load successfully posted to database')
+                }
+            });
+        }
+    });
+}
+
+export const insertOnlineShopPay = (data, result) => {
+    dbConnection.query("INSERT INTO gcash_transactions SET ?", {
+        gcash_id: data.gcash_id,
+        date_time: data.date_time,
+        transaction_type_id: data.transaction_type_id,
+        current_gcash_balance: data.current_gcash_balance,
+        amount: data.amount,
+        remarks: data.remarks
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const online_shop_payment_data = {
+                gcash_transact_id: results.insertId,
+                date_time: data.date_time,
+                online_shop_website: data.online_shop_website,
+                amount: data.amount,
+                remarks: data.remarks,
+            };
+
+            dbConnection.query("INSERT INTO gcash_online_shop_payment SET ?", online_shop_payment_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[GCash] New Online Shop Payment successfully posted to database')
                 }
             });
         }

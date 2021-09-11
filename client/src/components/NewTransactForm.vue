@@ -11,8 +11,8 @@
             <div class="form-group" v-if="formDetails.componentId === 1">
               <select class="custom-select" v-model="commonProps.bankId">
                 <option value="0">--Choose Bank--</option>
-                <option value="1">BPI</option>
-                <option value="2">SB</option>
+                <option value="1">Northland Bank</option>
+                <!-- <option value="2">SB</option> -->
               </select>
             </div>
             <div class="form-group">
@@ -57,14 +57,25 @@
                 <option value="0">Debit</option>
               </select>
             </div>
-            <div class="form-group">
-              <label class="col-form-label white">Current {{ formDetails.componentId === 1 ? 'Bank': 'GCash'}} Balance</label>
+            <div class="form-group" v-if="formDetails.componentId === 1">
+              <label class="col-form-label white">Current Bank Balance</label>
               <div class="form-group">
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
                     <span class="input-group-text">₱</span>
                   </div>
-                  <input type="text" class="form-control" v-model="commonProps.currentBalance" required>
+                  <input type="text" class="form-control" v-model="commonProps.sa1Balance" required>
+                </div>
+              </div>
+            </div>
+            <div class="form-group" v-if="formDetails.componentId === 2">
+              <label class="col-form-label white">Current GCash Balance</label>
+              <div class="form-group">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">₱</span>
+                  </div>
+                  <input type="text" class="form-control" v-model="commonProps.gcBalance" required>
                 </div>
               </div>
             </div>
@@ -78,6 +89,14 @@
                   <input type="number" class="form-control" min="1" step="any" v-model="commonProps.amount" required>
                 </div>
               </div>
+            </div>
+            <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 7">
+              <label class="control-label white">Online Shop Website:</label>
+              <select class="custom-select" v-model="commonProps.onlineShopWebsite">
+                  <option value="shp">Shopee Pay Top-up</option>
+                  <option value="lzd">Lazada Wallet Top-up</option>
+                  <option value="gplay">Google Play</option>
+                </select>
             </div>
             <div class="form-group">
               <label class="control-label white">Remarks</label><br>
@@ -107,238 +126,302 @@
 </template>
 
 <script>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { toast } from 'bulma-toast'
+
+import { gCashBalanceNc, getGCashBalNc } from '../composables/getGCashInfo'
+import { sa1BalanceNc, getSa1BalNc } from '../composables/getSa1Info'
 
 export default {
     props: ['formDetails'],
     setup(props) {
 
-        let commonProps = reactive(
-          {
-             dateTime: '',
-             bankId: 0,
-             transactType: 0,
-             customer: '',
-             mobileNo: '',
-             network: '',
-             paymentDateTime: '',
-             credit: 1,
-             currentBalance: 1,
-             amount: 1,
-             remarks: '',
-             message: '',
-             attachment: '',
-             location: ''
+      let commonProps = reactive(
+        {
+          dateTime: '',
+          bankId: 0,
+          transactType: 0,
+          customer: '',
+          mobileNo: '',
+          network: '',
+          paymentDateTime: '',
+          credit: 1,
+          sa1Name: '',
+          sa1Balance: sa1BalanceNc,
+          gcBalance: gCashBalanceNc,
+          amount: 1,
+          onlineShopWebsite: '',
+          remarks: '',
+          message: '',
+          attachment: '',
+          location: ''
           }
-        )
+      )
+
+      onMounted(async () => {
+        await getGCashBalNc()
+        await getSa1BalNc()
+      });
+
+      const router = useRouter()
+      
+      const handleChange = () => {
+        console.log(`Transaction Value: ${commonProps.transactType}`)
+        console.log(commonProps.gcBalance)
+      }
+      const handleSubmit = async () => {
         
-        const router = useRouter()
-
-        const handleChange = () => {
-          console.log(`Transaction Value: ${commonProps.transactType}`)
-          console.log(`credit.value: ${commonProps.credit}`)
-          console.log(`customer: ${commonProps.customer}`)
-        }
-        const handleSubmit = async () => {
-          
-          try {
-            if(props.formDetails.componentId === 1) {
-              
-              let newBankData = {
-                bank_id: commonProps.bankId,
-                date_time: commonProps.dateTime,
-                bank_transact_type_id: commonProps.transactType,
-                current_balance: commonProps.currentBalance,
-                amount: commonProps.amount,
-                remarks: commonProps.remarks,
-                location: commonProps.location
-              }
-
-              console.log(newBankData)
-              
-              if(commonProps.transactType === 1) {
-                try {
-                  await axios.post("http://localhost:5000/transactions/new-sa-depo", newBankData)
-                  toast({
-                    message: 'Successfully recorded Cash Deposit',
-                    type: 'is-info',
-                    position: "top-center",
-                    dismissible: true,
-                    pauseOnHover: true,
-                    closeOnClick: true
-                  })
-
-                } catch (error) {
-                  console.log(error)
-                }
-              } else if(commonProps.transactType === 2) {
-                try {
-                  await axios.post("http://localhost:5000/transactions/new-sa-wdraw", newBankData)
-                  toast({
-                    message: 'Successfully recorded Cash Withdraw',
-                    type: 'is-info',
-                    position: "top-center",
-                    dismissible: true,
-                    pauseOnHover: true,
-                    closeOnClick: true
-                  })
-                } catch (error) {
-                  console.log(error)
-                }
-              }
-
-            } else if(props.formDetails.componentId === 2) {
-
-              let newGCashData = {
-                gcash_id: 1,
-                date_time: commonProps.dateTime,
-                transaction_type_id: commonProps.transactType,
-                current_gcash_balance: commonProps.currentBalance,
-                amount: commonProps.amount,
-                remarks: commonProps.remarks
-              }
-
-              if(commonProps.transactType === 1) {
-                newGCashData.customer_id = commonProps.customer
-                newGCashData.mobile_number = commonProps.mobileNo
-                newGCashData.network = commonProps.network
-                if(!commonProps.paymentDateTime) {
-                  newGCashData.payment_date = null
-                }
-
-                try {
-                  await axios.post("http://localhost:5000/transactions/new-gc-loadsale", newGCashData)
-                  toast({
-                    message: '[GCash] New Load Sale successfully posted to database',
-                    type: 'is-info',
-                    position: "top-center",
-                    dismissible: true,
-                    pauseOnHover: true,
-                    closeOnClick: true
-                  })
-                } catch (error) {
-                  console.log(error)
-                }
-
-              } else if(commonProps.transactType === 3) {
-                try {
-                  await axios.post("http://localhost:5000/transactions/new-gc-billspay", newGCashData)
-                  toast({
-                    message: '[GCash] New Bills payment successfully posted to database',
-                    type: 'is-info',
-                    position: "top-center",
-                    dismissible: true,
-                    pauseOnHover: true,
-                    closeOnClick: true
-                  })
-                } catch (error) {
-                  console.log(error)
-                }
-              } else if(commonProps.transactType === 4) {
-                try {
-                  await axios.post("http://localhost:5000/transactions/new-gc-income", newGCashData)
-                  toast({
-                    message: '[GCash] New Sale / Income successfully posted to database',
-                    type: 'is-info',
-                    position: "top-center",
-                    dismissible: true,
-                    pauseOnHover: true,
-                    closeOnClick: true
-                  })
-                } catch (error) {
-                  console.log(error)
-                }
-              } else if(commonProps.transactType === 5) {
-                
-                newGCashData.mobile_number = commonProps.mobileNo
-                newGCashData.network = commonProps.network
-
-                try {
-                  await axios.post("http://localhost:5000/transactions/new-gc-selfbuyload", newGCashData)
-                  toast({
-                    message: '[GCash] New Self Buy Load successfully posted to database',
-                    type: 'is-info',
-                    position: "top-center",
-                    dismissible: true,
-                    pauseOnHover: true,
-                    closeOnClick: true
-                  })
-                } catch (error) {
-                  console.log(error)
-                }
-              } else if(commonProps.transactType === 8) {
-
-                newGCashData.credit = commonProps.credit
-                console.log(newGCashData)
-                
-                try {
-                  await axios.post("http://localhost:5000/transactions/new-gc-adjustment", newGCashData)
-                  toast({
-                    message: '[GCash] New Adjustment successfully posted to database',
-                    type: 'is-info',
-                    position: "top-center",
-                    dismissible: true,
-                    pauseOnHover: true,
-                    closeOnClick: true
-                  })
-                } catch (error) {
-                  console.log(error)
-                }
-              } else if(commonProps.transactType === 9) {
-
-                newGCashData.mobile_number = commonProps.mobileNo
-                newGCashData.message = commonProps.message
-                newGCashData.attachment = commonProps.attachment
-                console.log(newGCashData)
-                
-                try {
-                  await axios.post("http://localhost:5000/transactions/new-gc-sendmoney", newGCashData)
-                  toast({
-                    message: '[GCash] New Send Money w/ clip successfully posted to database',
-                    type: 'is-info',
-                    position: "top-center",
-                    dismissible: true,
-                    pauseOnHover: true,
-                    closeOnClick: true
-                  })
-                } catch (error) {
-                  console.log(error)
-                }
-              }
-
-              commonProps.dateTime = ''
-              commonProps.bankId = 0
-              commonProps.transactType = 0
-              commonProps.customer = ''
-              commonProps.mobileNo = ''
-              commonProps.network = ''
-              commonProps.paymentDateTime = ''
-              commonProps.credit = 1,
-              commonProps.currentBalance = 1,
-              commonProps.amount = 1,
-              commonProps.remarks = ''
-              commonProps.location = ''
-              router.push('/')
+        try {
+          if(props.formDetails.componentId === 1) {
+            
+            let newBankData = {
+              bank_id: commonProps.bankId,
+              date_time: commonProps.dateTime,
+              bank_transact_type_id: commonProps.transactType,
+              current_balance: commonProps.sa1Balance,
+              current_gcash_balance: commonProps.gcBalance,
+              amount: commonProps.amount,
+              remarks: commonProps.remarks,
+              location: commonProps.location
             }
-          } catch (error) {
-            console.log(error);
-          }
 
+            console.log(newBankData)
+            
+            if(commonProps.transactType === 1) {
+              try {
+                await axios.post("http://localhost:5000/transactions/new-sa-depo", newBankData)
+                toast({
+                  message: 'Successfully recorded Cash Deposit',
+                  type: 'is-info',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 2) {
+              try {
+                await axios.post("http://localhost:5000/transactions/new-sa-wdraw", newBankData)
+                toast({
+                  message: 'Successfully recorded Cash Withdraw',
+                  type: 'is-info',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 4) {
+              try {
+                await axios.post("http://localhost:5000/transactions/new-sa-gcash-cash-in", newBankData)
+                toast({
+                  message: '[Savings Account] New GCash Cash-in successfully posted to database',
+                  type: 'is-info',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            }
+
+          } else if(props.formDetails.componentId === 2) {
+
+            let newGCashData = {
+              gcash_id: 1,
+              date_time: commonProps.dateTime,
+              transaction_type_id: commonProps.transactType,
+              current_gcash_balance: commonProps.gcBalance,
+              amount: commonProps.amount,
+              remarks: commonProps.remarks
+            }
+
+            if(commonProps.transactType === 1) {
+              newGCashData.customer_id = commonProps.customer
+              newGCashData.mobile_number = commonProps.mobileNo
+              newGCashData.network = commonProps.network
+              if(!commonProps.paymentDateTime) {
+                newGCashData.payment_date = null
+              }
+
+              try {
+                await axios.post("http://localhost:5000/transactions/new-gc-loadsale", newGCashData)
+                toast({
+                  message: '[GCash] New Load Sale successfully posted to database',
+                  type: 'is-info',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+
+            } else if(commonProps.transactType === 2) {
+              try {
+                await axios.post("http://localhost:5000/transactions/new-gc-cash-in", newGCashData)
+                toast({
+                  message: '[GCash] New Cash-in successfully posted to database',
+                  type: 'is-info',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 3) {
+              try {
+                await axios.post("http://localhost:5000/transactions/new-gc-billspay", newGCashData)
+                toast({
+                  message: '[GCash] New Bills payment successfully posted to database',
+                  type: 'is-info',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 4) {
+              try {
+                await axios.post("http://localhost:5000/transactions/new-gc-income", newGCashData)
+                toast({
+                  message: '[GCash] New Sale / Income successfully posted to database',
+                  type: 'is-info',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 5) {
+              
+              newGCashData.mobile_number = commonProps.mobileNo
+              newGCashData.network = commonProps.network
+
+              try {
+                await axios.post("http://localhost:5000/transactions/new-gc-selfbuyload", newGCashData)
+                toast({
+                  message: '[GCash] New Self Buy Load successfully posted to database',
+                  type: 'is-info',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 7) {
+              
+              newGCashData.online_shop_website = commonProps.onlineShopWebsite
+
+              try {
+                await axios.post("http://localhost:5000/transactions/new-gc-ol-shop-pay", newGCashData)
+                toast({
+                  message: '[GCash] New Online Payment successfully posted to database',
+                  type: 'is-info',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 8) {
+
+              newGCashData.credit = commonProps.credit
+              console.log(newGCashData)
+              
+              try {
+                await axios.post("http://localhost:5000/transactions/new-gc-adjustment", newGCashData)
+                toast({
+                  message: '[GCash] New Adjustment successfully posted to database',
+                  type: 'is-info',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 9) {
+
+              newGCashData.mobile_number = commonProps.mobileNo
+              newGCashData.message = commonProps.message
+              newGCashData.attachment = commonProps.attachment
+              console.log(newGCashData)
+              
+              try {
+                await axios.post("http://localhost:5000/transactions/new-gc-sendmoney", newGCashData)
+                toast({
+                  message: '[GCash] New Send Money w/ clip successfully posted to database',
+                  type: 'is-info',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            }
+          }
+          commonProps.dateTime = ''
+          commonProps.bankId = 0
+          commonProps.transactType = 0
+          commonProps.customer = ''
+          commonProps.mobileNo = ''
+          commonProps.network = ''
+          commonProps.paymentDateTime = ''
+          commonProps.credit = 1,
+          commonProps.amount = 1,
+          commonProps.remarks = '',
+          commonProps.message = '',
+          commonProps.attachment = '',
+          commonProps.location = ''
+          router.push('/')
+        } catch (error) {
+          console.log(error);
+          router.push('/')
         }
 
-        return { 
-          commonProps, 
-          handleChange, 
-          handleSubmit }
+      }
+
+      return { 
+        commonProps, 
+        handleChange, 
+        handleSubmit,
+      }
     }
 
 }
 </script>
 
 <style scoped>
+
+#flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 #main-form {
   opacity: 0;

@@ -1,6 +1,7 @@
 import { 
     getSavingsAcctTransactions, 
-    getSavingsAcct1Balance, 
+    getSavingsAcct1Info, 
+    getSavingsAcct1BalanceNc, 
     insertBankCashDeposit, 
     insertBankCashWithdraw,  
     insertBankBillsPayment, 
@@ -19,8 +20,18 @@ export const showSavingsAcctTransactions = (req, res) => {
     });
 }
 
-export const showSavingsAcct1Balance = (req, res) => {
-    getSavingsAcct1Balance((err, results) => {
+export const showSavingsAcct1Info = (req, res) => {
+    getSavingsAcct1Info((err, results) => {
+        if(err) {
+            res.send(err);
+        } else {
+            res.json(results);
+        }
+    });
+}
+
+export const showSavingsAcct1BalanceNc = (req, res) => {
+    getSavingsAcct1BalanceNc((err, results) => {
         if(err) {
             res.send(err);
         } else {

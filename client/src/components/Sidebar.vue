@@ -1,13 +1,16 @@
 <template>
-  <ul>
-    <router-link :to="{ name: 'Home' }"><li>Home</li></router-link>
-    <router-link :to="{ name: 'NewBankTransact' }"><li>New Bank Transaction</li></router-link>
-    <router-link :to="{ name: 'NewGCashTransact' }"><li>New GCash Transaction</li></router-link>
-    <router-link :to="{ name: 'TransactsList'}"><li>View Records</li></router-link>
+<div>
+  <ul id="custom-sidebar">
+    <router-link class="common-link" :to="{ name: 'Home' }"><li>Home</li></router-link>
+    <router-link class="common-link" :to="{ name: 'NewBankTransact' }"><li>New Bank Transaction</li></router-link>
+    <router-link class="common-link" :to="{ name: 'NewGCashTransact' }"><li>New GCash Transaction</li></router-link>
+    <router-link class="common-link" :to="{ name: 'TransactsList'}"><li>View Records</li></router-link>
   </ul>
+</div>
 </template>
 
 <script>
+
 export default {
 
 }
@@ -15,17 +18,42 @@ export default {
 
 <style scoped>
 
-router-link {
+.common-link {
     text-decoration: none;
 }
 
-ul {
+.common-link:hover {
+    color: #fff;
+}
+
+#custom-sidebar {
   margin-left: 1.5rem;
 }
 
-@media all and (max-width: 700px) {
-  ul {
+#custom-sidebar li:hover {
+  background-color: var(--blue-highlight);
+}
+
+#custom-sidebar li {
+  padding: 1rem;
+  list-style-type: none;
+  background-color: var(--item-color);
+  border-radius: 0.44rem;
+  margin-bottom: 0.5rem;
+}
+
+@media screen and (max-width: 700px) {
+  /* ul {
     margin-left: 0;
+  }
+
+  li {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  } */
+
+  #custom-sidebar {
+    display: none;
   }
 }
 

@@ -20,4 +20,10 @@ export default {
   margin-right: 1rem;
   min-height: 100%;
 }
+
+@media all and (max-width: 700px) {
+  .home {
+    margin-right: 0;
+  }
+}
 </style>
