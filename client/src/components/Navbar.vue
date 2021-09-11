@@ -11,7 +11,7 @@
               <line x1="13" y1="13" x2="13" y2="21" />
               <line x1="21" y1="12" x2="21" y2="21" />
             </svg>
-            <router-link :to="{ name: 'Home' }">GCash&nbsp;&#38;&nbsp;Savings Account Monitoring System</router-link></h1>
+            <router-link :to="{ name: 'Home' }">GCash&nbsp;&#38;&nbsp;Savings Account Tracking System</router-link></h1>
           <div class="links" :class="{'open': isAddClass}">
             <ul class="nav-links">
               <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'Home' }">Dashboard</router-link></li>
