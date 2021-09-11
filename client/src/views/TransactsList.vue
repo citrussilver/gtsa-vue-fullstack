@@ -1,5 +1,5 @@
 <template>
-  <div id="flex-container">
+  <div id="main-content">
       <table id="table-style">
         <thead>
           <tr>
@@ -57,5 +57,16 @@ export default {
 </script>
 
 <style scoped>
+#main-content {
+  opacity: 0;
+  animation-name: wrapper-fadein;
+  animation-duration: var(--anim-duration);
+  animation-fill-mode: var(--anim-fill-mode);
+}
 
+@keyframes wrapper-fadein {
+    to {
+        opacity: 1;
+    }
+}
 </style>

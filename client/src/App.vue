@@ -1,8 +1,9 @@
 <template>
   <div>
-    <BasicLayout>
+    <!-- <BasicLayout>
       <router-view/>
-    </BasicLayout>
+    </BasicLayout> -->
+    <BasicLayout/>
   </div>
 </template>
 

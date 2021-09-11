@@ -1,18 +1,23 @@
 <template>
     <div class="basic-grid">
         <header>
-            <Navbar />
+            <Navbar @stop-scroll="stopVpScroll"/>
         </header>
         <aside class="sidebar-left">
             <Sidebar />
         </aside>
         <article>
-            <slot>Main Content Here..</slot>
+          <div class="router-view-div" :class="{'inactive': deactivateClass}"><router-view/></div>
+            <!-- <slot>Main Content Here..</slot> -->
         </article>
+        <footer class="custom-footer">
+          <p>2021 GCSA</p>
+        </footer>
     </div>
 </template>
 
 <script>
+import { ref } from 'vue'
 import Sidebar from '../Sidebar'
 import Navbar from '../Navbar.vue'
 
@@ -20,11 +25,34 @@ export default {
     components: {
         Sidebar,
         Navbar,
+    },
+    setup() {
+      const deactivateClass = ref(false)
+
+      const stopVpScroll = (value) => {
+        deactivateClass.value = value
+        if(deactivateClass.value) {
+          document.body.setAttribute('style', `position: fixed; right: 0; left: 0;`)
+        } else {
+          document.body.setAttribute('style', '')
+        }
+      }
+
+      return { deactivateClass, stopVpScroll }
     }
 }
 </script>
 
 <style>
+
+  .router-view-div {
+      transition: 0.5s filter ease-out;
+  }
+
+  .router-view-div.inactive {
+    pointer-events: none;
+    filter: grayscale(100%) opacity(0.5);
+  }
 
 html {
   background-color: #222;
@@ -42,6 +70,15 @@ header, footer {
 
 article {
   grid-column: 2 / 4;
+}
+
+.custom-footer {
+  position: fixed;
+  bottom: 0;
+  height: 50px;
+  width: 100%;
+  background-color: orange;
+  color: #fff;
 }
 
 @media all and (max-width: 700px) {

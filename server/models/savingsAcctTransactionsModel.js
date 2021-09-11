@@ -1,8 +1,7 @@
 import dbConnection from '../config/database.js';
 
-// Get All Savings Acc Transactions
-export const getSavingsAcctTransactions = (result) => {
-    dbConnection.query('SELECT DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, bt.description as transact_type, FORMAT(amount,2) AS amount, FORMAT(current_balance,2) AS current_balance, remarks, FORMAT(post_transact_balance,2) AS post_transact_balance, location FROM savings_acct_transactions sa JOIN bank_transaction_type bt ON sa.bank_transact_type_id = bt.id ORDER BY sa_transact_id DESC LIMIT 5', (err, results) => {
+export const getSavingsAcct1Info = (result) => {
+    dbConnection.query('SELECT bank_name, FORMAT(balance, 2) AS balance FROM banks WHERE bank_id = 1', (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -12,8 +11,20 @@ export const getSavingsAcctTransactions = (result) => {
     })
 }
 
-export const getSavingsAcct1Balance = (result) => {
+export const getSavingsAcct1BalanceNc = (result) => {
     dbConnection.query('SELECT balance FROM banks WHERE bank_id = 1', (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            result(null, results);
+        }
+    })
+}
+
+// Get All Savings Acc Transactions
+export const getSavingsAcctTransactions = (result) => {
+    dbConnection.query('SELECT DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, bt.description as transact_type, FORMAT(amount,2) AS amount, FORMAT(current_balance,2) AS current_balance, remarks, FORMAT(post_transact_balance,2) AS post_transact_balance, location FROM savings_acct_transactions sa JOIN bank_transaction_type bt ON sa.bank_transact_type_id = bt.id ORDER BY sa_transact_id DESC LIMIT 5', (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -51,6 +62,7 @@ export const insertBankCashDeposit = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
+                    console.log('[Savings Acct] New Cash Deposit successfully posted to database')
                 }
             });
         }
@@ -85,6 +97,7 @@ export const insertBankCashWithdraw = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
+                    console.log('[Savings Acct] New Cash Withdraw successfully posted to database')
                 }
             });
         }
@@ -93,7 +106,7 @@ export const insertBankCashWithdraw = (data, result) => {
 
 // Insert Savings Acct Transaction
 export const insertSavingsAcctTransaction = (data, result) => {
-    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", [data], (err, results) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", data, (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -106,12 +119,13 @@ export const insertSavingsAcctTransaction = (data, result) => {
 
 // Insert Bank Bills Payment
 export const insertBankBillsPayment = (data, result) => {
-    dbConnection.query("INSERT INTO bank_bills_payment SET ?", [data], (err, results) => {
+    dbConnection.query("INSERT INTO bank_bills_payment SET ?", data, (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
         } else {
             result(null, results);
+            console.log('[Savings Acct] New Bills payment successfully posted to database')
         }
     });
 }
@@ -133,8 +147,9 @@ export const insertGCashCashIn = (data, result) => {
             let saTransactId = results.insertId;
 
             const cash_in_data = {
-                date_time: data.dateTime,
+                date_time: data.date_time,
                 transaction_type_id: Number(2),
+                current_gcash_balance: data.current_gcash_balance,
                 amount: data.amount,
                 remarks: data.remarks,
             };
@@ -156,6 +171,7 @@ export const insertGCashCashIn = (data, result) => {
                             result(err, null);
                         } else {
                             result(null, results);
+                            console.log('[Savings Acct] New GCash cash-in successfully posted to database')
                         }
                     });
                 }
@@ -165,7 +181,7 @@ export const insertGCashCashIn = (data, result) => {
 }
 
 export const insertBankPrepaidReload = (data, result) => {
-    dbConnection.query("INSERT INTO bank_prepaid_reload SET ?", [data], (err, results) => {
+    dbConnection.query("INSERT INTO bank_prepaid_reload SET ?", data, (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
