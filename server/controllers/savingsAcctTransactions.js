@@ -6,7 +6,8 @@ import {
     insertBankCashWithdraw,  
     insertBankBillsPayment, 
     insertGCashCashIn, 
-    insertBankPrepaidReload
+    insertBankPrepaidReload, 
+    insertTransferMoney
 } from '../models/savingsAcctTransactionsModel.js';
 
 // Get All Savings Acct Transactions
@@ -99,6 +100,17 @@ export const createGCashCashIn = (req, res) => {
 export const createBankPrepaidReload = (req, res) => {
     const data = req.body;
     insertBankPrepaidReload(data, (err, results) => {
+        if (err){
+            res.send(err);
+        }else{
+            res.json(results);
+        }
+    });
+}
+
+export const createTransferMoney = (req, res) => {
+    const data = req.body;
+    insertTransferMoney(data, (err, results) => {
         if (err){
             res.send(err);
         }else{

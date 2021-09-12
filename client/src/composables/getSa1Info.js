@@ -6,7 +6,7 @@ export const sa1BalanceNc = ref(0)
 
 export const getSa1Info = async () => {
   
-  const response = await fetch('http://localhost:5000/sa/sa1-info', {
+    await fetch('http://localhost:5000/sa/sa1-info', {
       method: 'GET',
       body: JSON.stringify(),
       headers: {
@@ -16,6 +16,7 @@ export const getSa1Info = async () => {
       return res.json()
     })
     .then(data => {
+      console.log(data)
       sa1Balance.value = data[0].balance
       bankName.value = data[0].bank_name
     })
@@ -24,7 +25,7 @@ export const getSa1Info = async () => {
 
 export const getSa1BalNc = async () => {
   
-  const response = await fetch('http://localhost:5000/sa/sa1-bal-nc', {
+    await fetch('http://localhost:5000/sa/sa1-bal-nc', {
       method: 'GET',
       body: JSON.stringify(),
       headers: {

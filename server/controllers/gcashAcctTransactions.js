@@ -1,5 +1,5 @@
 import {
-    getGCashAcctBalance,
+    getGCashAcctInfo,
     getGCashAcctBalanceNc,
     insertLoadSale,
     insertGCashBillsPayment,
@@ -10,8 +10,8 @@ import {
     insertGCashSendMoney
 } from '../models/gcashAcctTransactionsModel.js'
 
-export const showGCashAcctBalance = (req, res) => {
-    getGCashAcctBalance((err, results) => {
+export const showGCashAcctInfo = (req, res) => {
+    getGCashAcctInfo((err, results) => {
         if(err){
             res.send(err);
         } else {

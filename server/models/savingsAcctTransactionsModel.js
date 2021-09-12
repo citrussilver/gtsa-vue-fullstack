@@ -190,3 +190,40 @@ export const insertBankPrepaidReload = (data, result) => {
         }
     });
 }
+
+export const insertTransferMoney = (data, result) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
+        bank_id: data.bank_id,
+        date_time: data.date_time,
+        bank_transact_type_id: data.bank_transact_type_id,
+        amount: data.amount,
+        current_balance: data.current_balance,
+        remarks: data.remarks,
+        location: data.location,
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+
+            const transfer_money_data = {
+                sa_transact_id: results.insertId,
+                bank_id: data.bank_id,
+                date_time: data.date_time,
+                receipient_acct_no: data.receipient_acct_no,
+                remarks: data.remarks,
+                amount: data.amount
+            }
+
+            dbConnection.query("INSERT INTO bank_transfer_money SET ?", transfer_money_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[Savings Acct] New Transfer Money successfully posted to database')
+                }
+            });
+        }
+    });
+}

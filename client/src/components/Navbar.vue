@@ -1,30 +1,33 @@
 <template>
   <div class="navbar custom-navbar">
       <nav>
+        <div class="nav-flex">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chart-infographic" width="40" height="40" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <circle cx="7" cy="7" r="4" />
+            <path d="M7 3v4h4" />
+            <line x1="9" y1="17" x2="9" y2="21" />
+            <line x1="17" y1="14" x2="17" y2="21" />
+            <line x1="13" y1="13" x2="13" y2="21" />
+            <line x1="21" y1="12" x2="21" y2="21" />
+          </svg>
           <h1>
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chart-infographic" width="40" height="40" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-              <circle cx="7" cy="7" r="4" />
-              <path d="M7 3v4h4" />
-              <line x1="9" y1="17" x2="9" y2="21" />
-              <line x1="17" y1="14" x2="17" y2="21" />
-              <line x1="13" y1="13" x2="13" y2="21" />
-              <line x1="21" y1="12" x2="21" y2="21" />
-            </svg>
-            <router-link :to="{ name: 'Home' }">GCash&nbsp;&#38;&nbsp;Savings Account Tracking System</router-link></h1>
-          <div class="links" :class="{'open': isAddClass}">
-            <ul class="nav-links">
-              <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'Home' }">Dashboard</router-link></li>
-              <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewBankTransact' }">New Bank Transaction</router-link></li>
-              <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewGCashTransact' }">New GCash Transaction</router-link></li>
-              <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'TransactsList' }">View Records</router-link></li>
-            </ul>
-          </div>
-          <div class="hamburger" @click="hamburgerClick">
-            <div class="burger-line" :class="{'slash-1': isAddClass}"></div>
-            <div class="burger-line" :class="{'slash-2': isAddClass}"></div>
-            <div class="burger-line" :class="{'hide': isAddClass}"></div>
-          </div>
+            <router-link :to="{ name: 'Home' }">GCash&nbsp;&#38;&nbsp;Savings Account</router-link>
+          </h1>
+        </div>
+        <div class="links" :class="{'open': isAddClass}">
+          <ul class="nav-links">
+            <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'Home' }">Dashboard</router-link></li>
+            <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewBankTransact' }">New Bank Transaction</router-link></li>
+            <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewGCashTransact' }">New GCash Transaction</router-link></li>
+            <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'TransactsList' }">View Records</router-link></li>
+          </ul>
+        </div>
+        <div class="hamburger" @click="hamburgerClick">
+          <div class="burger-line" :class="{'slash-1': isAddClass}"></div>
+          <div class="burger-line" :class="{'slash-2': isAddClass}"></div>
+          <div class="burger-line" :class="{'hide': isAddClass}"></div>
+        </div>
       </nav>
   </div>
 </template>
@@ -57,12 +60,27 @@ export default {
     position: static;
   }
 
+  .nav-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   nav a {
     text-decoration: none;
   }
 
   nav a:hover {
     color: #000;
+  }
+
+  h1::after {
+    content: '\ATracking System';
+    white-space: pre;
+    font-size: 0.9rem;
+    position: absolute;
+    left: 11.4rem;
+    top: 2rem;
   }
 
   .links {
@@ -134,8 +152,8 @@ export default {
   .hamburger {
     cursor: pointer;
     position: absolute;
-    top: 0.9rem;
-    right: 0;
+    top: 1rem;
+    right: 0.5rem;
     border: 1px solid white;
     border-radius: 5px;
     padding: 0.5rem;
