@@ -1,6 +1,6 @@
 import dbConnection from '../config/database.js';
 
-export const getGCashAcctBalance = (result) => {
+export const getGCashAcctInfo = (result) => {
     dbConnection.query('SELECT FORMAT(balance, 2) AS balance FROM gcash_account WHERE id = 1', (err, results) => {
         if(err) {
             console.log(err);

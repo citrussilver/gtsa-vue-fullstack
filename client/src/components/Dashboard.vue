@@ -13,26 +13,26 @@
               <div class="content">
                 <details>
                     <summary>Balance</summary>
-                    {{gCashBalance}}
+                    {{ gCashBalance }}
                 </details>
               </div>
             </article>
             <article class="tile is-child notification is-danger">
               <p class="title">
                   <ArticleTitleSlot>
-                      {{bankName}}
+                      {{ bankName }}
                   </ArticleTitleSlot>
               </p>
               <div class="content">
                 <details>
                     <summary>Balance</summary>
-                    {{sa1Balance}}
+                    {{ sa1Balance }}
                 </details>
               </div>
             </article>
           </div>
           <div class="tile is-parent">
-            <article class="tile is-child notification" style="background-color: #6D5C71;">
+            <article class="tile is-child right-padding notification" style="background-color: #6D5C71;">
               <p class="title">
                   <ArticleTitleSlot>
                       Random Anime Quotes
@@ -107,6 +107,8 @@ import ArticleTitleSlot from './slots/ArticleTitleSlot.vue'
 import ArticleSubtitleSlot from './slots/ArticleSubtitleSlot.vue'
 
 import { bankName, sa1Balance, getSa1Info } from '../composables/getSa1Info'
+import { gCashBalance, getGCashInfo } from '../composables/getGCashInfo'
+import { aniQuote, generateAniQuote } from '../composables/getAniQuote'
 
 export default {
     components: {
@@ -114,53 +116,13 @@ export default {
         ArticleSubtitleSlot
     },
     setup() {
+      onMounted(async () => {
+        await getSa1Info()
+        await getGCashInfo()
+        await generateAniQuote()
+      })
 
-        onMounted(async () => {
-            await getSa1Info()
-            console.log(sa1Balance)
-            getGCashBalance()
-            generateAniQuote()
-        })
-
-        
-        let gCashBalance = ref(null)
-
-        let aniQuote = reactive(
-          {
-             quote: '',
-             character: '',
-             anime: ''
-          }
-        )
-
-        const getGCashBalance = async () => {
-          await fetch('http://localhost:5000/gc/gc-bal', {
-            method: 'GET',
-            body: JSON.stringify(),
-            headers: {
-              'Content-type': 'application/json; charset=UTF-8',
-            },
-          })
-          .then(res => {
-              return res.json()
-          })
-          .then(data => {
-            gCashBalance.value = data[0].balance
-          })
-          .catch(error => console.log(error))
-        }
-
-        const generateAniQuote = async () => {
-          await fetch('https://animechan.vercel.app/api/random')
-          .then((response) => response.json())
-          .then((quote) => {
-            aniQuote.quote = quote.quote
-            aniQuote.character = quote.character
-            aniQuote.anime = quote.anime;
-          });
-        }
-
-        return { bankName, sa1Balance, gCashBalance, aniQuote, generateAniQuote }
+      return { bankName, sa1Balance, gCashBalance, aniQuote, generateAniQuote }
     }
 }
 </script>
@@ -261,6 +223,10 @@ article p {
   0%    {opacity: 0; transform: translateX(-10px)}
   100%  {opacity: 1; transform: translateX(0)}
 } */
+
+.right-padding {
+  padding-right: 1.5rem;
+}
 
 @media all and (max-width: 700px) {
   .tile.is-ancestor {

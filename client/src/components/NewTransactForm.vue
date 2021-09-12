@@ -1,127 +1,126 @@
 <template>
   <div id="flex-container">
-      <form id="main-form" @submit.prevent="handleSubmit">
-        <div :class="formDetails.cardBorder" style="width: 20rem;">
-          <div class="card-header white">{{formDetails.header}}</div>
-          <div class="card-body">
-            <div class="form-group">
-              <label class="col-form-label white">Date</label>
-              <input type="datetime-local" class="form-control" v-model="commonProps.dateTime" required>
-            </div>
-            <div class="form-group" v-if="formDetails.componentId === 1">
-              <select class="custom-select" v-model="commonProps.bankId">
-                <option value="0">--Choose Bank--</option>
-                <option value="1">Northland Bank</option>
-                <!-- <option value="2">SB</option> -->
-              </select>
-            </div>
-            <div class="form-group">
-                <select class="custom-select" v-model="commonProps.transactType" style="width: 12rem;" @change="handleChange">
-                    <option v-for="transact in formDetails.transactType" :key="transact.val" :value="transact.val">{{transact.title}}</option>
-                </select>
-            </div>
-            <div class="flex-group">
-              <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 1">
-                <label class="col-form-label white">Customer</label><br>
-                <select class="custom-select" v-model="commonProps.customer" style="width: 6rem;"  @change="handleChange">
-                  <option value="1" selected>Mama</option>
-                  <option value="2">Tito Anton</option>
-                  <option value="3">Ate Emy</option>
-                  <option value="4">Aki</option>
-                </select>
-              </div>
-              <div class="form-group" v-if="formDetails.componentId === 2 && (commonProps.transactType === 5 || commonProps.transactType === 1 || commonProps.transactType === 9)">
-                <label class="col-form-label white">Mobile Number</label><br>
-                <input type="number" class="form-control" style="width: 8rem;" v-model="commonProps.mobileNo">
-              </div>
-            </div>
-            <div class="flex-group">
-              <div class="form-group" v-if="formDetails.componentId === 2 && (commonProps.transactType === 5 || commonProps.transactType === 1)" style="width: 5rem;">
-                <label class="col-form-label white">Network</label><br>
-                <select class="custom-select" v-model="commonProps.network">
-                  <option value="TM">TM</option>
-                  <option value="Globe">Globe</option>
-                  <option value="TNT">TNT</option>
-                  <option value="Smart">Smart</option>
-                </select>
-              </div>
-              <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 1">
-                <label class="col-form-label white">Payment Date / Time</label>
-                <input type="datetime-local" class="form-control" v-model="commonProps.paymentDateTime">
-              </div>
-            </div>
-            <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 8">
-              <label class="col-form-label white">Credit or Debit?</label><br>
-              <select class="custom-select" v-model="commonProps.credit" style="width: 6rem;"  @change="handleChange">
-                <option value="1" selected>Credit</option>
-                <option value="0">Debit</option>
-              </select>
-            </div>
-            <div class="form-group" v-if="formDetails.componentId === 1">
-              <label class="col-form-label white">Current Bank Balance</label>
-              <div class="form-group">
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">₱</span>
-                  </div>
-                  <input type="text" class="form-control" v-model="commonProps.sa1Balance" required>
-                </div>
-              </div>
-            </div>
-            <div class="form-group" v-if="formDetails.componentId === 2">
-              <label class="col-form-label white">Current GCash Balance</label>
-              <div class="form-group">
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">₱</span>
-                  </div>
-                  <input type="text" class="form-control" v-model="commonProps.gcBalance" required>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label white">{{ commonProps.transactType === 4 ? 'Sale / Income Received:' : 'Amount'}}</label>
-              <div class="form-group">
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">₱</span>
-                  </div>
-                  <input type="number" class="form-control" min="1" step="any" v-model="commonProps.amount" required>
-                </div>
-              </div>
-            </div>
-            <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 7">
-              <label class="control-label white">Online Shop Website:</label>
-              <select class="custom-select" v-model="commonProps.onlineShopWebsite">
-                  <option value="shp">Shopee Pay Top-up</option>
-                  <option value="lzd">Lazada Wallet Top-up</option>
-                  <option value="gplay">Google Play</option>
-                </select>
-            </div>
-            <div class="form-group">
-              <label class="control-label white">Remarks</label><br>
-              <textarea class="form-control" rows="3" v-model="commonProps.remarks"/>
-            </div>
-            <div class="form-group" v-if="commonProps.transactType === 9">
-              <label class="control-label white">Message</label><br>
-              <textarea class="form-control" rows="3" v-model="commonProps.message"/>
-            </div>
-            <div class="form-group" v-if="commonProps.transactType === 9">
-              <label class="control-label white">Attachment:</label><br>
-              <select class="custom-select" v-model="commonProps.attachment">
-                <option value="Photo" selected>Photo</option>
-                <option value="Video">Video</option>
-                <option value="Audio">Audio</option>
-              </select>
-            </div>
-            <div class="form-group" v-if="formDetails.componentId === 1">
-              <label class="col-form-label white">Location</label><br>
-              <input type="text" class="form-control" v-model="commonProps.location" required>
-            </div>
-            <button type="submit" class="btn btn-outline-success styled-button">Submit</button>
+    <form id="main-form" @submit.prevent="handleSubmit">
+      <div :class="formDetails.cardBorder">
+        <div class="card-header white">{{formDetails.header}}</div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="col-form-label white">Date</label>
+            <input type="datetime-local" class="form-control" v-model="commonProps.dateTime" required>
           </div>
+          <div class="form-group" v-if="formDetails.componentId === 1">
+            <select class="custom-select" v-model="commonProps.bankId">
+              <option value="0">--Choose Bank--</option>
+              <option value="1">Northland Bank</option>
+            </select>
+          </div>
+          <div class="form-group">
+              <select class="custom-select cselect-style" v-model="commonProps.transactType" @change="handleChange">
+                  <option v-for="transact in formDetails.transactType" :key="transact.val" :value="transact.val">{{transact.title}}</option>
+              </select>
+          </div>
+          <div class="flex-group">
+            <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 1">
+              <label class="col-form-label white">Customer</label><br>
+              <select class="custom-select" v-model="commonProps.customer" style="width: 6rem;"  @change="handleChange">
+                <option value="1" selected>Mama</option>
+                <option value="2">Tito Anton</option>
+                <option value="3">Ate Emy</option>
+                <option value="4">Aki</option>
+              </select>
+            </div>
+            <div class="form-group" v-if="formDetails.componentId === 2 && (commonProps.transactType === 5 || commonProps.transactType === 1 || commonProps.transactType === 9)">
+              <label class="col-form-label white">Mobile Number</label><br>
+              <input type="number" class="form-control" style="width: 8rem;" v-model="commonProps.mobileNo">
+            </div>
+          </div>
+          <div class="flex-group">
+            <div class="form-group" v-if="formDetails.componentId === 2 && (commonProps.transactType === 5 || commonProps.transactType === 1)" style="width: 5rem;">
+              <label class="col-form-label white">Network</label><br>
+              <select class="custom-select" v-model="commonProps.network">
+                <option value="TM">TM</option>
+                <option value="Globe">Globe</option>
+                <option value="TNT">TNT</option>
+                <option value="Smart">Smart</option>
+              </select>
+            </div>
+            <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 1">
+              <label class="col-form-label white">Payment Date / Time</label>
+              <input type="datetime-local" class="form-control" v-model="commonProps.paymentDateTime">
+            </div>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 8">
+            <label class="col-form-label white">Credit or Debit?</label><br>
+            <select class="custom-select" v-model="commonProps.credit" style="width: 6rem;"  @change="handleChange">
+              <option value="1" selected>Credit</option>
+              <option value="0">Debit</option>
+            </select>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === 1">
+            <label class="col-form-label white">Current Bank Balance</label>
+            <div class="form-group">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">₱</span>
+                </div>
+                <input type="text" class="form-control" v-model="commonProps.sa1Balance" required>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === 2">
+            <label class="col-form-label white">Current GCash Balance</label>
+            <div class="form-group">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">₱</span>
+                </div>
+                <input type="text" class="form-control" v-model="commonProps.gcBalance" required>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label white">{{ commonProps.transactType === 4 ? 'Sale / Income Received:' : 'Amount'}}</label>
+            <div class="form-group">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">₱</span>
+                </div>
+                <input type="number" class="form-control" min="1" step="any" v-model="commonProps.amount" required>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 7">
+            <label class="control-label white">Online Shop Website:</label>
+            <select class="custom-select" v-model="commonProps.onlineShopWebsite">
+                <option value="shp">Shopee Pay Top-up</option>
+                <option value="lzd">Lazada Wallet Top-up</option>
+                <option value="gplay">Google Play</option>
+              </select>
+          </div>
+          <div class="form-group">
+            <label class="control-label white">Remarks</label><br>
+            <textarea class="form-control" rows="3" v-model="commonProps.remarks"/>
+          </div>
+          <div class="form-group" v-if="commonProps.transactType === 9">
+            <label class="control-label white">Message</label><br>
+            <textarea class="form-control" rows="3" v-model="commonProps.message"/>
+          </div>
+          <div class="form-group" v-if="commonProps.transactType === 9">
+            <label class="control-label white">Attachment:</label><br>
+            <select class="custom-select" v-model="commonProps.attachment">
+              <option value="Photo" selected>Photo</option>
+              <option value="Video">Video</option>
+              <option value="Audio">Audio</option>
+            </select>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === 1">
+            <label class="col-form-label white">Location</label><br>
+            <input type="text" class="form-control" v-model="commonProps.location" required>
+          </div>
+          <div id="btn-container"><button type="submit" class="btn btn-outline-success styled-button">Submit</button></div>
         </div>
-      </form>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -141,7 +140,7 @@ export default {
       let commonProps = reactive(
         {
           dateTime: '',
-          bankId: 0,
+          bankId: 1,
           transactType: 0,
           customer: '',
           mobileNo: '',
@@ -151,6 +150,7 @@ export default {
           sa1Name: '',
           sa1Balance: sa1BalanceNc,
           gcBalance: gCashBalanceNc,
+          receipientAcctNo: '',
           amount: 1,
           onlineShopWebsite: '',
           remarks: '',
@@ -193,7 +193,7 @@ export default {
               try {
                 await axios.post("http://localhost:5000/transactions/new-sa-depo", newBankData)
                 toast({
-                  message: 'Successfully recorded Cash Deposit',
+                  message: '[Savings Account] New Cash Deposit successfully posted to database',
                   type: 'is-info',
                   position: "top-center",
                   dismissible: true,
@@ -208,7 +208,7 @@ export default {
               try {
                 await axios.post("http://localhost:5000/transactions/new-sa-wdraw", newBankData)
                 toast({
-                  message: 'Successfully recorded Cash Withdraw',
+                  message: '[Savings Account] New Cash Withdraw successfully posted to database',
                   type: 'is-info',
                   position: "top-center",
                   dismissible: true,
@@ -232,8 +232,24 @@ export default {
               } catch (error) {
                 console.log(error)
               }
-            }
+            } else if(commonProps.transactType === 6) {
 
+              newBankData.receipient_acct_no = commonProps.receipientAcctNo
+
+              try {
+                await axios.post('http://localhost:5000/transactions/new-sa-transfer-money', newBankData)
+                toast({
+                  message: '[Savings Account] New Transfer Money successfully posted to database',
+                  type: 'is-info',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            }
           } else if(props.formDetails.componentId === 2) {
 
             let newGCashData = {
@@ -385,7 +401,7 @@ export default {
             }
           }
           commonProps.dateTime = ''
-          commonProps.bankId = 0
+          commonProps.bankId = 1
           commonProps.transactType = 0
           commonProps.customer = ''
           commonProps.mobileNo = ''
@@ -424,10 +440,15 @@ export default {
 }
 
 #main-form {
+  width: 20rem;
   opacity: 0;
   animation-name: wrapper-fadein;
   animation-duration: var(--anim-duration);
   animation-fill-mode: var(--anim-fill-mode);
+}
+
+.cselect-style {
+  width: 12rem;
 }
 
 @keyframes wrapper-fadein {
@@ -454,5 +475,29 @@ export default {
   transform: scale(0.90);
 }
 
+@media all and (max-width: 700px) {
+  #main-form {
+    width: 96vw;
+    font-size: 1.5rem;
+  }
+
+  .cselect-style {
+    width: 18rem;
+  }
+
+  #btn-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .styled-button{
+    transform: scale(1.5);    
+  }
+
+  #main-form input, #main-form select, #main-form textarea {
+    font-size: 1.5rem;
+  }
+
+}
 
 </style>

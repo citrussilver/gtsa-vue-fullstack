@@ -19,7 +19,7 @@ export default {
     const bankFormDetails = ref(
       {
         componentId: 1,
-        cardBorder: 'card border-success mb-3',
+        cardBorder: 'card border-success',
         header: 'New Bank Transaction',
         transactType: [
           { val: 0, title: '-- Select Transaction Type --' },
