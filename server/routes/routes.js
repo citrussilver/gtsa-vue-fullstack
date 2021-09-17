@@ -49,7 +49,5 @@ router.post('/transactions/new-gc-ol-shop-pay', createOnlineShopPay);
 router.post('/transactions/new-gc-adjustment', createGCashAdjustment);
 router.post('/transactions/new-gc-sendmoney', createGCashSendMoney);
 
-const router = express.Router()
-
 export default router;
 
