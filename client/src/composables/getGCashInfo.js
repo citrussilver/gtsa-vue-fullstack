@@ -1,11 +1,12 @@
 import { ref } from 'vue'
+import config from '../config' 
 
 export const gCashBalance = ref(0)
 export const gCashBalanceNc = ref(0)
 
 export const getGCashInfo = async () => {
   
-    await fetch('http://localhost:5000/gc/gc-info', {
+    await fetch(`${config.apiUrl}/gc/gc-info`, {
       method: 'GET',
       body: JSON.stringify(),
       headers: {
@@ -22,7 +23,7 @@ export const getGCashInfo = async () => {
 
 export const getGCashBalNc = async () => {
   
-    await fetch('http://localhost:5000/gc/gc-bal-nc', {
+    await fetch(`${config.apiUrl}/gc/gc-bal-nc`, {
       method: 'GET',
       body: JSON.stringify(),
       headers: {
