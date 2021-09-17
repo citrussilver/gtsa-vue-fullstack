@@ -10,7 +10,11 @@ const app = express();
 //body-parser new way usage
 app.use(express.urlencoded({extended: true}));
 app.use(express.json())
-app.use(cors());
+let corsOpts = {
+    origin: '*',
+    methods: ['GET', 'POST']
+}
+app.use(cors(corsOpts));
 app.use(Router);
 
 const port = process.env.PORT || 5000;
