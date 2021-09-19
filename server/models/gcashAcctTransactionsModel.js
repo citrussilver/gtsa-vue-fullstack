@@ -1,7 +1,18 @@
 import dbConnection from '../config/database.js';
 
+export const getGCashTransactions = (result) => {
+    dbConnection.query('SELECT gcash_transact_id, DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, gtt.description as transact_type, FORMAT(current_gcash_balance,2) AS current_gcash_balance, FORMAT(amount,2) AS amount, FORMAT(post_gcash_balance,2) AS post_gcash_balance, remarks FROM gcash_transactions gt JOIN gcash_transaction_type gtt ON gt.transaction_type_id = gtt.transaction_type_id ORDER BY gt.transaction_type_id DESC LIMIT 5', (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            result(null, results);
+        }
+    })
+}
+
 export const getGCashAcctInfo = (result) => {
-    dbConnection.query('SELECT FORMAT(balance, 2) AS balance FROM gcash_account WHERE id = 1', (err, results) => {
+    dbConnection.query('SELECT account_nickname, FORMAT(balance, 2) AS balance FROM gcash_account WHERE id = 1', (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -13,6 +24,17 @@ export const getGCashAcctInfo = (result) => {
 
 export const getGCashAcctBalanceNc = (result) => {
     dbConnection.query('SELECT balance FROM gcash_account WHERE id = 1', (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            result(null, results);
+        }
+    })
+}
+
+export const getGCashCustomers = (result) => {
+    dbConnection.query('SELECT customer_id, name FROM gcash_customers', (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -250,6 +272,32 @@ export const insertGCashSendMoney = (data, result) => {
                 } else {
                     result(null, results);
                     console.log('[GCash] New Send Money w/ clip successfully posted to database')
+                }
+            });
+        }
+    });
+}
+
+export const insertGCashRefund = (data, result) => {
+    dbConnection.query("INSERT INTO gcash_transactions SET ?", data, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const refund_data = {
+                gcash_transact_id: results.insertId,
+                date_time: data.date_time,
+                amount: data.amount,
+                description: data.remarks
+            };
+
+            dbConnection.query("INSERT INTO gcash_refund SET ?", refund_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[GCash] New Refund successfully posted to database')
                 }
             });
         }

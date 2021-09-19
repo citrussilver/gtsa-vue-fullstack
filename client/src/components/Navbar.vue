@@ -12,11 +12,11 @@
             <line x1="21" y1="12" x2="21" y2="21" />
           </svg>
           <h1>
-            <router-link :to="{ name: 'Home' }">GCash&nbsp;&#38;&nbsp;Savings Account</router-link>
+            <router-link :to="{ name: 'Home' }">{{navTitle}}</router-link>
           </h1>
         </div>
         <div class="links" :class="{'open': isAddClass}">
-          <ul class="nav-links">
+          <ul class="nav-links mobile-nav">
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'Home' }">Dashboard</router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewBankTransact' }">New Bank Transaction</router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewGCashTransact' }">New GCash Transaction</router-link></li>
@@ -38,6 +38,10 @@ import { ref } from 'vue'
 export default {
   emits: ["stop-scroll"],
   setup(props, { emit }) {
+
+    const navTitle = ref('GCash & Savings Account')
+    //const navTitle = ref('E-Wallet & Savings Account')
+
     const isAddClass = ref(false)
 
     const hamburgerClick = () => {
@@ -50,7 +54,7 @@ export default {
       emit('stop-scroll', false )
     }
 
-    return { isAddClass, hamburgerClick, closeBurger }
+    return { navTitle, isAddClass, hamburgerClick, closeBurger }
   }
 }
 </script>
@@ -104,6 +108,10 @@ export default {
     margin-left: 1rem;
   }
 
+  .mobile-nav {
+    display: none;
+  }
+
   .li-link {
     padding: 0.5rem 0.5rem;
   }
@@ -124,6 +132,14 @@ export default {
   }
 
 @media screen and (max-width: 700px) {
+
+  .custom-navbar {
+    margin: 0;
+  }
+
+  .mobile-nav {
+    display: inline-block;
+  }
   
   .burger-line {
     width: 1.5rem;
@@ -176,7 +192,7 @@ export default {
     width: 100%;
     clip-path: circle(30px at 100% 2%);
     -webkit-clip-path: circle(30px at 100% 2%);
-    transition: 1s background-color ease-in-out, 1s clip-path ease-out;
+    transition: 0.5s background-color ease-in-out, 0.5s clip-path ease-out;
   }
 
   nav .links.open{

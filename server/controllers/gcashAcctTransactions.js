@@ -1,14 +1,27 @@
 import {
+    getGCashTransactions,
     getGCashAcctInfo,
     getGCashAcctBalanceNc,
+    getGCashCustomers,
     insertLoadSale,
     insertGCashBillsPayment,
     insertGCashIncomeSale,
     insertSelfBuyLoad,
     insertOnlineShopPay,
     insertGCashAdjustment,
-    insertGCashSendMoney
+    insertGCashSendMoney,
+    insertGCashRefund
 } from '../models/gcashAcctTransactionsModel.js'
+
+export const showGCashTransactions = (req, res) => {
+    getGCashTransactions((err, results) => {
+        if(err){
+            res.send(err);
+        } else {
+            res.json(results);
+        }
+    });
+}
 
 export const showGCashAcctInfo = (req, res) => {
     getGCashAcctInfo((err, results) => {
@@ -22,6 +35,16 @@ export const showGCashAcctInfo = (req, res) => {
 
 export const showGCashAcctBalanceNc = (req, res) => {
     getGCashAcctBalanceNc((err, results) => {
+        if(err){
+            res.send(err);
+        } else {
+            res.json(results);
+        }
+    });
+}
+
+export const showGCashCustomers = (req, res) => {
+    getGCashCustomers((err, results) => {
         if(err){
             res.send(err);
         } else {
@@ -105,4 +128,15 @@ export const createGCashSendMoney = (req, res) => {
             res.json(results);
         }
     })
+}
+
+export const createGCashRefund = (req, res) => {
+    const data = req.body;
+    insertGCashRefund(data, (err, results) => {
+        if (err){
+            res.send(err);
+        } else{
+            res.json(results);
+        }
+    });
 }

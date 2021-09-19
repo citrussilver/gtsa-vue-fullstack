@@ -4,10 +4,10 @@
       <div class="tile is-vertical is-8">
         <div class="tile">
           <div class="tile is-parent is-vertical">
-            <article class="tile is-child notification is-info">
+            <article class="tile is-child notification is-info custom-tile">
               <p class="title">
                   <ArticleTitleSlot>
-                      Sample GCash Account
+                      {{ gCashNickname }}
                   </ArticleTitleSlot>
               </p>
               <div class="content">
@@ -107,7 +107,7 @@ import ArticleTitleSlot from './slots/ArticleTitleSlot.vue'
 import ArticleSubtitleSlot from './slots/ArticleSubtitleSlot.vue'
 
 import { bankName, sa1Balance, getSa1Info } from '../composables/getSa1Info'
-import { gCashBalance, getGCashInfo } from '../composables/getGCashInfo'
+import { gCashNickname, gCashBalance, getGCashInfo } from '../composables/getGCashInfo'
 import { aniQuote, generateAniQuote } from '../composables/getAniQuote'
 
 export default {
@@ -122,7 +122,7 @@ export default {
         await generateAniQuote()
       })
 
-      return { bankName, sa1Balance, gCashBalance, aniQuote, generateAniQuote }
+      return { bankName, sa1Balance, gCashNickname, gCashBalance, aniQuote, generateAniQuote }
     }
 }
 </script>
@@ -229,9 +229,18 @@ article p {
 }
 
 @media all and (max-width: 700px) {
-  .tile.is-ancestor {
-    margin-left: 0;
-    margin-right: 0;
+
+  #main-content {
+    width: 96vw;
+    font-size: 1.5rem;
   }
+
+  #main-content {
+    margin: 0 0.5rem;
+  }
+
+  /* .tile.is-ancestor {
+    margin: 0 -0.5rem;
+  } */
 }
 </style>

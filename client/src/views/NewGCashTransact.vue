@@ -27,7 +27,8 @@ export default {
           { val: 6, title: 'Send to Bank' },
           { val: 7, title: 'Online Shop Payment' },
           { val: 8, title: 'Adjustment' },
-          { val: 9, title: 'Send Money w/ Clip' }
+          { val: 9, title: 'Send Money w/ Clip' },
+          { val: 10, title: 'Refund' }
         ],
       }
     )

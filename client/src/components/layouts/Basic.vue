@@ -6,7 +6,7 @@
         <aside class="sidebar-left">
             <Sidebar />
         </aside>
-        <article>
+        <article class="article-style">
           <div class="router-view-div" :class="{'inactive': deactivateClass}"><router-view/></div>
             <!-- <slot>Main Content Here..</slot> -->
         </article>
@@ -61,16 +61,41 @@ html {
 .basic-grid {
   display: grid;
   grid-template-columns: 0.2fr 1fr;
+  grid-template-rows: 0.1fr 1fr 0.1fr;
   grid-gap: 1rem;
+  grid-template-areas:
+  "header header"
+  "aside article"
+  "footer footer"
 }
 
-header, footer {
-  grid-column: 1 / 4;
+header {
+  grid-area: header;
+}
+
+aside {
+  grid-area: aside;
 }
 
 article {
-  grid-column: 2 / 4;
+  grid-area: article;
 }
+
+footer {
+  grid-area: footer;
+}
+
+header {
+  grid-column: 1 / 4;
+}
+
+/*article {
+  grid-column: 2 / 4;
+} */
+
+/* .article-style {
+  height: 80vh;
+} */
 
 .custom-footer {
   position: fixed;
@@ -82,9 +107,19 @@ article {
 }
 
 @media all and (max-width: 700px) {
-  aside,
+  /* aside,
   article {
     grid-column: 1 / 4;
+  } */
+  article {
+    grid-column: 1 / 4;
+  }
+  .basic-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+    "header"
+    "article"
+    "footer"
   }
 }
 
