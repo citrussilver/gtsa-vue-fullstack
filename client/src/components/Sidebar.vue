@@ -19,11 +19,16 @@ export default {
 <style scoped>
 
 .common-link {
-    text-decoration: none;
+  color: #fff;
+  text-decoration: none;
 }
 
 .common-link:hover {
-    color: #fff;
+  color: #fff;
+}
+
+.common-link:active {
+  color: orange;
 }
 
 #custom-sidebar {

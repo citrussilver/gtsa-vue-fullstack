@@ -15,24 +15,29 @@ import {
 } from '../controllers/savingsAcctTransactions.js';
 
 import {
+    showGCashTransactions,
     showGCashAcctInfo,
     showGCashAcctBalanceNc,
+    showGCashCustomers,
     createLoadSale,
     createGCashBillsPayment,
     createGCashIncomeSale,
     createSelfBuyLoad,
     createOnlineShopPay,
     createGCashAdjustment,
-    createGCashSendMoney
+    createGCashSendMoney,
+    createGCashRefund
 } from '../controllers/gcashAcctTransactions.js';
 
 const router = express.Router();
 
-router.get('/transactions', showSavingsAcctTransactions);
+router.get('/sa/transacts', showSavingsAcctTransactions);
 router.get('/sa/sa1-info', showSavingsAcct1Info);
 router.get('/sa/sa1-bal-nc', showSavingsAcct1BalanceNc);
+router.get('/gc/transacts', showGCashTransactions);
 router.get('/gc/gc-info', showGCashAcctInfo);
 router.get('/gc/gc-bal-nc', showGCashAcctBalanceNc);
+router.get('/gc/gc-custs', showGCashCustomers)
 
 router.post('/transactions/new-sa-transaction', createSavingsAcctTransaction);
 router.post('/transactions/new-sa-depo', createBankCashDeposit);
@@ -49,6 +54,7 @@ router.post('/transactions/new-gc-selfbuyload', createSelfBuyLoad);
 router.post('/transactions/new-gc-ol-shop-pay', createOnlineShopPay);
 router.post('/transactions/new-gc-adjustment', createGCashAdjustment);
 router.post('/transactions/new-gc-sendmoney', createGCashSendMoney);
+router.post('/transactions/new-gc-refund', createGCashRefund);
 
 export default router;
 

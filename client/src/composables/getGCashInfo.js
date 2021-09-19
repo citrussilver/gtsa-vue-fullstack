@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import config from '../config' 
 
+export const gCashNickname = ref('')
 export const gCashBalance = ref(0)
 export const gCashBalanceNc = ref(0)
 
@@ -16,6 +17,7 @@ export const getGCashInfo = async () => {
       return res.json()
     })
     .then(data => {
+      gCashNickname.value = data[0].account_nickname
       gCashBalance.value = data[0].balance
     })
     .catch(error => console.log(error))

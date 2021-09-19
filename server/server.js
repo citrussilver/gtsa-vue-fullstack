@@ -12,8 +12,9 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json())
 
 let corsOpts = {
-    origin: '*',
-    methods: ['GET', 'POST']
+    origin: ['http://localhost:5000', 'https://localhost:8080', 'http://192.168.18.28:8080/', 'http://192.168.18.28:5000/' ],
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
 }
 app.use(cors(corsOpts));
 
