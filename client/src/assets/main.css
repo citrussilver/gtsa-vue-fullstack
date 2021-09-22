@@ -31,6 +31,10 @@ a, a:visited {
     text-decoration: none;   
 }
 
+.white {
+    color: #fff;
+}
+
 .navbar, footer {
     padding: 1rem 1rem;
     background: #adb5bd;
@@ -70,4 +74,78 @@ nav h1 {
     background-color: var(--green);
     padding-top: 12px;
     padding-bottom: 12px;
+}
+
+.wrapper input[type="text"], input[type="email"], input[type="password"], textarea {
+    width: 100%;
+    background: inherit;
+    border-style: none none solid none;
+    display: block;
+    color: #fff;
+}
+
+.wrapper input[type=text]:focus, input[type="email"]:focus, input[type="password"]:focus, textarea:focus {
+    outline: none;
+}
+
+.field-group {
+    text-align: center;
+}
+
+.field-group .line {
+    text-align: center;
+    height: 2px;
+    width: 0px;
+    position: absolute;
+    background-color: var(--green);
+    display: inline-block;
+    transition: .3s width ease-in-out;
+    position: relative;
+    top: -1rem;
+}
+
+.wrapper input[type=text]:focus + .line, input[type="email"]:focus + .line, input[type="password"]:focus + .line, textarea:focus + .line {
+    width: 100%;
+    background-color: var(--green);
+}
+
+#flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#main-form {
+    opacity: 0;
+    animation-name: wrapper-fadein;
+    animation-duration: var(--anim-duration);
+    animation-fill-mode: var(--anim-fill-mode);
+}
+
+@keyframes wrapper-fadein {
+    to {
+        opacity: 1;
+    }
+}
+
+.styled-button{
+    box-shadow: 7px 6px 28px 1px rgba(0, 0, 0, 0.24);
+}
+
+.styled-button:active {
+    box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+    transform: scale(0.90);
+}
+
+@media all and (max-width: 700px) {
+    
+
+
+    .cselect-style {
+        width: 18rem;
+    }
+
+    .styled-button{
+        transform: scale(1.5);    
+    }
 }

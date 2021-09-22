@@ -1,5 +1,10 @@
 import express from 'express';
-import cors from "cors";
+
+import { handlelogin } from '../controllers/auth.js'
+
+import { validateRegister } from '../middleware/users.js'
+
+import { signUpUser } from '../controllers/userSignUp.js'
 
 import { 
     showSavingsAcctTransactions,
@@ -55,6 +60,9 @@ router.post('/transactions/new-gc-ol-shop-pay', createOnlineShopPay);
 router.post('/transactions/new-gc-adjustment', createGCashAdjustment);
 router.post('/transactions/new-gc-sendmoney', createGCashSendMoney);
 router.post('/transactions/new-gc-refund', createGCashRefund);
+
+router.post('/login', handlelogin);
+router.post('/signup', validateRegister, signUpUser);
 
 export default router;
 

@@ -114,36 +114,8 @@ export default {
 
 <style scoped>
 
-.white {
-  color: #fff;
-}
-
-#flex-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#main-form {
-  opacity: 0;
-  animation-name: wrapper-fadein;
-  animation-duration: var(--anim-duration);
-  animation-fill-mode: var(--anim-fill-mode);
-}
-
 #table-style {
   color: #fff;
-}
-
-@keyframes wrapper-fadein {
-    to {
-        opacity: 1;
-    }
-}
-
-#flex-wrapper {
-  display: flex;
-  justify-content: center;
 }
 
 .cselect-style {
@@ -151,14 +123,6 @@ export default {
 }
 
 @media screen and (max-width: 700px) {
-  #main-form {
-    width: 96vw;
-    font-size: 1.5rem;
-  }
-
-  .cselect-style {
-    width: 18rem;
-  }
 
   #main-form select {
     font-size: 1.5rem;

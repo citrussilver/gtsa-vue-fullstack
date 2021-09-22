@@ -4,11 +4,12 @@
             <Navbar @stop-scroll="stopVpScroll"/>
         </header>
         <aside class="sidebar-left">
-            <Sidebar />
+            <Sidebar :class="{'inactive': deactivateClass}" />
         </aside>
         <article class="article-style">
-          <div class="router-view-div" :class="{'inactive': deactivateClass}"><router-view/></div>
-            <!-- <slot>Main Content Here..</slot> -->
+          <div class="router-view-div" :class="{'inactive': deactivateClass}">
+            <slot>Main Content Here..</slot>
+          </div>
         </article>
         <footer class="custom-footer">
           <p>2021 GCSA</p>
@@ -49,7 +50,7 @@ export default {
       transition: 0.5s filter ease-out;
   }
 
-  .router-view-div.inactive {
+  .router-view-div.inactive, .inactive {
     pointer-events: none;
     filter: grayscale(100%) opacity(0.5);
   }
