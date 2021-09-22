@@ -105,6 +105,7 @@
           <div class="form-group" v-if="commonProps.transactType === 9">
             <label class="control-label white">Attachment:</label><br>
             <select class="custom-select" v-model="commonProps.attachment">
+              <option value="None">None</option>
               <option value="Photo" selected>Photo</option>
               <option value="Video">Video</option>
               <option value="Audio">Audio</option>
@@ -198,7 +199,8 @@ export default {
                 await axios.post(`${config.apiUrl}/transactions/new-sa-depo`, newBankData)
                 toast({
                   message: '[Savings Account] New Cash Deposit successfully posted to database',
-                  type: 'is-info',
+                  duration: 3000,
+                  type: 'is-warning',
                   position: "top-center",
                   dismissible: true,
                   pauseOnHover: true,
@@ -213,7 +215,8 @@ export default {
                 await axios.post(`${config.apiUrl}/transactions/new-sa-wdraw`, newBankData)
                 toast({
                   message: '[Savings Account] New Cash Withdraw successfully posted to database',
-                  type: 'is-info',
+                  duration: 3000,
+                  type: 'is-warning',
                   position: "top-center",
                   dismissible: true,
                   pauseOnHover: true,
@@ -227,7 +230,8 @@ export default {
                 await axios.post(`${config.apiUrl}/transactions/new-sa-gcash-cash-in`, newBankData)
                 toast({
                   message: '[Savings Account] New GCash Cash-in successfully posted to database',
-                  type: 'is-info',
+                  duration: 3000,
+                  type: 'is-warning',
                   position: "top-center",
                   dismissible: true,
                   pauseOnHover: true,
@@ -244,7 +248,8 @@ export default {
                 await axios.post(`${config.apiUrl}/transactions/new-sa-transfer-money`, newBankData)
                 toast({
                   message: '[Savings Account] New Transfer Money successfully posted to database',
-                  type: 'is-info',
+                  duration: 3000,
+                  type: 'is-warning',
                   position: "top-center",
                   dismissible: true,
                   pauseOnHover: true,
@@ -278,7 +283,8 @@ export default {
                 await axios.post(`${config.apiUrl}/transactions/new-gc-loadsale`, newGCashData)
                 toast({
                   message: '[GCash] New Load Sale successfully posted to database',
-                  type: 'is-info',
+                  duration: 3000,
+                  type: 'is-warning',
                   position: "top-center",
                   dismissible: true,
                   pauseOnHover: true,
@@ -296,7 +302,8 @@ export default {
                 await axios.post(`${config.apiUrl}/transactions/new-gc-cash-in`, newGCashData)
                 toast({
                   message: '[GCash] New Cash-in successfully posted to database',
-                  type: 'is-info',
+                  duration: 3000,
+                  type: 'is-warning',
                   position: "top-center",
                   dismissible: true,
                   pauseOnHover: true,
@@ -313,7 +320,8 @@ export default {
                 await axios.post(`${config.apiUrl}/transactions/new-gc-billspay`, newGCashData)
                 toast({
                   message: '[GCash] New Bills payment successfully posted to database',
-                  type: 'is-info',
+                  duration: 3000,
+                  type: 'is-warning',
                   position: "top-center",
                   dismissible: true,
                   pauseOnHover: true,
@@ -330,7 +338,8 @@ export default {
                 await axios.post(`${config.apiUrl}/transactions/new-gc-income`, newGCashData)
                 toast({
                   message: '[GCash] New Sale / Income successfully posted to database',
-                  type: 'is-info',
+                  duration: 3000,
+                  type: 'is-warning',
                   position: "top-center",
                   dismissible: true,
                   pauseOnHover: true,
@@ -350,7 +359,8 @@ export default {
                 await axios.post(`${config.apiUrl}/transactions/new-gc-selfbuyload`, newGCashData)
                 toast({
                   message: '[GCash] New Self Buy Load successfully posted to database',
-                  type: 'is-info',
+                  duration: 3000,
+                  type: 'is-warning',
                   position: "top-center",
                   dismissible: true,
                   pauseOnHover: true,
@@ -368,7 +378,8 @@ export default {
                 await axios.post(`${config.apiUrl}/transactions/new-gc-ol-shop-pay`, newGCashData)
                 toast({
                   message: '[GCash] New Online Payment successfully posted to database',
-                  type: 'is-info',
+                  duration: 3000,
+                  type: 'is-warning',
                   position: "top-center",
                   dismissible: true,
                   pauseOnHover: true,
@@ -386,7 +397,8 @@ export default {
                 await axios.post(`${config.apiUrl}/transactions/new-gc-adjustment`, newGCashData)
                 toast({
                   message: '[GCash] New Adjustment successfully posted to database',
-                  type: 'is-info',
+                  duration: 3000,
+                  type: 'is-warning',
                   position: "top-center",
                   dismissible: true,
                   pauseOnHover: true,
@@ -406,7 +418,8 @@ export default {
                 await axios.post(`${config.apiUrl}/transactions/new-gc-sendmoney`, newGCashData)
                 toast({
                   message: '[GCash] New Send Money w/ clip successfully posted to database',
-                  type: 'is-info',
+                  duration: 3000,
+                  type: 'is-warning',
                   position: "top-center",
                   dismissible: true,
                   pauseOnHover: true,
@@ -423,7 +436,8 @@ export default {
                 await axios.post(`${config.apiUrl}/transactions/new-gc-refund`, newGCashData)
                 toast({
                   message: '[GCash] New Refund successfully posted to database',
-                  type: 'is-info',
+                  duration: 3000,
+                  type: 'is-warning',
                   position: "top-center",
                   dismissible: true,
                   pauseOnHover: true,
@@ -469,18 +483,8 @@ export default {
 
 <style scoped>
 
-#flex-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 #main-form {
-  width: 20rem;
-  opacity: 0;
-  animation-name: wrapper-fadein;
-  animation-duration: var(--anim-duration);
-  animation-fill-mode: var(--anim-fill-mode);
+  width: 22rem;
 }
 
 .cselect-style {
@@ -502,16 +506,8 @@ export default {
   justify-content: space-between;
 }
 
-.styled-button{
-  box-shadow: 7px 6px 28px 1px rgba(0, 0, 0, 0.24);
-}
+@media screen and (max-width: 700px) {
 
-.styled-button:active {
-  box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
-  transform: scale(0.90);
-}
-
-@media all and (max-width: 700px) {
   #main-form {
     width: 96vw;
     font-size: 1.5rem;
@@ -521,10 +517,6 @@ export default {
     margin: 0 0.5rem;
   }
 
-  .cselect-style {
-    width: 18rem;
-  }
-
   .customer-select-style {
     width: 11.5rem;
   }
@@ -532,10 +524,6 @@ export default {
   #btn-container {
     display: flex;
     justify-content: center;
-  }
-
-  .styled-button{
-    transform: scale(1.5);    
   }
 
   #main-form input, #main-form select, #main-form textarea {
