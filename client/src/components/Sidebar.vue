@@ -3,6 +3,7 @@
   <ul id="custom-sidebar">
     <router-link class="common-link" :to="{ name: 'Home' }"><li>Home</li></router-link>
     <router-link class="common-link" :to="{ name: 'NewBankTransact' }"><li>New Bank Transaction</li></router-link>
+    <router-link class="common-link" :to="{ name: 'NewCreditCardTransact' }"><li>New Credit Card Transaction</li></router-link>
     <router-link class="common-link" :to="{ name: 'NewGCashTransact' }"><li>New GCash Transaction</li></router-link>
     <router-link class="common-link" :to="{ name: 'TransactsList'}"><li>View Records</li></router-link>
   </ul>

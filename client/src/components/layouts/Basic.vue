@@ -94,8 +94,9 @@ header {
   grid-column: 2 / 4;
 } */
 
+/* Resolved the big space above dashboard content */
 /* .article-style {
-  height: 80vh;
+  height: 112vh;
 } */
 
 .custom-footer {

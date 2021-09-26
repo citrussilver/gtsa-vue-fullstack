@@ -1,7 +1,6 @@
 import {
-    getGCashTransactions,
-    getGCashAcctInfo,
-    getGCashAcctBalanceNc,
+    getGCashAccts,
+    getGCashTransacts,
     getGCashCustomers,
     insertLoadSale,
     insertGCashBillsPayment,
@@ -11,10 +10,10 @@ import {
     insertGCashAdjustment,
     insertGCashSendMoney,
     insertGCashRefund
-} from '../models/gcashAcctTransactionsModel.js'
+} from '../models/gcashModel.js'
 
-export const showGCashTransactions = (req, res) => {
-    getGCashTransactions((err, results) => {
+export const showGCashTransacts = (req, res) => {
+    getGCashTransacts((err, results) => {
         if(err){
             res.send(err);
         } else {
@@ -23,18 +22,8 @@ export const showGCashTransactions = (req, res) => {
     });
 }
 
-export const showGCashAcctInfo = (req, res) => {
-    getGCashAcctInfo((err, results) => {
-        if(err){
-            res.send(err);
-        } else {
-            res.json(results);
-        }
-    });
-}
-
-export const showGCashAcctBalanceNc = (req, res) => {
-    getGCashAcctBalanceNc((err, results) => {
+export const showGCashAccts = (req, res) => {
+    getGCashAccts((err, results) => {
         if(err){
             res.send(err);
         } else {
@@ -53,7 +42,7 @@ export const showGCashCustomers = (req, res) => {
     });
 }
 
-export const createLoadSale = (req, res) => {
+export const newLoadSale = (req, res) => {
     const data = req.body;
     insertLoadSale(data, (err, results) => {
         if (err){
@@ -64,7 +53,7 @@ export const createLoadSale = (req, res) => {
     });
 }
 
-export const createGCashBillsPayment = (req, res) => {
+export const newGCashBillsPayment = (req, res) => {
     const data = req.body;
     insertGCashBillsPayment(data, (err, results) => {
         if (err){
@@ -75,7 +64,7 @@ export const createGCashBillsPayment = (req, res) => {
     });
 }
 
-export const createGCashIncomeSale = (req, res) => {
+export const newGCashIncomeSale = (req, res) => {
     const data = req.body;
     insertGCashIncomeSale(data, (err, results) => {
         if (err){
@@ -86,7 +75,7 @@ export const createGCashIncomeSale = (req, res) => {
     });
 }
 
-export const createSelfBuyLoad = (req, res) => {
+export const newSelfBuyLoad = (req, res) => {
     const data = req.body;
     insertSelfBuyLoad(data, (err, results) => {
         if (err){
@@ -97,7 +86,7 @@ export const createSelfBuyLoad = (req, res) => {
     });
 }
 
-export const createOnlineShopPay = (req, res) => {
+export const newOnlineShopPay = (req, res) => {
     const data = req.body;
     insertOnlineShopPay(data, (err, results) => {
         if (err){
@@ -108,7 +97,7 @@ export const createOnlineShopPay = (req, res) => {
     });
 } 
 
-export const createGCashAdjustment = (req, res) => {
+export const newGCashAdjustment = (req, res) => {
     const data = req.body;
     insertGCashAdjustment(data, (err, results) => {
         if(err){
@@ -119,7 +108,7 @@ export const createGCashAdjustment = (req, res) => {
     })
 }
 
-export const createGCashSendMoney = (req, res) => {
+export const newGCashSendMoney = (req, res) => {
     const data = req.body;
     insertGCashSendMoney(data, (err, results) => {
         if(err){
@@ -130,7 +119,7 @@ export const createGCashSendMoney = (req, res) => {
     })
 }
 
-export const createGCashRefund = (req, res) => {
+export const newGCashRefund = (req, res) => {
     const data = req.body;
     insertGCashRefund(data, (err, results) => {
         if (err){

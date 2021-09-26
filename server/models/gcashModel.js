@@ -1,7 +1,7 @@
 import dbConnection from '../config/database.js';
 
-export const getGCashTransactions = (result) => {
-    dbConnection.query('SELECT gcash_transact_id, date_time AS date_time_og, DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, gtt.description as transact_type, FORMAT(current_gcash_balance,2) AS current_gcash_balance, FORMAT(amount,2) AS amount, FORMAT(post_gcash_balance,2) AS post_gcash_balance, remarks FROM gcash_transactions gt JOIN gcash_transaction_type gtt ON gt.transaction_type_id = gtt.transaction_type_id ORDER BY date_time_og DESC LIMIT 20', (err, results) => {
+export const getGCashTransacts = (result) => {
+    dbConnection.query('SELECT gcash_transact_id, date_time AS date_time_og, DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, gtt.description as transact_type, FORMAT(current_gcash_balance,2) AS current_gcash_balance, FORMAT(amount,2) AS amount, FORMAT(post_gcash_balance,2) AS post_gcash_balance, remarks FROM gcash_transactions gt JOIN gcash_transaction_type gtt ON gt.transact_type_id = gtt.transact_type_id ORDER BY date_time_og DESC LIMIT 20', (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -11,19 +11,8 @@ export const getGCashTransactions = (result) => {
     })
 }
 
-export const getGCashAcctInfo = (result) => {
-    dbConnection.query('SELECT account_nickname, FORMAT(balance, 2) AS balance FROM gcash_account WHERE id = 1', (err, results) => {
-        if(err) {
-            console.log(err);
-            result(err, null);
-        } else {
-            result(null, results);
-        }
-    })
-}
-
-export const getGCashAcctBalanceNc = (result) => {
-    dbConnection.query('SELECT balance FROM gcash_account WHERE id = 1', (err, results) => {
+export const getGCashAccts = (result) => {
+    dbConnection.query('SELECT id, account_nick, balance, FORMAT(balance, 2) as balance_wc FROM gcash_account', (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -48,7 +37,7 @@ export const insertLoadSale = (data, result) => {
     dbConnection.query("INSERT INTO gcash_transactions SET ?",  {
         gcash_id: data.gcash_id,
         date_time: data.date_time,
-        transaction_type_id: data.transaction_type_id,
+        transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
         remarks: data.remarks
@@ -140,7 +129,7 @@ export const insertSelfBuyLoad = (data, result) => {
     dbConnection.query("INSERT INTO gcash_transactions SET ?", {
         gcash_id: data.gcash_id,
         date_time: data.date_time,
-        transaction_type_id: data.transaction_type_id,
+        transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
         remarks: data.remarks
@@ -175,7 +164,7 @@ export const insertOnlineShopPay = (data, result) => {
     dbConnection.query("INSERT INTO gcash_transactions SET ?", {
         gcash_id: data.gcash_id,
         date_time: data.date_time,
-        transaction_type_id: data.transaction_type_id,
+        transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
         remarks: data.remarks
@@ -212,7 +201,7 @@ export const insertGCashAdjustment = (data, result) => {
     dbConnection.query("INSERT INTO gcash_transactions SET ?", {
         gcash_id: data.gcash_id,
         date_time: data.date_time,
-        transaction_type_id: data.transaction_type_id,
+        transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
         remarks: data.remarks
@@ -246,7 +235,7 @@ export const insertGCashSendMoney = (data, result) => {
     dbConnection.query("INSERT INTO gcash_transactions SET ?", {
         gcash_id: data.gcash_id,
         date_time: data.date_time,
-        transaction_type_id: data.transaction_type_id,
+        transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
         remarks: data.remarks

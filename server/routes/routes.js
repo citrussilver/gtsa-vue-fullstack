@@ -7,59 +7,73 @@ import { validateRegister } from '../middleware/users.js'
 import { signUpUser } from '../controllers/userSignUp.js'
 
 import { 
-    showSavingsAcctTransactions,
-    showSavingsAcct1Info,
-    showSavingsAcct1BalanceNc,
-    createSavingsAcctTransaction,
-    createBankCashDeposit,
-    createBankCashWithdraw,
-    createBankBillsPayment,
-    createGCashCashIn,
-    createBankPrepaidReload,
-    createTransferMoney
-} from '../controllers/savingsAcctTransactions.js';
+    showSa1Transacts,
+    showSa2Transacts,
+    showAllSavingsAccs,
+    newSavingsAcctTransaction,
+    newBankCashDeposit,
+    newBankCashWithdraw,
+    newBankBillsPayment,
+    newGCashCashIn,
+    newBankPrepaidReload,
+    newTransferMoney,
+    newEarnInterest
+} from '../controllers/savingsAcctController.js';
 
 import {
-    showGCashTransactions,
-    showGCashAcctInfo,
-    showGCashAcctBalanceNc,
+    showAllCcs,
+    showCcTransacts,
+    newCcOnlinePay,
+    newCcNonOnlinePay
+} from '../controllers/ccController.js' ;
+
+import {
+    showGCashAccts,
+    showGCashTransacts,
     showGCashCustomers,
-    createLoadSale,
-    createGCashBillsPayment,
-    createGCashIncomeSale,
-    createSelfBuyLoad,
-    createOnlineShopPay,
-    createGCashAdjustment,
-    createGCashSendMoney,
-    createGCashRefund
-} from '../controllers/gcashAcctTransactions.js';
+    newLoadSale,
+    newGCashBillsPayment,
+    newGCashIncomeSale,
+    newSelfBuyLoad,
+    newOnlineShopPay,
+    newGCashAdjustment,
+    newGCashSendMoney,
+    newGCashRefund
+} from '../controllers/gcashController.js';
 
 const router = express.Router();
 
-router.get('/sa/transacts', showSavingsAcctTransactions);
-router.get('/sa/sa1-info', showSavingsAcct1Info);
-router.get('/sa/sa1-bal-nc', showSavingsAcct1BalanceNc);
-router.get('/gc/transacts', showGCashTransactions);
-router.get('/gc/gc-info', showGCashAcctInfo);
-router.get('/gc/gc-bal-nc', showGCashAcctBalanceNc);
+router.get('/sa/sa-accs', showAllSavingsAccs);
+router.get('/sa1/tr', showSa1Transacts);
+router.get('/sa2/tr', showSa2Transacts);
+
+router.get('/cc/cc-accs', showAllCcs);
+router.get('/cc/tr', showCcTransacts);
+
+router.get('/gc/gc-accs', showGCashAccts);
+router.get('/gc/tr', showGCashTransacts);
 router.get('/gc/gc-custs', showGCashCustomers)
 
-router.post('/transactions/new-sa-transaction', createSavingsAcctTransaction);
-router.post('/transactions/new-sa-depo', createBankCashDeposit);
-router.post('/transactions/new-sa-wdraw', createBankCashWithdraw);
-router.post('/transactions/new-sa-billspay', createBankBillsPayment);
-router.post('/transactions/new-sa-gcash-cash-in', createGCashCashIn);
-router.post('/transactions/new-sa-prepaid-reload', createBankPrepaidReload);
-router.post('/transactions/new-sa-transfer-money', createTransferMoney);
+router.post('/tr/new-sa-transaction', newSavingsAcctTransaction);
+router.post('/tr/new-sa-depo', newBankCashDeposit);
+router.post('/tr/new-sa-wdraw', newBankCashWithdraw);
+router.post('/tr/new-sa-billspay', newBankBillsPayment);
+router.post('/tr/new-sa-gc-ci', newGCashCashIn);
+router.post('/tr/new-sa-prepaid-reload', newBankPrepaidReload);
+router.post('/tr/new-sa-transfer-money', newTransferMoney);
+router.post('/tr/new-sa-ei', newEarnInterest);
 
-router.post('/transactions/new-gc-loadsale', createLoadSale);
-router.post('/transactions/new-gc-billspay', createGCashBillsPayment);
-router.post('/transactions/new-gc-income', createGCashIncomeSale);
-router.post('/transactions/new-gc-selfbuyload', createSelfBuyLoad);
-router.post('/transactions/new-gc-ol-shop-pay', createOnlineShopPay);
-router.post('/transactions/new-gc-adjustment', createGCashAdjustment);
-router.post('/transactions/new-gc-sendmoney', createGCashSendMoney);
-router.post('/transactions/new-gc-refund', createGCashRefund);
+router.post('/tr/new-gc-loadsale', newLoadSale);
+router.post('/tr/new-gc-billspay', newGCashBillsPayment);
+router.post('/tr/new-gc-income', newGCashIncomeSale);
+router.post('/tr/new-gc-selfbuyload', newSelfBuyLoad);
+router.post('/tr/new-gc-ol-shop-pay', newOnlineShopPay);
+router.post('/tr/new-gc-adjustment', newGCashAdjustment);
+router.post('/tr/new-gc-sendmoney', newGCashSendMoney);
+router.post('/tr/new-gc-refund', newGCashRefund);
+
+router.post('/tr/new-cc-op', newCcOnlinePay);
+router.post('/tr/new-cc-nop', newCcNonOnlinePay);
 
 router.post('/login', handlelogin);
 router.post('/signup', validateRegister, signUpUser);

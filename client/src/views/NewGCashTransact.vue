@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { reactive } from 'vue'
 import NewTransactForm from '../components/NewTransactForm.vue'
 
 export default {
@@ -13,7 +13,7 @@ export default {
     NewTransactForm
   },
   setup() {
-    const gCashFormDetails = ref(
+    const gCashFormDetails = reactive(
       {
         componentId: 2,
         cardBorder: 'card border-primary mb-3',

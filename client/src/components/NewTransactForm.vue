@@ -9,20 +9,24 @@
             <input type="datetime-local" class="form-control" v-model="commonProps.dateTime" required>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 1">
-            <select class="custom-select" v-model="commonProps.bankId">
-              <option value="0">--Choose Bank--</option>
-              <option value="1">Northland Bank</option>
+            <select class="custom-select" v-model="commonProps.bankId" @change="trackSelection(commonProps.bankId, 'sa')">
+              <option v-for="bank in savingsAccs" :key="bank.bank_id" :value="bank.bank_id">{{ bank.bank_name }} - {{ bank.bank_abbrev }}</option>
+            </select>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === 3">
+            <select class="custom-select" v-model="ccProps.ccId" @change="trackSelection(ccProps.ccId, 'cc')">
+              <option v-for="creditCard in creditCards" :key="creditCard.credit_card_id" :value="creditCard.credit_card_id">{{ creditCard.last_4_digits }} - {{ creditCard.cc_name }}</option>
             </select>
           </div>
           <div class="form-group">
-              <select class="custom-select cselect-style" v-model="commonProps.transactType">
+              <select class="custom-select cselect-style" v-model="commonProps.transactType" @change="trackSelection(commonProps.transactType, 'tt')">
                   <option v-for="transact in formDetails.transactType" :key="transact.val" :value="transact.val">{{transact.title}}</option>
               </select>
           </div>
           <div class="flex-group">
             <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 1">
               <label class="col-form-label white">Customer</label><br>
-              <select class="custom-select customer-select-style" v-model="commonProps.customer" @change="trackSelection(commonProps.customer)">
+              <select class="custom-select customer-select-style" v-model="commonProps.customer" @change="trackSelection(commonProps.customer, 'gcash')">
                 <option v-for="customer in customers" :key="customer.customer_id" :value="customer.customer_id">{{ customer.name }}</option>
               </select>
             </div>
@@ -60,8 +64,20 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">₱</span>
                 </div>
-                <input type="text" class="form-control" style="border: 0.3px solid rgba(0, 188, 140, 1); background-color: #303030; color: white;" v-model="commonProps.sa1Balance" disabled>
+                <input type="text" class="form-control border-success" style="background-color: #303030; color: white;" v-model="commonProps.saBalance" disabled>
               </div>
+            </div>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === 3">
+            <label class="col-form-label white">Current Available Credit Limit</label>
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">₱</span>
+                </div>
+                <input type="text" class="form-control border-danger" style="background-color: #303030; color: white;" v-model="ccProps.availCreditLimit" disabled>
+              </div>
+              <div id="cl-notice"></div>
             </div>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 2">
@@ -71,7 +87,7 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">₱</span>
                 </div>
-                <input type="text" class="form-control" style="border: 0.3px solid rgba(0, 150, 255, 1); background-color: #303030; color: white;" v-model="commonProps.gcBalance" disabled>
+                <input type="text" class="form-control border-primary" style="background-color: #303030; color: white;" v-model="commonProps.gcBalance" disabled>
               </div>
             </div>
           </div>
@@ -89,10 +105,19 @@
           <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 7">
             <label class="control-label white">Online Shop Website:</label>
             <select class="custom-select" v-model="commonProps.onlineShopWebsite">
-                <option value="shp">Shopee Pay Top-up</option>
-                <option value="lzd">Lazada Wallet Top-up</option>
-                <option value="gplay">Google Play</option>
+                <option value="Shopee">Shopee Pay Top-up</option>
+                <option value="Lazada">Lazada Wallet Top-up</option>
+                <option value="Google Play">Google Play</option>
               </select>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === 3">
+            <label class="control-label white">{{ commonProps.transactType === 1 ? 'Online Shop Website:' : 'Physical Store Name'}}</label>
+            <select v-if="commonProps.transactType === 1" class="custom-select" v-model="commonProps.onlineShopWebsite">
+                <option value="Google Play">Google Play</option>
+                <option value="Steam">Steam</option>
+                <option value="GOG">GOG</option>
+            </select>
+            <input v-else type="text" class="form-control" v-model="commonProps.storeName">
           </div>
           <div class="form-group">
             <label class="control-label white">Remarks</label><br>
@@ -113,7 +138,11 @@
           </div>
           <div class="form-group" v-if="formDetails.componentId === 1">
             <label class="col-form-label white">Location</label><br>
-            <input type="text" class="form-control" v-model="commonProps.location" required>
+            <select class="custom-select" v-model="commonProps.location">
+              <option value="Select">-- Select App / Location --</option>
+              <option value="App">App</option>
+              <option value="ATM">ATM</option>
+            </select>
           </div>
           <div id="btn-container"><button type="submit" class="btn btn-outline-success styled-button">Submit</button></div>
         </div>
@@ -123,15 +152,16 @@
 </template>
 
 <script>
-import { onMounted, reactive, ref } from 'vue'
+import { onBeforeMount, onMounted, reactive, ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { toast } from 'bulma-toast'
 import config from '../config'
 
-import { gCashBalanceNc, getGCashBalNc } from '../composables/getGCashInfo'
-import { sa1BalanceNc, getSa1BalNc } from '../composables/getSa1Info'
-import { customers, getCustomers } from '../composables/getCustomers'
+import { gCash1Bal, getGCashInfo } from '../composables/getGCashInfo.js'
+import { savingsAccs, getSavingsAccs } from '../composables/getBanksInfo.js'
+import { creditCards, getCreditCards  } from '../composables/getCcsInfo.js'
+import { customers, getCustomers } from '../composables/getCustomers.js'
 
 export default {
     props: ['formDetails'],
@@ -141,35 +171,79 @@ export default {
         {
           dateTime: '',
           bankId: 1,
+          gCashId: 1,
           transactType: 0,
           customer: '',
           mobileNo: '',
           network: '',
           paymentDateTime: '',
           credit: 1,
-          sa1Name: '',
-          sa1Balance: sa1BalanceNc,
-          gcBalance: gCashBalanceNc,
+          saName: '',
+          saBalance: 1,
+          gcBalance: 1,
           receipientAcctNo: '',
           amount: 1,
-          onlineShopWebsite: '',
+          onlineShopWebsite: 'Google Play',
+          storeName: '',
           remarks: '',
           message: '',
-          attachment: '',
-          location: ''
+          attachment: 'Photo',
+          location: 'Select'
           }
       )
 
-      onMounted(async () => {
-        await getGCashBalNc()
-        await getSa1BalNc()
-        await getCustomers()
-      });
+      let ccProps = reactive(
+        {
+          ccId: 1,
+          dateTime: '',
+          transactType: 1, 
+          amount: 1,
+          remarks: '',
+          availCreditLimit: 1,
+        }
+      )
 
       const router = useRouter()
+
+      const setSavingsAcc = (val) => {
+        let index = ref(0)
+        index.value = val-1
+        console.log(commonProps.bankId)
+        commonProps.saBalance = savingsAccs.value[index.value].balance
+        if(val === 1) {
+          commonProps.location = 'BPI App'
+        } else {
+          commonProps.location = 'SB App'
+        }
+      }
+
+      const setCc = (val) => {
+        let index = ref(0)
+        index.value = val-1
+        console.log(creditCards.value[index.value].avail_credit_limit)
+        ccProps.ccId = creditCards.value[index.value].credit_card_id
+        console.log('cc id is ' + ccProps.ccId)
+        ccProps.availCreditLimit = creditCards.value[index.value].avail_credit_limit
+      }
+
+      const setGCashAcc = () => {
+        commonProps.gcBalance = gCash1Bal.value
+      }
       
-      const trackSelection = (value) => {
-        console.log(value)
+      const trackSelection = (val, flag) => {
+        console.log(val, flag)
+        if(flag === 'sa') {
+          setSavingsAcc(val)
+        }
+
+        if(flag === 'cc') {
+          setCc(val)
+        }
+
+        if(flag === 'tt') {
+          console.log(val)
+          commonProps.transactType = val
+        }
       }
 
       const digitOnlyInput = (event) => {
@@ -185,7 +259,7 @@ export default {
               bank_id: commonProps.bankId,
               date_time: commonProps.dateTime,
               bank_transact_type_id: commonProps.transactType,
-              current_balance: commonProps.sa1Balance,
+              current_balance: commonProps.saBalance,
               current_gcash_balance: commonProps.gcBalance,
               amount: commonProps.amount,
               remarks: commonProps.remarks,
@@ -196,7 +270,7 @@ export default {
             
             if(commonProps.transactType === 1) {
               try {
-                await axios.post(`${config.apiUrl}/transactions/new-sa-depo`, newBankData)
+                await axios.post(`${config.apiUrl}/tr/new-sa-depo`, newBankData)
                 toast({
                   message: '[Savings Account] New Cash Deposit successfully posted to database',
                   duration: 3000,
@@ -206,13 +280,12 @@ export default {
                   pauseOnHover: true,
                   closeOnClick: true
                 })
-
               } catch (error) {
                 console.log(error)
               }
             } else if(commonProps.transactType === 2) {
               try {
-                await axios.post(`${config.apiUrl}/transactions/new-sa-wdraw`, newBankData)
+                await axios.post(`${config.apiUrl}/tr/new-sa-wdraw`, newBankData)
                 toast({
                   message: '[Savings Account] New Cash Withdraw successfully posted to database',
                   duration: 3000,
@@ -225,9 +298,28 @@ export default {
               } catch (error) {
                 console.log(error)
               }
-            } else if(commonProps.transactType === 4) {
+            } else if(commonProps.transactType === 3) {
               try {
-                await axios.post(`${config.apiUrl}/transactions/new-sa-gcash-cash-in`, newBankData)
+                await axios.post(`${config.apiUrl}/tr/new-sa-billspay`, newBankData)
+                toast({
+                  message: '[Savings Account] New Bills Payment successfully posted to database',
+                  duration: 3000,
+                  type: 'is-warning',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 4) {
+
+              newBankData.gcash_id = commonProps.gCashId
+              console.log('entered transactType === 4')
+
+              try {
+                await axios.post(`${config.apiUrl}/tr/new-sa-gc-ci`, newBankData)
                 toast({
                   message: '[Savings Account] New GCash Cash-in successfully posted to database',
                   duration: 3000,
@@ -240,14 +332,31 @@ export default {
               } catch (error) {
                 console.log(error)
               }
+              //end of Bank Transactions
             } else if(commonProps.transactType === 6) {
 
               newBankData.receipient_acct_no = commonProps.receipientAcctNo
 
               try {
-                await axios.post(`${config.apiUrl}/transactions/new-sa-transfer-money`, newBankData)
+                await axios.post(`${config.apiUrl}/tr/new-sa-transfer-money`, newBankData)
                 toast({
                   message: '[Savings Account] New Transfer Money successfully posted to database',
+                  duration: 3000,
+                  type: 'is-warning',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 8) {
+              console.log('entered 8 transaction type')
+              try {
+                await axios.post(`${config.apiUrl}/tr/new-sa-ei`, newBankData)
+                toast({
+                  message: '[Savings Account] New Earn Interest successfully posted to database',
                   duration: 3000,
                   type: 'is-warning',
                   position: "top-center",
@@ -280,7 +389,7 @@ export default {
               newGCashData.remarks = '[Load Sale] ' + newGCashData.remarks
 
               try {
-                await axios.post(`${config.apiUrl}/transactions/new-gc-loadsale`, newGCashData)
+                await axios.post(`${config.apiUrl}/tr/new-gc-loadsale`, newGCashData)
                 toast({
                   message: '[GCash] New Load Sale successfully posted to database',
                   duration: 3000,
@@ -299,7 +408,7 @@ export default {
               newGCashData.remarks = '[Cash-In] ' + newGCashData.remarks
 
               try {
-                await axios.post(`${config.apiUrl}/transactions/new-gc-cash-in`, newGCashData)
+                await axios.post(`${config.apiUrl}/tr/new-gc-cash-in`, newGCashData)
                 toast({
                   message: '[GCash] New Cash-in successfully posted to database',
                   duration: 3000,
@@ -317,7 +426,7 @@ export default {
               newGCashData.remarks = '[Bills Payment] ' + newGCashData.remarks
 
               try {
-                await axios.post(`${config.apiUrl}/transactions/new-gc-billspay`, newGCashData)
+                await axios.post(`${config.apiUrl}/tr/new-gc-billspay`, newGCashData)
                 toast({
                   message: '[GCash] New Bills payment successfully posted to database',
                   duration: 3000,
@@ -335,7 +444,7 @@ export default {
               newGCashData.remarks = '[Sale / Income] ' + newGCashData.remarks
 
               try {
-                await axios.post(`${config.apiUrl}/transactions/new-gc-income`, newGCashData)
+                await axios.post(`${config.apiUrl}/tr/new-gc-income`, newGCashData)
                 toast({
                   message: '[GCash] New Sale / Income successfully posted to database',
                   duration: 3000,
@@ -356,7 +465,7 @@ export default {
               newGCashData.remarks = '[Self Buy Load] ' + newGCashData.remarks
 
               try {
-                await axios.post(`${config.apiUrl}/transactions/new-gc-selfbuyload`, newGCashData)
+                await axios.post(`${config.apiUrl}/tr/new-gc-selfbuyload`, newGCashData)
                 toast({
                   message: '[GCash] New Self Buy Load successfully posted to database',
                   duration: 3000,
@@ -375,7 +484,7 @@ export default {
               newGCashData.remarks = '[Online Payment] ' + newGCashData.remarks
 
               try {
-                await axios.post(`${config.apiUrl}/transactions/new-gc-ol-shop-pay`, newGCashData)
+                await axios.post(`${config.apiUrl}/tr/new-gc-ol-shop-pay`, newGCashData)
                 toast({
                   message: '[GCash] New Online Payment successfully posted to database',
                   duration: 3000,
@@ -394,7 +503,7 @@ export default {
               newGCashData.remarks = '[Adjustment] ' + newGCashData.remarks
               
               try {
-                await axios.post(`${config.apiUrl}/transactions/new-gc-adjustment`, newGCashData)
+                await axios.post(`${config.apiUrl}/tr/new-gc-adjustment`, newGCashData)
                 toast({
                   message: '[GCash] New Adjustment successfully posted to database',
                   duration: 3000,
@@ -415,7 +524,7 @@ export default {
               newGCashData.remarks = '[Send Money w/ clip] ' + newGCashData.remarks
               
               try {
-                await axios.post(`${config.apiUrl}/transactions/new-gc-sendmoney`, newGCashData)
+                await axios.post(`${config.apiUrl}/tr/new-gc-sendmoney`, newGCashData)
                 toast({
                   message: '[GCash] New Send Money w/ clip successfully posted to database',
                   duration: 3000,
@@ -433,9 +542,55 @@ export default {
               newGCashData.remarks = '[Refund] ' + newGCashData.remarks
 
               try {
-                await axios.post(`${config.apiUrl}/transactions/new-gc-refund`, newGCashData)
+                await axios.post(`${config.apiUrl}/tr/new-gc-refund`, newGCashData)
                 toast({
                   message: '[GCash] New Refund successfully posted to database',
+                  duration: 3000,
+                  type: 'is-warning',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            }
+          } else if(props.formDetails.componentId === 3) {
+            let newCCData = {
+              credit_card_id: ccProps.ccId,
+              date_time: commonProps.dateTime,
+              transact_type_id: commonProps.transactType,
+              amount: commonProps.amount,
+              remarks: commonProps.remarks,
+            }
+
+            if (commonProps.transactType === 1) {
+              newCCData.online_shop_website = commonProps.onlineShopWebsite
+              newCCData.remarks = '[Online Payment] ' + newCCData.remarks
+
+              try {
+                await axios.post(`${config.apiUrl}/tr/new-cc-op`, newCCData)
+                toast({
+                  message: '[Credit Card] New Online Payment successfully posted to database',
+                  duration: 3000,
+                  type: 'is-warning',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else {
+              newCCData.store_name = commonProps.storeName
+              newCCData.remarks = '[Non-Online Payment] ' + newCCData.remarks
+
+              try {
+                await axios.post(`${config.apiUrl}/tr/new-cc-nop`, newCCData)
+                toast({
+                  message: '[Credit Card] New Non-Online Payment successfully posted to database',
                   duration: 3000,
                   type: 'is-warning',
                   position: "top-center",
@@ -450,7 +605,7 @@ export default {
           }
           commonProps.dateTime = ''
           commonProps.bankId = 1
-          commonProps.transactType = 0
+          commonProps.transactType = 1
           commonProps.customer = ''
           commonProps.mobileNo = ''
           commonProps.network = ''
@@ -459,7 +614,7 @@ export default {
           commonProps.amount = 1,
           commonProps.remarks = '',
           commonProps.message = '',
-          commonProps.attachment = '',
+          commonProps.attachment = 'Photo',
           commonProps.location = ''
           router.push('/')
         } catch (error) {
@@ -469,9 +624,31 @@ export default {
 
       }
 
+      onMounted(async () => {
+         if(props.formDetails.componentId === 1) {
+          await getSavingsAccs()
+          setSavingsAcc(1)
+          setGCashAcc()
+        }
+
+        if(props.formDetails.componentId === 2) {
+          await getGCashInfo()
+          setGCashAcc()
+          getCustomers()
+        }
+        
+        if(props.formDetails.componentId === 3) {
+          await getCreditCards()
+          setCc(1)
+        }
+      })
+
       return { 
+        savingsAccs,
+        creditCards,
         customers,
         commonProps, 
+        ccProps, 
         trackSelection, 
         handleSubmit,
         digitOnlyInput,
@@ -506,15 +683,30 @@ export default {
   justify-content: space-between;
 }
 
+.elec-red {
+  color: #DE0000;
+}
+
+#cl-notice::after {
+  color: #fff;
+  text-shadow: 0 0 5px #cf1c01, 0 0 5px #cf1c01, 0 0 5px #cf1c01, 0 0 5px #cf1c01;
+  content: '*please check regularly on bank';
+  font-size: 0.7rem;
+}
+
 @media screen and (max-width: 700px) {
 
   #main-form {
-    width: 96vw;
+    width: 99vw; /* To expand common forms*/
     font-size: 1.5rem;
   }
 
   .main-form-content {
     margin: 0 0.5rem;
+  }
+  
+  .cselect-style {
+    width: 18rem;
   }
 
   .customer-select-style {
@@ -532,6 +724,18 @@ export default {
 
   .pay-mobile-res {
     width: 11.5rem;
+  }
+
+  .styled-button{
+    transform: scale(1.5);
+  }
+
+  #after-content {
+    color: orange;
+  }
+  
+  #cl-notice::after {
+    font-size: 1rem;
   }
 }
 

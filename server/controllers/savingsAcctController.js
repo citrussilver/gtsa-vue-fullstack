@@ -1,18 +1,19 @@
 import { 
-    getSavingsAcctTransactions, 
-    getSavingsAcct1Info, 
-    getSavingsAcct1BalanceNc, 
+    getSa1Transacts,
+    getSa2Transacts,
+    getAllSavingsAccs, 
     insertBankCashDeposit, 
     insertBankCashWithdraw,  
     insertBankBillsPayment, 
     insertGCashCashIn, 
     insertBankPrepaidReload, 
-    insertTransferMoney
-} from '../models/savingsAcctTransactionsModel.js';
+    insertTransferMoney,
+    insertEarnInterest
+} from '../models/savingsAcctModel.js';
 
 // Get All Savings Acct Transactions
-export const showSavingsAcctTransactions = (req, res) => {
-    getSavingsAcctTransactions((err, results) => {
+export const showSa1Transacts = (req, res) => {
+    getSa1Transacts((err, results) => {
         if(err) {
             res.send(err);
         } else {
@@ -21,8 +22,8 @@ export const showSavingsAcctTransactions = (req, res) => {
     });
 }
 
-export const showSavingsAcct1Info = (req, res) => {
-    getSavingsAcct1Info((err, results) => {
+export const showSa2Transacts = (req, res) => {
+    getSa2Transacts((err, results) => {
         if(err) {
             res.send(err);
         } else {
@@ -31,8 +32,8 @@ export const showSavingsAcct1Info = (req, res) => {
     });
 }
 
-export const showSavingsAcct1BalanceNc = (req, res) => {
-    getSavingsAcct1BalanceNc((err, results) => {
+export const showAllSavingsAccs = (req, res) => {
+    getAllSavingsAccs((err, results) => {
         if(err) {
             res.send(err);
         } else {
@@ -41,7 +42,7 @@ export const showSavingsAcct1BalanceNc = (req, res) => {
     });
 }
 
-export const createSavingsAcctTransaction = (req, res) => {
+export const newSavingsAcctTransaction = (req, res) => {
     const data = req.body;
     insertSavingsAcctTransaction(data, (err, results) => {
         if (err){
@@ -53,7 +54,7 @@ export const createSavingsAcctTransaction = (req, res) => {
 }
 
 // Insert Bank Cash Deposit
-export const createBankCashDeposit = (req, res) => {
+export const newBankCashDeposit = (req, res) => {
     const data = req.body;
     insertBankCashDeposit(data, (err, results) => {
         if (err){
@@ -64,7 +65,7 @@ export const createBankCashDeposit = (req, res) => {
     });
 }
 
-export const createBankCashWithdraw = (req, res) => {
+export const newBankCashWithdraw = (req, res) => {
     const data = req.body;
     insertBankCashWithdraw(data, (err, results) => {
         if (err){
@@ -75,7 +76,7 @@ export const createBankCashWithdraw = (req, res) => {
     });
 }
 
-export const createBankBillsPayment = (req, res) => {
+export const newBankBillsPayment = (req, res) => {
     const data = req.body;
     insertBankBillsPayment(data, (err, results) => {
         if (err){
@@ -86,7 +87,7 @@ export const createBankBillsPayment = (req, res) => {
     });
 }
 
-export const createGCashCashIn = (req, res) => {
+export const newGCashCashIn = (req, res) => {
     const data = req.body;
     insertGCashCashIn(data, (err, results) => {
         if (err){
@@ -97,7 +98,7 @@ export const createGCashCashIn = (req, res) => {
     });
 }
 
-export const createBankPrepaidReload = (req, res) => {
+export const newBankPrepaidReload = (req, res) => {
     const data = req.body;
     insertBankPrepaidReload(data, (err, results) => {
         if (err){
@@ -108,9 +109,20 @@ export const createBankPrepaidReload = (req, res) => {
     });
 }
 
-export const createTransferMoney = (req, res) => {
+export const newTransferMoney = (req, res) => {
     const data = req.body;
     insertTransferMoney(data, (err, results) => {
+        if (err){
+            res.send(err);
+        }else{
+            res.json(results);
+        }
+    });
+}
+
+export const newEarnInterest = (req, res) => {
+    const data = req.body;
+    insertEarnInterest(data, (err, results) => {
         if (err){
             res.send(err);
         }else{

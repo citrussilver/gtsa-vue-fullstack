@@ -1,11 +1,11 @@
 import { ref } from 'vue'
 import config from '../config'
 
-export let gCashTransacts = ref([])
+export let ccTransacts = ref([])
 
-export const getGCashTransacts = async () => {
+export const getCcTransacts = async () => {
 
-    await fetch(`${config.apiUrl}/gc/tr`, {
+    await fetch(`${config.apiUrl}/cc/tr`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {
@@ -15,7 +15,7 @@ export const getGCashTransacts = async () => {
         return res.json()
     })
     .then(data => {
-        gCashTransacts.value = [...data]
+        ccTransacts.value = [...data]
     })
     .catch(error => console.log(error))
 }

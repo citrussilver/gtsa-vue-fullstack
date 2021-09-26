@@ -5,10 +5,8 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { reactive } from 'vue'
 import NewTransactForm from '../components/NewTransactForm.vue'
-import axios from 'axios'
-import { useRouter } from 'vue-router'
 
 export default {
   components: {
@@ -16,7 +14,7 @@ export default {
   },
   setup() {
 
-    const bankFormDetails = ref(
+    const bankFormDetails = reactive(
       {
         componentId: 1,
         cardBorder: 'card border-success',
