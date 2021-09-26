@@ -1,11 +1,11 @@
 import { ref } from 'vue'
 import config from '../config'
 
-export let sa1Transacts = ref([])
+export let savingsAccs = ref([])
 
-export const getSa1Transacts = async () => {
+export const getSavingsAccs = async () => {
 
-    await fetch(`${config.apiUrl}/sa/transacts`, {
+    await fetch(`${config.apiUrl}/sa/sa-accs`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {
@@ -15,7 +15,8 @@ export const getSa1Transacts = async () => {
         return res.json()
     })
     .then(data => {
-        sa1Transacts.value = [...data]
+        savingsAccs.value = [...data]
     })
     .catch(error => console.log(error))
 }
+

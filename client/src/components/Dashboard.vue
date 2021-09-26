@@ -7,26 +7,26 @@
             <article class="tile is-child notification is-info custom-tile">
               <p class="title">
                   <ArticleTitleSlot>
-                      {{ gCashNickname }}
+                     {{ gCashObj.nick }}
                   </ArticleTitleSlot>
               </p>
               <div class="content">
                 <details>
                     <summary>Balance</summary>
-                    {{ gCashBalance }}
+                    {{ gCashObj.balance_wc }}
                 </details>
               </div>
             </article>
             <article class="tile is-child notification is-danger">
               <p class="title">
                   <ArticleTitleSlot>
-                      {{ bankName }}
+                      {{ sa1Obj.name }}
                   </ArticleTitleSlot>
               </p>
               <div class="content">
                 <details>
                     <summary>Balance</summary>
-                    {{ sa1Balance }}
+                    {{ sa1Obj.balance }}
                 </details>
               </div>
             </article>
@@ -68,16 +68,41 @@
           </div>
         </div>
         <div class="tile is-parent">
-          <article class="tile is-child notification is-primary">
+          <article class="tile is-child notification is-warning">
             <p class="title">
-                <ArticleTitleSlot />
+                <ArticleTitleSlot>
+                  {{ sa2Obj.name }}
+                </ArticleTitleSlot>
             </p>
             <p class="subtitle">
                 <ArticleSubtitleSlot/>
             </p>
             <div class="content">
+              <details>
+                <summary>Balance</summary>
+                {{ sa2Obj.balance }}
+              </details>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child notification is-primary" style="background-color: #6D5C71;">
+            <p class="title">
+                <ArticleTitleSlot>
+                  {{ cc1Obj.name }}
+                </ArticleTitleSlot>
+            </p>
+            <p class="subtitle">
+                <ArticleSubtitleSlot>
+                  Last 4 digits: {{ cc1Obj.last4d }}
+                </ArticleSubtitleSlot>
+            </p>
+            <div class="content">
               <!-- Content -->
-              Content
+              <details>
+                <summary>Available Credit Limit</summary>
+                {{ cc1Obj.avail_cl }}
+              </details>
             </div>
           </article>
         </div>
@@ -102,12 +127,13 @@
 </template>
 
 <script>
-import { ref, reactive, onMounted } from 'vue'
+import { onMounted, ref, reactive } from 'vue'
 import ArticleTitleSlot from './slots/ArticleTitleSlot.vue'
 import ArticleSubtitleSlot from './slots/ArticleSubtitleSlot.vue'
 
-import { bankName, sa1Balance, getSa1Info } from '../composables/getSa1Info'
-import { gCashNickname, gCashBalance, getGCashInfo } from '../composables/getGCashInfo'
+import { savingsAccs, getSavingsAccs } from '../composables/getBanksInfo.js'
+import { creditCards, getCreditCards  } from '../composables/getCcsInfo.js'
+import { gCash1Nick, gCash1BalWc, getGCashInfo } from '../composables/getGCashInfo'
 import { aniQuote, generateAniQuote } from '../composables/getAniQuote'
 
 export default {
@@ -116,13 +142,61 @@ export default {
         ArticleSubtitleSlot
     },
     setup() {
-      onMounted(async () => {
-        await getSa1Info()
-        await getGCashInfo()
-        await generateAniQuote()
+
+      let sa1Obj = reactive({
+        name: '',
+        balance: 1
       })
 
-      return { bankName, sa1Balance, gCashNickname, gCashBalance, aniQuote, generateAniQuote }
+      let sa2Obj = reactive({
+        name: '',
+        balance: 1
+      })
+
+      let cc1Obj = reactive({
+        name: '',
+        last4d: 1,
+        avail_cl: 1
+      })
+
+      let gCashObj = reactive({
+        nick: '',
+        balance: 1
+      })
+
+      const setSavingsAcc = (val) => {
+        let index = ref(0)
+        index.value = val-1
+        if(val === 1) {  
+          sa1Obj.name = savingsAccs.value[index.value].bank_name
+          sa1Obj.balance = savingsAccs.value[index.value].balance_wc
+        } else {
+          sa2Obj.name = savingsAccs.value[index.value].bank_name
+          sa2Obj.balance = savingsAccs.value[index.value].balance_wc
+        }
+      }
+
+      const setCc = (val) => {
+        let index = ref(0)
+        index.value = val-1
+        cc1Obj.name = creditCards.value[index.value].cc_name
+        cc1Obj.last4d = creditCards.value[index.value].last_4_digits
+        cc1Obj.avail_cl = creditCards.value[index.value].avail_credit_limit_wc
+      }
+
+      onMounted(async () => {
+        await getGCashInfo()
+        gCashObj.nick = gCash1Nick.value
+        gCashObj.balance_wc = gCash1BalWc.value
+        await generateAniQuote()
+        await getSavingsAccs()
+        setSavingsAcc(1)
+        setSavingsAcc(2)
+        await getCreditCards()
+        setCc(1)
+      })
+      
+      return { sa1Obj, sa2Obj, cc1Obj, gCashObj, aniQuote, generateAniQuote }
     }
 }
 </script>
@@ -232,17 +306,12 @@ article p {
 
 @media all and (max-width: 700px) {
 
-  #main-content {
-    width: 96vw;
+  #main-content {    
     font-size: 1.5rem;
   }
 
-  #main-content {
-    margin: 0 0.5rem;
+  .tile.is-ancestor {
+    margin: 0;
   }
-
-  /* .tile.is-ancestor {
-    margin: 0 -0.5rem;
-  } */
 }
 </style>

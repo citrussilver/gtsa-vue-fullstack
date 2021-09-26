@@ -1,11 +1,13 @@
 import { ref } from 'vue'
 import config from '../config'
 
-export let gCashTransacts = ref([])
+export let creditCards = ref([])
+export let cc1Alias = ref('')
+export let cc1AvailCreditLimit = ref(0)
 
-export const getGCashTransacts = async () => {
+export const getCreditCards = async () => {
 
-    await fetch(`${config.apiUrl}/gc/tr`, {
+    await fetch(`${config.apiUrl}/cc/cc-accs`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {
@@ -15,7 +17,7 @@ export const getGCashTransacts = async () => {
         return res.json()
     })
     .then(data => {
-        gCashTransacts.value = [...data]
+        creditCards.value = [...data]
     })
     .catch(error => console.log(error))
 }

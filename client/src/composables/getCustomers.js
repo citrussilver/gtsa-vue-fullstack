@@ -16,7 +16,6 @@ export const getCustomers = async () => {
     })
     .then(data => {
         customers.value = [...data]
-        console.log(customers)
     })
     .catch(error => console.log(error))
 }

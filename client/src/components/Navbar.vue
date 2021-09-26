@@ -19,6 +19,7 @@
           <ul class="nav-links mobile-nav">
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'Home' }">Dashboard</router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewBankTransact' }">New Bank Transaction</router-link></li>
+            <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewCreditCardTransact' }">New Credit Card Transaction</router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewGCashTransact' }">New GCash Transaction</router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'TransactsList' }">View Records</router-link></li>
           </ul>
@@ -207,7 +208,8 @@ export default {
     margin: 0;
     flex-direction: column;
     position: absolute;
-    bottom: 50vh;
+    bottom: 40vh;
+    left: 1vw;
     width: 100%;
   }
 

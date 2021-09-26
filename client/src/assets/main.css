@@ -136,16 +136,3 @@ nav h1 {
     box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
     transform: scale(0.90);
 }
-
-@media all and (max-width: 700px) {
-    
-
-
-    .cselect-style {
-        width: 18rem;
-    }
-
-    .styled-button{
-        transform: scale(1.5);    
-    }
-}

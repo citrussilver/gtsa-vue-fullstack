@@ -1,0 +1,93 @@
+import dbConnection from '../config/database.js';
+
+export const getAllCcs = (result) => {
+    dbConnection.query('SELECT credit_card_id, last_4_digits, cc_name, avail_credit_limit, FORMAT(avail_credit_limit, 2) AS avail_credit_limit_wc FROM credit_cards', (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            result(null, results);
+        }
+    })
+}
+
+export const getCcTransacts = (result) => {
+    dbConnection.query('SELECT cc_transact_id, date_time AS date_time_og, DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, cctt.description as transact_type, FORMAT(amount,2) AS amount, remarks FROM credit_card_transactions cctr JOIN credit_card_transaction_type cctt ON cctr.transact_type_id = cctt.id WHERE credit_card_id = 1 ORDER BY date_time_og DESC LIMIT 30', (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            result(null, results);
+        }
+    })
+}
+
+export const insertCcOnlinePay = (data, result) => {
+    dbConnection.query("INSERT INTO credit_card_transactions SET ?", {
+        credit_card_id: data.credit_card_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        amount: data.amount,
+        remarks: data.remarks,
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+
+            const online_pay_data = {
+                cc_transact_id: results.insertId,
+                credit_card_id: data.credit_card_id,
+                date_time: data.date_time,
+                amount: data.amount,
+                online_shop_website: data.online_shop_website,
+                remarks: data.remarks,
+            }
+
+            dbConnection.query("INSERT INTO credit_card_online_payments SET ?", online_pay_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[Credit Card] New Online payment successfully posted to database')
+                }
+            });
+        }
+    });
+}
+
+export const insertCcNonOnlinePay = (data, result) => {
+    dbConnection.query("INSERT INTO credit_card_transactions SET ?", {
+        credit_card_id: data.credit_card_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        amount: data.amount,
+        remarks: data.remarks,
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+
+            const non_online_pay_data = {
+                cc_transact_id: results.insertId,
+                credit_card_id: data.credit_card_id,
+                date_time: data.date_time,
+                amount: data.amount,
+                store_name: data.store_name,
+                remarks: data.remarks,
+            }
+
+            dbConnection.query("INSERT INTO credit_card_non_online_payments SET ?", non_online_pay_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[Credit Card] New Non-Online payment successfully posted to database')
+                }
+            });
+        }
+    });
+}
