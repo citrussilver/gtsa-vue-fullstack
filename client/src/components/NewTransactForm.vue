@@ -91,6 +91,10 @@
               </div>
             </div>
           </div>
+          <div class="form-group" v-if="formDetails.componentId === 3">
+            <label class="control-label white">Description</label><br>
+            <input type="text" class="form-control" v-model="commonProps.description"/>
+          </div>
           <div class="form-group">
             <label class="control-label white">{{ commonProps.transactType === 4 ? 'Sale / Income Received:' : 'Amount'}}</label>
             <div class="form-group">
@@ -110,7 +114,7 @@
                 <option value="Google Play">Google Play</option>
               </select>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 3">
+          <div class="form-group" v-if="formDetails.componentId === 3 && (commonProps.transactType === 1 || commonProps.transactType === 2)">
             <label class="control-label white">{{ commonProps.transactType === 1 ? 'Online Shop Website:' : 'Physical Store Name'}}</label>
             <select v-if="commonProps.transactType === 1" class="custom-select" v-model="commonProps.onlineShopWebsite">
                 <option value="Google Play">Google Play</option>
@@ -119,15 +123,42 @@
             </select>
             <input v-else type="text" class="form-control" v-model="commonProps.storeName">
           </div>
+          <div class="form-group" v-if="formDetails.componentId === 3 && commonProps.transactType === 3">
+            <label class="control-label white">Term</label>
+            <select class="custom-select" v-model="commonProps.term">
+                <option value="Monthly">Monthly</option>
+                <option value="6 Months">6 Months</option>
+                <option value="12 Months">12 Months</option>
+              </select>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === 3">
+            <label class="control-label white">Term Payment</label><br>
+            <input type="number" class="form-control" min="1" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="commonProps.termPay"/>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === 3">
+            <label class="control-label white">Transaction No.</label><br>
+            <input type="text" class="form-control" placeholder="Ask the agent about Transaction No." v-model="commonProps.loanTransactNo"/>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === 3">
+            <label class="control-label white">Agent Name</label><br>
+            <input type="text" class="form-control" v-model="commonProps.loanAgentName"/>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === 3 && commonProps.transactType === 3">
+            <label class="control-label white">Loan Thru</label>
+            <select class="custom-select" v-model="commonProps.loanThru">
+                <option value="phone">Phone</option>
+                <option value="branch">Branch</option>
+              </select>
+          </div>
           <div class="form-group">
             <label class="control-label white">Remarks</label><br>
             <textarea class="form-control" rows="3" v-model="commonProps.remarks"/>
           </div>
-          <div class="form-group" v-if="commonProps.transactType === 9">
+          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 9">
             <label class="control-label white">Message</label><br>
             <textarea class="form-control" rows="3" v-model="commonProps.message"/>
           </div>
-          <div class="form-group" v-if="commonProps.transactType === 9">
+          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 9">
             <label class="control-label white">Attachment:</label><br>
             <select class="custom-select" v-model="commonProps.attachment">
               <option value="None">None</option>
@@ -142,6 +173,7 @@
               <option value="Select">-- Select App / Location --</option>
               <option value="App">App</option>
               <option value="ATM">ATM</option>
+              <option value="Automatic Activity">Automatic Activity</option>
             </select>
           </div>
           <div id="btn-container"><button type="submit" class="btn btn-outline-success styled-button">Submit</button></div>
@@ -183,6 +215,12 @@ export default {
           gcBalance: 1,
           receipientAcctNo: '',
           amount: 1,
+          term: 'Monthly',
+          termPay: 1,
+          loanThru: '',
+          loanTransactNo: '',
+          loanAgentName: '',
+          description: '',
           onlineShopWebsite: 'Google Play',
           storeName: '',
           remarks: '',
@@ -352,11 +390,26 @@ export default {
                 console.log(error)
               }
             } else if(commonProps.transactType === 8) {
-              console.log('entered 8 transaction type')
               try {
                 await axios.post(`${config.apiUrl}/tr/new-sa-ei`, newBankData)
                 toast({
                   message: '[Savings Account] New Earn Interest successfully posted to database',
+                  duration: 3000,
+                  type: 'is-warning',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            }  else if(commonProps.transactType === 9) {
+              console.log('entered 9 transaction type')
+              try {
+                await axios.post(`${config.apiUrl}/tr/new-sa-tw`, newBankData)
+                toast({
+                  message: '[Savings Account] New Tax Witheld successfully posted to database',
                   duration: 3000,
                   type: 'is-warning',
                   position: "top-center",
@@ -373,7 +426,7 @@ export default {
             let newGCashData = {
               gcash_id: 1,
               date_time: commonProps.dateTime,
-              transaction_type_id: commonProps.transactType,
+              transact_type_id: commonProps.transactType,
               current_gcash_balance: commonProps.gcBalance,
               amount: commonProps.amount,
               remarks: commonProps.remarks
@@ -561,6 +614,7 @@ export default {
               credit_card_id: ccProps.ccId,
               date_time: commonProps.dateTime,
               transact_type_id: commonProps.transactType,
+              description: commonProps.description,
               amount: commonProps.amount,
               remarks: commonProps.remarks,
             }
@@ -583,7 +637,7 @@ export default {
               } catch (error) {
                 console.log(error)
               }
-            } else {
+            } else if (commonProps.transactType === 2){
               newCCData.store_name = commonProps.storeName
               newCCData.remarks = '[Non-Online Payment] ' + newCCData.remarks
 
@@ -601,6 +655,31 @@ export default {
               } catch (error) {
                 console.log(error)
               }
+            } else {
+              if(!newCCData.description) {
+                newCCData.description =  '[Credit-to-Cash Promo Loan]'
+              }
+              newCCData.loan_thru = commonProps.loanThru
+              newCCData.loan_transact_no = commonProps.loanTransactNo
+              newCCData.loan_agent_name = commonProps.loanAgentName
+              newCCData.term = commonProps.term
+              newCCData.term_pay = commonProps.termPay
+
+              try {
+                await axios.post(`${config.apiUrl}/tr/new-cc-loan`, newCCData)
+                toast({
+                  message: '[Credit Card] New Credit-to-Cash Loan successfully posted to database',
+                  duration: 3000,
+                  type: 'is-warning',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+
             }
           }
           commonProps.dateTime = ''

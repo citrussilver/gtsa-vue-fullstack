@@ -286,3 +286,39 @@ export const insertEarnInterest = (data, result) => {
         }
     });
 }
+
+export const insertTaxWithheld = (data, result) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
+        bank_id: data.bank_id,
+        date_time: data.date_time,
+        bank_transact_type_id: data.bank_transact_type_id,
+        amount: data.amount,
+        current_balance: data.current_balance,
+        remarks: data.remarks,
+        location: data.location,
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+
+            const tax_withheld_data = {
+                sa_transact_id: results.insertId,
+                bank_id: data.bank_id,
+                date_time: data.date_time,
+                amount: data.amount,
+                remarks: data.remarks,
+            }
+
+            dbConnection.query("INSERT INTO bank_tax_withheld SET ?", tax_withheld_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[Savings Acct] New Tax Withheld successfully posted to database')
+                }
+            });
+        }
+    });
+}

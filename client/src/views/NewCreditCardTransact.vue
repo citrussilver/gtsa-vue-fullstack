@@ -23,6 +23,7 @@ export default {
           { val: 0, title: '-- Select Transaction Type --' },
           { val: 1, title: 'Online Payment' },
           { val: 2, title: 'Non-online Payment' },
+          { val: 3, title: 'Loan - Credit to Cash Promo' },
         ],
       }
     )
