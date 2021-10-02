@@ -17,14 +17,16 @@ import {
     newGCashCashIn,
     newBankPrepaidReload,
     newTransferMoney,
-    newEarnInterest
+    newEarnInterest,
+    newTaxWithheld
 } from '../controllers/savingsAcctController.js';
 
 import {
     showAllCcs,
     showCcTransacts,
     newCcOnlinePay,
-    newCcNonOnlinePay
+    newCcNonOnlinePay,
+    newCcPromoLoan
 } from '../controllers/ccController.js' ;
 
 import {
@@ -62,6 +64,7 @@ router.post('/tr/new-sa-gc-ci', newGCashCashIn);
 router.post('/tr/new-sa-prepaid-reload', newBankPrepaidReload);
 router.post('/tr/new-sa-transfer-money', newTransferMoney);
 router.post('/tr/new-sa-ei', newEarnInterest);
+router.post('/tr/new-sa-tw', newTaxWithheld);
 
 router.post('/tr/new-gc-loadsale', newLoadSale);
 router.post('/tr/new-gc-billspay', newGCashBillsPayment);
@@ -74,6 +77,7 @@ router.post('/tr/new-gc-refund', newGCashRefund);
 
 router.post('/tr/new-cc-op', newCcOnlinePay);
 router.post('/tr/new-cc-nop', newCcNonOnlinePay);
+router.post('/tr/new-cc-loan', newCcPromoLoan);
 
 router.post('/login', handlelogin);
 router.post('/signup', validateRegister, signUpUser);

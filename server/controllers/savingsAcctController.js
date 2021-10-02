@@ -8,7 +8,8 @@ import {
     insertGCashCashIn, 
     insertBankPrepaidReload, 
     insertTransferMoney,
-    insertEarnInterest
+    insertEarnInterest,
+    insertTaxWithheld
 } from '../models/savingsAcctModel.js';
 
 // Get All Savings Acct Transactions
@@ -123,6 +124,17 @@ export const newTransferMoney = (req, res) => {
 export const newEarnInterest = (req, res) => {
     const data = req.body;
     insertEarnInterest(data, (err, results) => {
+        if (err){
+            res.send(err);
+        }else{
+            res.json(results);
+        }
+    });
+}
+
+export const newTaxWithheld = (req, res) => {
+    const data = req.body;
+    insertTaxWithheld(data, (err, results) => {
         if (err){
             res.send(err);
         }else{

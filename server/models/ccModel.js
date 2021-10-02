@@ -27,6 +27,7 @@ export const insertCcOnlinePay = (data, result) => {
         credit_card_id: data.credit_card_id,
         date_time: data.date_time,
         transact_type_id: data.transact_type_id,
+        description: data.description,
         amount: data.amount,
         remarks: data.remarks,
     }, (err, results) => {
@@ -62,6 +63,7 @@ export const insertCcNonOnlinePay = (data, result) => {
         credit_card_id: data.credit_card_id,
         date_time: data.date_time,
         transact_type_id: data.transact_type_id,
+        description: data.description,
         amount: data.amount,
         remarks: data.remarks,
     }, (err, results) => {
@@ -86,6 +88,47 @@ export const insertCcNonOnlinePay = (data, result) => {
                 } else {
                     result(null, results);
                     console.log('[Credit Card] New Non-Online payment successfully posted to database')
+                }
+            });
+        }
+    });
+}
+
+export const insertCcPromoLoan = (data, result) => {
+    dbConnection.query("INSERT INTO credit_card_transactions SET ?", {
+        credit_card_id: data.credit_card_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        description: data.description,
+        amount: data.amount,
+        remarks: data.remarks,
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+
+            const promo_loan_data = {
+                cc_transact_id: results.insertId,
+                credit_card_id: data.credit_card_id,
+                date_time: data.date_time,
+                loan_thru: data.loan_thru,
+                loan_transact_no: data.loan_transact_no,
+                loan_agent_name: data.loan_agent_name,
+                description: data.description,
+                amount: data.amount,
+                term: data.term,
+                term_pay: data.term_pay,
+                remarks: data.remarks,
+            }
+
+            dbConnection.query("INSERT INTO credit_card_loan SET ?", promo_loan_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[Credit Card] New Promo Loan successfully posted to database')
                 }
             });
         }
