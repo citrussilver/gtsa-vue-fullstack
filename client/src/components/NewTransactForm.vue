@@ -50,7 +50,7 @@
               <input type="datetime-local" class="form-control pay-mobile-res" v-model="commonProps.paymentDateTime">
             </div>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 8">
+          <div class="form-group" v-if="(formDetails.componentId === 1 && commonProps.transactType === 7 || formDetails.componentId === 2 && commonProps.transactType === 8)">
             <label class="col-form-label white">Credit or Debit?</label><br>
             <select class="custom-select" v-model="commonProps.credit" style="width: 6rem;">
               <option value="1" selected>Credit</option>
@@ -120,6 +120,7 @@
                 <option value="Google Play">Google Play</option>
                 <option value="Steam">Steam</option>
                 <option value="GOG">GOG</option>
+                <option value="Grab">Grab</option>
             </select>
             <input v-else type="text" class="form-control" v-model="commonProps.storeName">
           </div>
@@ -131,15 +132,15 @@
                 <option value="12 Months">12 Months</option>
               </select>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 3">
+          <div class="form-group" v-if="formDetails.componentId === 3 && commonProps.transactType === 3">
             <label class="control-label white">Term Payment</label><br>
             <input type="number" class="form-control" min="1" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="commonProps.termPay"/>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 3">
+          <div class="form-group" v-if="formDetails.componentId === 3 && commonProps.transactType === 3">
             <label class="control-label white">Transaction No.</label><br>
             <input type="text" class="form-control" placeholder="Ask the agent about Transaction No." v-model="commonProps.loanTransactNo"/>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 3">
+          <div class="form-group" v-if="formDetails.componentId === 3 && commonProps.transactType === 3">
             <label class="control-label white">Agent Name</label><br>
             <input type="text" class="form-control" v-model="commonProps.loanAgentName"/>
           </div>
@@ -379,6 +380,27 @@ export default {
                 await axios.post(`${config.apiUrl}/tr/new-sa-transfer-money`, newBankData)
                 toast({
                   message: '[Savings Account] New Transfer Money successfully posted to database',
+                  duration: 3000,
+                  type: 'is-warning',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 7) {
+
+              // Adjustment
+
+              newBankData.credit = commonProps.credit
+              newBankData.remarks = '[Adjustment] ' + newBankData.remarks
+
+              try {
+                await axios.post(`${config.apiUrl}/tr/new-sa-adjustment`, newBankData)
+                toast({
+                  message: '[Savings Account] New Adjustment successfully posted to database',
                   duration: 3000,
                   type: 'is-warning',
                   position: "top-center",
