@@ -8,6 +8,7 @@ import {
     insertGCashCashIn, 
     insertBankPrepaidReload, 
     insertTransferMoney,
+    insertAdjustment,
     insertEarnInterest,
     insertTaxWithheld
 } from '../models/savingsAcctModel.js';
@@ -113,6 +114,17 @@ export const newBankPrepaidReload = (req, res) => {
 export const newTransferMoney = (req, res) => {
     const data = req.body;
     insertTransferMoney(data, (err, results) => {
+        if (err){
+            res.send(err);
+        }else{
+            res.json(results);
+        }
+    });
+}
+
+export const newAdjustment = (req, res) => {
+    const data = req.body;
+    insertAdjustment(data, (err, results) => {
         if (err){
             res.send(err);
         }else{

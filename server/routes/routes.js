@@ -17,6 +17,7 @@ import {
     newGCashCashIn,
     newBankPrepaidReload,
     newTransferMoney,
+    newAdjustment,
     newEarnInterest,
     newTaxWithheld
 } from '../controllers/savingsAcctController.js';
@@ -63,6 +64,7 @@ router.post('/tr/new-sa-billspay', newBankBillsPayment);
 router.post('/tr/new-sa-gc-ci', newGCashCashIn);
 router.post('/tr/new-sa-prepaid-reload', newBankPrepaidReload);
 router.post('/tr/new-sa-transfer-money', newTransferMoney);
+router.post('/tr/new-sa-adjustment', newAdjustment);
 router.post('/tr/new-sa-ei', newEarnInterest);
 router.post('/tr/new-sa-tw', newTaxWithheld);
 
