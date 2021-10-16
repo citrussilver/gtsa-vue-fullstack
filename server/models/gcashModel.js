@@ -248,6 +248,7 @@ export const insertGCashSendMoney = (data, result) => {
                 gcash_transact_id: results.insertId,
                 date_time: data.date_time,
                 mobile_number: data.mobile_number,
+                type: data.type,
                 amount: data.amount,
                 remarks: data.remarks,
                 message: data.message,
@@ -260,7 +261,7 @@ export const insertGCashSendMoney = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log('[GCash] New Send Money w/ clip successfully posted to database')
+                    console.log('[GCash] New Send Money successfully posted to database')
                 }
             });
         }
@@ -287,6 +288,40 @@ export const insertGCashRefund = (data, result) => {
                 } else {
                     result(null, results);
                     console.log('[GCash] New Refund successfully posted to database')
+                }
+            });
+        }
+    });
+}
+
+export const insertPayQr = (data, result) => {
+    dbConnection.query("INSERT INTO gcash_transactions SET ?", {
+        gcash_id: data.gcash_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        current_gcash_balance: data.current_gcash_balance,
+        amount: data.amount,
+        remarks: data.remarks
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const pay_qr_data = {
+                gcash_transact_id: results.insertId,
+                date_time: data.date_time,
+                store_name: data.store_name,
+                amount: data.amount,
+                description: data.description
+            };
+
+            dbConnection.query("INSERT INTO gcash_pay_qr SET ?", pay_qr_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[GCash] New Pay QR successfully posted to database')
                 }
             });
         }

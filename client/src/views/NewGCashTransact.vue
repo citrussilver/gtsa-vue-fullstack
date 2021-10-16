@@ -27,8 +27,9 @@ export default {
           { val: 6, title: 'Send to Bank' },
           { val: 7, title: 'Online Payment' },
           { val: 8, title: 'Adjustment' },
-          { val: 9, title: 'Send Money w/ Clip' },
-          { val: 10, title: 'Refund' }
+          { val: 9, title: 'Send Money' },
+          { val: 10, title: 'Refund' },
+          { val: 11, title: 'Pay QR' },
         ],
       }
     )
