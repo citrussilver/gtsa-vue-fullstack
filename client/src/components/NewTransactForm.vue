@@ -23,6 +23,14 @@
                   <option v-for="transact in formDetails.transactType" :key="transact.val" :value="transact.val">{{transact.title}}</option>
               </select>
           </div>
+          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 9">
+            <select class="custom-select send-money-type" v-model="commonProps.sendMoneyType">
+              <option value="1">Express Send</option>
+              <option value="2">Send via QR</option>
+              <option value="3">Send with a Clip</option>
+              <option value="4">Send Gift</option>
+            </select>
+          </div>
           <div class="flex-group">
             <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 1">
               <label class="col-form-label white">Customer</label><br>
@@ -31,8 +39,15 @@
               </select>
             </div>
             <div class="form-group" v-if="formDetails.componentId === 2 && (commonProps.transactType === 5 || commonProps.transactType === 1 || commonProps.transactType === 9)">
-              <label class="col-form-label white">Mobile Number</label><br>
-              <input type="number" class="form-control customer-select-style" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keydown="digitOnlyInput" v-model="commonProps.mobileNo">
+              <label class="col-form-label white">{{ commonProps.transactType === 5 ? 'Own Mobile Numbers':'Mobile Number' }}</label><br>
+              <input type="number" v-if="(formDetails.componentId === 2  && commonProps.transactType != 5 )" class="form-control customer-select-style" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keydown="digitOnlyInput" v-model="commonProps.mobileNo">
+              <select v-else class="custom-select own-numbers" v-model="commonProps.mobileNo">
+                <option value="0">-- Select Mobile No. --</option>
+                <option value="09755512192">TM - 09755512192</option>
+                <option value="09369700679">GCash No. - 0936970679</option>
+                <option value="09157611994">Globe / BPI OTP - 09157611994</option>
+                <option value="09179561248">Globe / Grab - 09179561248</option>
+              </select>
             </div>
           </div>
           <div class="flex-group">
@@ -91,7 +106,7 @@
               </div>
             </div>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 3">
+          <div class="form-group" v-if="(formDetails.componentId === 3) || (formDetails.componentId === 2 && commonProps.transactType === 11 )">
             <label class="control-label white">Description</label><br>
             <input type="text" class="form-control" v-model="commonProps.description"/>
           </div>
@@ -107,11 +122,12 @@
             </div>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 7">
-            <label class="control-label white">Online Shop Website:</label>
+            <label class="control-label white">Online Service / Shop Website:</label>
             <select class="custom-select" v-model="commonProps.onlineShopWebsite">
                 <option value="Shopee">Shopee Pay Top-up</option>
                 <option value="Lazada">Lazada Wallet Top-up</option>
                 <option value="Google Play">Google Play</option>
+                <option value="GrabPay">GrabPay</option>
               </select>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 3 && (commonProps.transactType === 1 || commonProps.transactType === 2)">
@@ -123,6 +139,10 @@
                 <option value="Grab">Grab</option>
             </select>
             <input v-else type="text" class="form-control" v-model="commonProps.storeName">
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 11">
+            <label class="control-label white">Store Name:</label><br>
+            <input type="text" class="form-control" v-model="commonProps.storeName"/>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 3 && commonProps.transactType === 3">
             <label class="control-label white">Term</label>
@@ -151,15 +171,11 @@
                 <option value="branch">Branch</option>
               </select>
           </div>
-          <div class="form-group">
-            <label class="control-label white">Remarks</label><br>
-            <textarea class="form-control" rows="3" v-model="commonProps.remarks"/>
-          </div>
           <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 9">
             <label class="control-label white">Message</label><br>
             <textarea class="form-control" rows="3" v-model="commonProps.message"/>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 9">
+          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 9 && commonProps.sendMoneyType === 3">
             <label class="control-label white">Attachment:</label><br>
             <select class="custom-select" v-model="commonProps.attachment">
               <option value="None">None</option>
@@ -167,6 +183,10 @@
               <option value="Video">Video</option>
               <option value="Audio">Audio</option>
             </select>
+          </div>
+          <div class="form-group" v-if="((formDetails.componentId === 1) || (formDetails.componentId === 2 && commonProps.transactType != 11))">
+            <label class="control-label white">Remarks</label><br>
+            <textarea class="form-control" rows="3" v-model="commonProps.remarks"/>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 1">
             <label class="col-form-label white">Location</label><br>
@@ -207,8 +227,8 @@ export default {
           gCashId: 1,
           transactType: 0,
           customer: '',
-          mobileNo: '',
-          network: '',
+          mobileNo: '0',
+          network: 'Globe',
           paymentDateTime: '',
           credit: 1,
           saName: '',
@@ -222,6 +242,7 @@ export default {
           loanTransactNo: '',
           loanAgentName: '',
           description: '',
+          sendMoneyType: 1,
           onlineShopWebsite: 'Google Play',
           storeName: '',
           remarks: '',
@@ -355,6 +376,7 @@ export default {
             } else if(commonProps.transactType === 4) {
 
               newBankData.gcash_id = commonProps.gCashId
+              newBankData.remarks = '[GCash Cash-in]' + commonProps.remarks
               console.log('entered transactType === 4')
 
               try {
@@ -594,14 +616,31 @@ export default {
             } else if(commonProps.transactType === 9) {
 
               newGCashData.mobile_number = commonProps.mobileNo
-              newGCashData.message = commonProps.message
-              newGCashData.attachment = commonProps.attachment
-              newGCashData.remarks = '[Send Money w/ clip] ' + newGCashData.remarks
+
+              if(commonProps.sendMoneyType === 1) {
+                newGCashData.type = 'Express Send'
+                newGCashData.message = commonProps.message
+                newGCashData.attachment = 'N/A'
+              } else if (commonProps.sendMoneyType === 2) {
+                newGCashData.type = 'Send via QR'
+                newGCashData.message = 'N/A'
+                newGCashData.attachment = 'N/A'
+              } else if (commonProps.sendMoneyType === 3) {
+                newGCashData.type = 'Send with a Clip'
+                newGCashData.message = commonProps.message
+                newGCashData.attachment = commonProps.attachment
+              } else {
+                newGCashData.type  = 'Send Gift'
+                newGCashData.message = commonProps.message
+                newGCashData.attachment = 'N/A'
+              }
               
+              newGCashData.remarks = `[${newGCashData.type}] ${newGCashData.remarks}`
+              console.log(newGCashData.remarks)
               try {
                 await axios.post(`${config.apiUrl}/tr/new-gc-sendmoney`, newGCashData)
                 toast({
-                  message: '[GCash] New Send Money w/ clip successfully posted to database',
+                  message: '[GCash] New Send Money successfully posted to database',
                   duration: 3000,
                   type: 'is-warning',
                   position: "top-center",
@@ -620,6 +659,26 @@ export default {
                 await axios.post(`${config.apiUrl}/tr/new-gc-refund`, newGCashData)
                 toast({
                   message: '[GCash] New Refund successfully posted to database',
+                  duration: 3000,
+                  type: 'is-warning',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 11) {
+
+              newGCashData.store_name = commonProps.storeName
+              newGCashData.description = '[Pay QR] ' + commonProps.description
+              newGCashData.remarks = newGCashData.description
+
+              try {
+                await axios.post(`${config.apiUrl}/tr/new-gc-pay-qr`, newGCashData)
+                toast({
+                  message: '[GCash] New Pay QR successfully posted to database',
                   duration: 3000,
                   type: 'is-warning',
                   position: "top-center",
@@ -795,6 +854,10 @@ export default {
   font-size: 0.7rem;
 }
 
+.send-money-type {
+  width: 9rem;
+}
+
 @media screen and (max-width: 700px) {
 
   #main-form {
@@ -837,6 +900,10 @@ export default {
   
   #cl-notice::after {
     font-size: 1rem;
+  }
+
+  .send-money-type {
+    width: 12rem;
   }
 }
 

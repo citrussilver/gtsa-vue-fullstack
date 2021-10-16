@@ -41,7 +41,8 @@ import {
     newOnlineShopPay,
     newGCashAdjustment,
     newGCashSendMoney,
-    newGCashRefund
+    newGCashRefund,
+    newPayQr
 } from '../controllers/gcashController.js';
 
 const router = express.Router();
@@ -76,6 +77,7 @@ router.post('/tr/new-gc-ol-shop-pay', newOnlineShopPay);
 router.post('/tr/new-gc-adjustment', newGCashAdjustment);
 router.post('/tr/new-gc-sendmoney', newGCashSendMoney);
 router.post('/tr/new-gc-refund', newGCashRefund);
+router.post('/tr/new-gc-pay-qr', newPayQr);
 
 router.post('/tr/new-cc-op', newCcOnlinePay);
 router.post('/tr/new-cc-nop', newCcNonOnlinePay);
