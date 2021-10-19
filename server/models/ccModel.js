@@ -12,7 +12,7 @@ export const getAllCcs = (result) => {
 }
 
 export const getCcTransacts = (result) => {
-    dbConnection.query('SELECT cc_transact_id, date_time AS date_time_og, DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, cctt.description as transact_type, FORMAT(amount,2) AS amount, remarks FROM credit_card_transactions cctr JOIN credit_card_transaction_type cctt ON cctr.transact_type_id = cctt.id WHERE credit_card_id = 1 ORDER BY date_time_og DESC LIMIT 30', (err, results) => {
+    dbConnection.query('SELECT cc_transact_id, date_time AS date_time_og, DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, cctt.description as transact_type, cctr.description, FORMAT(amount,2) AS amount, remarks FROM credit_card_transactions cctr JOIN credit_card_transaction_type cctt ON cctr.transact_type_id = cctt.id WHERE credit_card_id = 1 ORDER BY date_time_og DESC LIMIT 30', (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
