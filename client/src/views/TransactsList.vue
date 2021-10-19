@@ -64,6 +64,7 @@
                 <tr>
                     <th>Date</th>
                     <th>Transact Type</th>
+                    <th>Description</th>
                     <th>Amount</th>
                     <th>Remarks</th>
                 </tr>
@@ -72,6 +73,7 @@
                 <tr v-for="transaction in ccTransacts" :key="transaction.cc_transact_id">
                   <td data-label="Date">{{ transaction.date_time }}</td>
                   <td data-label="Transact Type">{{ transaction.transact_type }}</td>
+                  <td data-label="Description">{{ transaction.description }}</td>
                   <td data-label="Amount">{{ transaction.amount }}</td>
                   <td data-label="Remarks">{{ transaction.remarks }}</td>
                 </tr>

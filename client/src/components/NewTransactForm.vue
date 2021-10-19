@@ -137,6 +137,8 @@
                 <option value="Steam">Steam</option>
                 <option value="GOG">GOG</option>
                 <option value="Grab">Grab</option>
+                <option value="Patreon">Patreon</option>
+                <option value="Gumroad">Gumroad</option>
             </select>
             <input v-else type="text" class="form-control" v-model="commonProps.storeName">
           </div>
@@ -184,7 +186,7 @@
               <option value="Audio">Audio</option>
             </select>
           </div>
-          <div class="form-group" v-if="((formDetails.componentId === 1) || (formDetails.componentId === 2 && commonProps.transactType != 11))">
+          <div class="form-group" v-if="((formDetails.componentId === 1) || (formDetails.componentId === 2 && commonProps.transactType != 11)) || (formDetails.componentId === 3)">
             <label class="control-label white">Remarks</label><br>
             <textarea class="form-control" rows="3" v-model="commonProps.remarks"/>
           </div>
