@@ -10,7 +10,18 @@ module.exports = {
     //         },
     //     },
     // },
+    publicPath: '/gtsa/',
+    // devServer: {
+    //     proxy: 'http://localhost:5000'
+    // },
     devServer: {
-        proxy: 'http://localhost:5000'
-    }
+        proxy: {
+            '^/': {
+                target: 'http://localhost:5000',
+                ws: false,
+                changeOrigin: true,
+
+            }
+        }
+    },
 }

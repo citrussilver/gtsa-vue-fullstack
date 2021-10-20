@@ -12,7 +12,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json())
 
 let corsOpts = {
-    origin: ['http://localhost:5000', 'https://localhost:8080', 'http://192.168.1.12:8081/', 'http://192.168.1.12:8080/' ],
+    origin: ['http://localhost:5000', 'https://localhost:8080/gtsa/', 'http://192.168.1.26:8080/gtsa/' ],
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
 }
