@@ -128,6 +128,7 @@
                 <option value="Lazada">Lazada Wallet Top-up</option>
                 <option value="Google Play">Google Play</option>
                 <option value="GrabPay">GrabPay</option>
+                <option value="Youtube Membership">Youtube Membership</option>
               </select>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 3 && (commonProps.transactType === 1 || commonProps.transactType === 2)">
@@ -139,6 +140,7 @@
                 <option value="Grab">Grab</option>
                 <option value="Patreon">Patreon</option>
                 <option value="Gumroad">Gumroad</option>
+                <option value="Others">Others</option>
             </select>
             <input v-else type="text" class="form-control" v-model="commonProps.storeName">
           </div>
