@@ -38,12 +38,20 @@ import {
     newGCashBillsPayment,
     newGCashIncomeSale,
     newSelfBuyLoad,
+    newBankTransfer,
     newOnlineShopPay,
     newGCashAdjustment,
     newGCashSendMoney,
     newGCashRefund,
     newPayQr
 } from '../controllers/gcashController.js';
+
+// import {
+//     createSessionHandler,
+//     getSessionHandler,
+//     deleteSessionHandler,
+//   } from "./controllers/session.controller.ts";
+// import { requireUser } from "./middleware/requireUser";
 
 const router = express.Router();
 
@@ -73,6 +81,7 @@ router.post('/tr/new-gc-loadsale', newLoadSale);
 router.post('/tr/new-gc-billspay', newGCashBillsPayment);
 router.post('/tr/new-gc-income', newGCashIncomeSale);
 router.post('/tr/new-gc-selfbuyload', newSelfBuyLoad);
+router.post('/tr/new-gc-btr', newBankTransfer);
 router.post('/tr/new-gc-ol-shop-pay', newOnlineShopPay);
 router.post('/tr/new-gc-adjustment', newGCashAdjustment);
 router.post('/tr/new-gc-sendmoney', newGCashSendMoney);
@@ -86,5 +95,16 @@ router.post('/tr/new-cc-loan', newCcPromoLoan);
 router.post('/login', handlelogin);
 router.post('/signup', validateRegister, signUpUser);
 
+// function routes(app) {
+//     // login
+//     app.post("/api/session", createSessionHandler);
+//     // get the current session
+  
+//     app.get("/api/session", requireUser, getSessionHandler);
+//     // logout
+//     app.delete("/api/session", requireUser, deleteSessionHandler);
+// }
+
 export default router;
+// export {routes};
 

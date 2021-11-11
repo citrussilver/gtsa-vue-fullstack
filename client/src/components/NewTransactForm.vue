@@ -121,6 +121,12 @@
               </div>
             </div>
           </div>
+          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 6">
+            <label class="control-label white">Acct Name</label><br>
+            <input type="text" class="form-control" v-model="commonProps.acctName"/>
+            <label class="control-label white">Acct Number</label><br>
+            <input type="text" class="form-control" v-model="commonProps.acctNo"/>
+          </div>
           <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 7">
             <label class="control-label white">Online Service / Shop Website:</label>
             <select class="custom-select" v-model="commonProps.onlineShopWebsite">
@@ -239,6 +245,8 @@ export default {
           saBalance: 1,
           gcBalance: 1,
           receipientAcctNo: '',
+          acctName: '',
+          acctNo: '',
           amount: 1,
           term: 'Monthly',
           termPay: 1,
@@ -569,6 +577,27 @@ export default {
                 await axios.post(`${config.apiUrl}/tr/new-gc-selfbuyload`, newGCashData)
                 toast({
                   message: '[GCash] New Self Buy Load successfully posted to database',
+                  duration: 3000,
+                  type: 'is-warning',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 6) {
+              
+              newGCashData.acct_no = commonProps.acctNo
+              newGCashData.acct_name = commonProps.acctName
+
+              newGCashData.remarks = '[Bank Transfer] ' + newGCashData.remarks
+
+              try {
+                await axios.post(`${config.apiUrl}/tr/new-gc-btr`, newGCashData)
+                toast({
+                  message: '[GCash] New Bank Transfer successfully posted to database',
                   duration: 3000,
                   type: 'is-warning',
                   position: "top-center",

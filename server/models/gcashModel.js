@@ -160,6 +160,41 @@ export const insertSelfBuyLoad = (data, result) => {
     });
 }
 
+export const insertBankTransfer = (data, result) => {
+    dbConnection.query("INSERT INTO gcash_transactions SET ?", {
+        gcash_id: data.gcash_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        current_gcash_balance: data.current_gcash_balance,
+        amount: data.amount,
+        remarks: data.remarks
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const bank_transfer_data = {
+                gcash_transact_id: results.insertId,
+                date_time: data.date_time,
+                acct_no: data.acct_no,
+                acct_name: data.acct_name,
+                amount: data.amount,
+                remarks: data.remarks,
+            };
+
+            dbConnection.query("INSERT INTO gcash_send_to_bank SET ?", bank_transfer_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[GCash] New Bank Transfer successfully posted to database')
+                }
+            });
+        }
+    });
+}
+
 export const insertOnlineShopPay = (data, result) => {
     dbConnection.query("INSERT INTO gcash_transactions SET ?", {
         gcash_id: data.gcash_id,
