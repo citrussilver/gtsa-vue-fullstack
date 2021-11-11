@@ -1,9 +1,9 @@
-// import express
 import express from "express";
-// import cors
 import cors from "cors";
-// import routes
+//
+
 import Router from "./routes/routes.js";
+// import deserializeUser from "./middleware/deserializeUser";
 
 const app = express();
 //Middleware
@@ -11,8 +11,10 @@ const app = express();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json())
 
+// app.use(deserializeUser);
+
 let corsOpts = {
-    origin: ['http://localhost:5000', 'https://localhost:8080/gtsa/', 'http://192.168.1.26:8080/gtsa/' ],
+    origin: ['http://localhost:5000', 'https://localhost:8080/gtsa/', 'http://192.168.1.17:8080/gtsa/' ],
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
 }
@@ -25,3 +27,5 @@ const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log(`Server started on port ${port}`)
 });
+
+// routes(app);
