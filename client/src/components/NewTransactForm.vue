@@ -111,7 +111,7 @@
             <input type="text" class="form-control" v-model="commonProps.description"/>
           </div>
           <div class="form-group">
-            <label class="control-label white">{{ commonProps.transactType === 4 ? 'Sale / Income Received:' : 'Amount'}}</label>
+            <label class="control-label white">{{ (formDetails.componentId === 2 && commonProps.transactType === 4) ? 'Sale / Income Received:' : 'Amount'}}</label>
             <div class="form-group">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
