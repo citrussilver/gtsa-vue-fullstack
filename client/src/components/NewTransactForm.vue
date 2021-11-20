@@ -406,6 +406,24 @@ export default {
                 console.log(error)
               }
               //end of Bank Transactions
+            } else if(commonProps.transactType === 5) {
+
+              newBankData.receipient_acct_no = commonProps.receipientAcctNo
+
+              try {
+                await axios.post(`${config.apiUrl}/tr/new-sa-prepaid-reload`, newBankData)
+                toast({
+                  message: '[Savings Account] New Reload Prepaid successfully posted to database',
+                  duration: 3000,
+                  type: 'is-warning',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
             } else if(commonProps.transactType === 6) {
 
               newBankData.receipient_acct_no = commonProps.receipientAcctNo
