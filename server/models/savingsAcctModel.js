@@ -204,12 +204,36 @@ export const insertGCashCashIn = (data, result) => {
 }
 
 export const insertBankPrepaidReload = (data, result) => {
-    dbConnection.query("INSERT INTO bank_prepaid_reload SET ?", data, (err, results) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
+        bank_id: data.bank_id,
+        date_time: data.date_time,
+        bank_transact_type_id: data.bank_transact_type_id,
+        amount: data.amount,
+        current_balance: data.current_balance,
+        remarks: data.remarks,
+        location: data.location,
+    }, (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
         } else {
-            result(null, results);
+
+            const reload_prepaid_card_data = {
+                sa_transact_id: results.insertId,
+                date_time: data.date_time,
+                prepaid_card_id: 3,
+                amount: data.amount,
+            }
+
+            dbConnection.query("INSERT INTO bank_prepaid_reload SET ?", reload_prepaid_card_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[Savings Acct] Reload Prepaid Card successfully posted to database')
+                }
+            });
         }
     });
 }
