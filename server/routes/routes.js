@@ -33,6 +33,7 @@ import {
 import {
     showGCashAccts,
     showGCashTransacts,
+    filterRemarksGCashTransacts,
     showGCashCustomers,
     newLoadSale,
     newGCashBillsPayment,
@@ -64,6 +65,7 @@ router.get('/cc/tr', showCcTransacts);
 
 router.get('/gc/gc-accs', showGCashAccts);
 router.get('/gc/tr', showGCashTransacts);
+router.get('/gc/tr/:flStr', filterRemarksGCashTransacts);
 router.get('/gc/gc-custs', showGCashCustomers)
 
 router.post('/tr/new-sa-transaction', newSavingsAcctTransaction);

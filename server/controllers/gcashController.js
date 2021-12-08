@@ -1,6 +1,7 @@
 import {
     getGCashAccts,
     getGCashTransacts,
+    getFilterRemarksGCashTransacts,
     getGCashCustomers,
     insertLoadSale,
     insertGCashBillsPayment,
@@ -16,6 +17,18 @@ import {
 
 export const showGCashTransacts = (req, res) => {
     getGCashTransacts((err, results) => {
+        if(err){
+            res.send(err);
+        } else {
+            res.json(results);
+        }
+    });
+}
+
+export const filterRemarksGCashTransacts = (req, res) => {
+    let filterString = req.params.flStr;
+    let flStr = filterString.replace(':', '');
+    getFilterRemarksGCashTransacts(flStr, (err, results) => {
         if(err){
             res.send(err);
         } else {

@@ -1,7 +1,47 @@
 import dbConnection from '../config/database.js';
 
 export const getGCashTransacts = (result) => {
-    dbConnection.query('SELECT gcash_transact_id, date_time AS date_time_og, DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, gtt.description as transact_type, FORMAT(current_gcash_balance,2) AS current_gcash_balance, FORMAT(amount,2) AS amount, FORMAT(post_gcash_balance,2) AS post_gcash_balance, remarks FROM gcash_transactions gt JOIN gcash_transaction_type gtt ON gt.transact_type_id = gtt.transact_type_id ORDER BY date_time_og DESC LIMIT 20', (err, results) => {
+    dbConnection.query(
+        `SELECT gcash_transact_id, 
+        date_time AS date_time_og, 
+        DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, 
+        gtt.description as transact_type, 
+        FORMAT(current_gcash_balance,2) AS current_gcash_balance, 
+        FORMAT(amount,2) AS amount, 
+        FORMAT(post_gcash_balance,2) AS post_gcash_balance, 
+        remarks 
+        FROM gcash_transactions gt 
+        INNER JOIN gcash_transaction_type gtt ON gt.transact_type_id = gtt.transact_type_id 
+        ORDER BY date_time_og DESC LIMIT 20`, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            result(null, results);
+        }
+    })
+}
+
+export const getFilterRemarksGCashTransacts = (flStr, result) => {
+    // console.log(flStr);
+    dbConnection.query(
+        `SELECT gcash_transact_id, 
+        date_time AS date_time_og, 
+        DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, 
+        gtt.description as transact_type, 
+        FORMAT(current_gcash_balance,2) AS current_gcash_balance, 
+        FORMAT(amount,2) AS amount, 
+        FORMAT(post_gcash_balance,2) AS post_gcash_balance, 
+        remarks 
+        FROM gcash_transactions gt 
+        INNER JOIN gcash_transaction_type gtt 
+        ON gt.transact_type_id = gtt.transact_type_id 
+        WHERE remarks LIKE "%${flStr}%" 
+        UNION ALL SELECT "-", "-", "-", "Total", "-", FORMAT(SUM(amount),2), "-", "-" 
+        FROM gcash_transactions gt 
+        INNER JOIN gcash_transaction_type gtt 
+        ON gt.transact_type_id = gtt.transact_type_id  
+        WHERE remarks LIKE "%${flStr}%"`, (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);

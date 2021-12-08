@@ -4,7 +4,8 @@
     <div class="card border-success">
       <div class="card-header white">View Records</div>
       <div class="card-body">
-        <div class="form-group">
+        <div class="form-input-flex">
+          <div class="form-group">
             <select class="custom-select cselect-style" v-model="choice" @change="checkChoice(choice)">
                 <option value="0">-- Select a Source -- </option>
                 <option value="1">Savings Acct 1 Transactions</option>
@@ -12,6 +13,15 @@
                 <option value="3">GCash Transactions</option>
                 <option value="4">Credit Card Transactions</option>
             </select>
+          </div>
+          <div style="margin-left: 1rem;"></div>
+          <div class="form-input-flex" v-if="choice > 0">
+              <label class="control-label white" style="white-space: nowrap; margin-top: 0.5rem;">Search String</label><br>
+              <div style="margin-left: 1rem;"></div>
+              <input type="text" class="form-control" v-model="filterString"/>
+              <div style="margin-left: 1rem;"></div>
+              <div id="btn-container"><button class="btn btn-outline-success styled-button" @click="handleFilter">Submit</button></div>
+          </div>
         </div>
         <table id="table-style" v-if="choice == 1 || choice == 2">
             <thead>
@@ -97,13 +107,14 @@ import { ref} from 'vue'
 
 import { sa1Transacts, getSa1Transacts, sa2Transacts, getSa2Transacts } from '../composables/getSaTransacts'
 import { ccTransacts, getCcTransacts } from '../composables/getCcTransacts'
-import { gCashTransacts, getGCashTransacts } from '../composables/getGCashTransacts'
+import { gCashTransacts, getGCashTransacts, getFilterRemarksGCashTransacts } from '../composables/getGCashTransacts'
 
 export default {
 
     setup() {
 
       let choice = ref(0)
+      let filterString = ref('')
 
       const setMobileHeaders = (selector) => {
         const tableEl = document.querySelector(selector);
@@ -134,12 +145,29 @@ export default {
         }
       }
 
-      return { choice, checkChoice, sa1Transacts, sa2Transacts, gCashTransacts, ccTransacts, setMobileHeaders }
+      const handleFilter = () => {
+        console.log(filterString.value)
+        if(choice.value == 3) {
+          if(filterString.value) {
+            getFilterRemarksGCashTransacts(filterString.value)
+          } else {
+            alert('Please input something!')
+          }
+        } else {
+          alert('Sorry, the filter is currently a work in progress..')
+        }
+      }
+
+      return { choice, filterString, checkChoice, handleFilter, sa1Transacts, sa2Transacts, gCashTransacts, ccTransacts, setMobileHeaders }
     }
 }
 </script>
 
 <style scoped>
+
+.form-input-flex {
+  display: flex;  
+}
 
 #table-style {
   color: #fff;
