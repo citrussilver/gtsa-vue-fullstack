@@ -1,4 +1,7 @@
 import express from 'express';
+// import bcrypt from 'bcryptjs';
+// import uuid from 'uuid';
+// import jwt from 'jwt';
 
 import { handlelogin } from '../controllers/auth.js'
 
@@ -96,6 +99,10 @@ router.post('/tr/new-cc-loan', newCcPromoLoan);
 
 router.post('/login', handlelogin);
 router.post('/signup', validateRegister, signUpUser);
+
+// router.get('/secret-route', (req, res, next) => {
+//     res.send('This is the secret content. Only logged in users can see that!');
+// });
 
 // function routes(app) {
 //     // login

@@ -18,7 +18,7 @@ export const getGCashInfo = async () => {
       return res.json()
     })
     .then(data => {
-      console.log(data)
+      //console.log(data)
       gCashAccts.value = [...data]
       gCash1Nick.value = data[0].account_nick
       gCash1Bal.value = data[0].balance

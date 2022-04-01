@@ -117,7 +117,7 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">₱</span>
                 </div>
-                <input type="number" class="form-control" min="1" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="commonProps.amount" required>
+                <input type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="commonProps.amount" required>
               </div>
             </div>
           </div>
@@ -130,11 +130,13 @@
           <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 7">
             <label class="control-label white">Online Service / Shop Website:</label>
             <select class="custom-select" v-model="commonProps.onlineShopWebsite">
+                <option value="Steam">Steam</option>
                 <option value="Shopee">Shopee Pay Top-up</option>
                 <option value="Lazada">Lazada Wallet Top-up</option>
                 <option value="Google Play">Google Play</option>
                 <option value="GrabPay">GrabPay</option>
                 <option value="Youtube Membership">Youtube Membership</option>
+                <option value="Twitch Membership">Twitch Membership</option>
               </select>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 3 && (commonProps.transactType === 1 || commonProps.transactType === 2)">
@@ -261,7 +263,7 @@ export default {
           message: '',
           attachment: 'Photo',
           location: 'Select'
-          }
+        }
       )
 
       let ccProps = reactive(
@@ -505,6 +507,8 @@ export default {
               amount: commonProps.amount,
               remarks: commonProps.remarks
             }
+
+
 
             if(commonProps.transactType === 1) {
               newGCashData.customer_id = commonProps.customer
