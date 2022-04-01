@@ -9,12 +9,9 @@ export let aniQuote = reactive(
 )
 
 export const generateAniQuote = async () => {
-    await fetch('https://animechan.vercel.app/api/random')
-    .then((response) => response.json())
-    .then((quote) => {
-        aniQuote.quote = quote.quote
-        aniQuote.character = quote.character
-        aniQuote.anime = quote.anime;
-    })
-    .catch(error => console.log(error))
+    const response = await fetch('https://animechan.vercel.app/api/random')
+    const data = await response.json()
+    aniQuote.quote = data.quote
+    aniQuote.character = data.character
+    aniQuote.anime = data.anime;
 }
