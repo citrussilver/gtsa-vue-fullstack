@@ -30,6 +30,7 @@ export default {
           { val: 7, title: 'Adjustment' },
           { val: 8, title: 'Earn Interest' },
           { val: 9, title: 'Tax Withheld' },
+          { val: 10, title: 'Salary / Income' },
         ],
       }
     )

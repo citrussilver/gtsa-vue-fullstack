@@ -10,7 +10,8 @@ import {
     insertTransferMoney,
     insertAdjustment,
     insertEarnInterest,
-    insertTaxWithheld
+    insertTaxWithheld,
+    insertSalaryIncome
 } from '../models/savingsAcctModel.js';
 
 // Get All Savings Acct Transactions
@@ -147,6 +148,17 @@ export const newEarnInterest = (req, res) => {
 export const newTaxWithheld = (req, res) => {
     const data = req.body;
     insertTaxWithheld(data, (err, results) => {
+        if (err){
+            res.send(err);
+        }else{
+            res.json(results);
+        }
+    });
+}
+
+export const newSalaryIncome = (req, res) => {
+    const data = req.body;
+    insertSalaryIncome(data, (err, results) => {
         if (err){
             res.send(err);
         }else{

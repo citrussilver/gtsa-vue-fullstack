@@ -22,7 +22,8 @@ import {
     newTransferMoney,
     newAdjustment,
     newEarnInterest,
-    newTaxWithheld
+    newTaxWithheld,
+    newSalaryIncome
 } from '../controllers/savingsAcctController.js';
 
 import {
@@ -81,6 +82,7 @@ router.post('/tr/new-sa-transfer-money', newTransferMoney);
 router.post('/tr/new-sa-adjustment', newAdjustment);
 router.post('/tr/new-sa-ei', newEarnInterest);
 router.post('/tr/new-sa-tw', newTaxWithheld);
+router.post('/tr/new-sa-inc', newSalaryIncome);
 
 router.post('/tr/new-gc-loadsale', newLoadSale);
 router.post('/tr/new-gc-billspay', newGCashBillsPayment);

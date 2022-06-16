@@ -383,3 +383,37 @@ export const insertTaxWithheld = (data, result) => {
         }
     });
 }
+
+export const insertSalaryIncome = (data, result) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
+        bank_id: data.bank_id,
+        date_time: data.date_time,
+        bank_transact_type_id: data.bank_transact_type_id,
+        amount: data.amount,
+        current_balance: data.current_balance,
+        remarks: data.remarks,
+        location: data.location,
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const sa_income_data = {
+                sa_transact_id: results.insertId,
+                date_time: data.date_time,
+                amount: data.amount,
+                description: data.remarks
+            };
+
+            dbConnection.query("INSERT INTO bank_income SET ?", sa_income_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[Savings Acct] New Salary / Income successfully posted to database')
+                }
+            })
+        }
+    })
+}
