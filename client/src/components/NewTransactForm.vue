@@ -137,6 +137,7 @@
                 <option value="GrabPay">GrabPay</option>
                 <option value="Youtube Membership">Youtube Membership</option>
                 <option value="Twitch Membership">Twitch Membership</option>
+                <option value="OF Subscription">OF Subscription</option>
               </select>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 3 && (commonProps.transactType === 1 || commonProps.transactType === 2)">
@@ -315,7 +316,6 @@ export default {
         }
 
         if(flag === 'tt') {
-          console.log(val)
           commonProps.transactType = val
         }
       }
@@ -391,7 +391,6 @@ export default {
 
               newBankData.gcash_id = commonProps.gCashId
               newBankData.remarks = '[GCash Cash-in]' + commonProps.remarks
-              console.log('entered transactType === 4')
 
               try {
                 await axios.post(`${config.apiUrl}/tr/new-sa-gc-ci`, newBankData)
@@ -447,7 +446,7 @@ export default {
             } else if(commonProps.transactType === 7) {
 
               // Adjustment
-
+              // properties are manually added which are unique only to this transaction
               newBankData.credit = commonProps.credit
               newBankData.remarks = '[Adjustment] ' + newBankData.remarks
 
@@ -481,11 +480,27 @@ export default {
                 console.log(error)
               }
             }  else if(commonProps.transactType === 9) {
-              console.log('entered 9 transaction type')
               try {
                 await axios.post(`${config.apiUrl}/tr/new-sa-tw`, newBankData)
                 toast({
                   message: '[Savings Account] New Tax Witheld successfully posted to database',
+                  duration: 3000,
+                  type: 'is-warning',
+                  position: "top-center",
+                  dismissible: true,
+                  pauseOnHover: true,
+                  closeOnClick: true
+                })
+              } catch (error) {
+                console.log(error)
+              }
+            } else if(commonProps.transactType === 10) {
+              // Salary / Income
+              
+              try {
+                await axios.post(`${config.apiUrl}/tr/new-sa-inc`, newBankData)
+                toast({
+                  message: '[Savings Account] New Salary / Income successfully posted to database',
                   duration: 3000,
                   type: 'is-warning',
                   position: "top-center",
@@ -507,9 +522,7 @@ export default {
               amount: commonProps.amount,
               remarks: commonProps.remarks
             }
-
-
-
+            
             if(commonProps.transactType === 1) {
               newGCashData.customer_id = commonProps.customer
               newGCashData.mobile_number = commonProps.mobileNo
