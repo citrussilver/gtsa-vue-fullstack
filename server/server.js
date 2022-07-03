@@ -14,7 +14,7 @@ app.use(express.json())
 // app.use(deserializeUser);
 
 let corsOpts = {
-    origin: ['https://localhost:8080/gtsa/', 'http://192.168.0.188:8080/gtsa/', 'http://192.168.1.12:8080/gtsa/' ],
+    origin: '*',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
 }
