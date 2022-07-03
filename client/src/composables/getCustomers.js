@@ -5,7 +5,7 @@ export let customers = ref([])
 
 export const getCustomers = async () => {
 
-    await fetch(`${config.apiUrl}/gc/gc-custs`, {
+    await fetch(`${config.apiUrl}/gcash/get-gcash-customers`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {

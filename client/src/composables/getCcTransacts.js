@@ -5,7 +5,7 @@ export let ccTransacts = ref([])
 
 export const getCcTransacts = async () => {
 
-    await fetch(`${config.apiUrl}/cc/tr`, {
+    await fetch(`${config.apiUrl}/cc/get-cc-transacts`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {
