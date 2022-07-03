@@ -6,7 +6,7 @@ export let sa2Transacts = ref([])
 
 export const getSa1Transacts = async () => {
 
-    await fetch(`${config.apiUrl}/sa1/tr`, {
+    await fetch(`${config.apiUrl}/sa/get-sa1-transactions`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {
@@ -23,7 +23,7 @@ export const getSa1Transacts = async () => {
 
 export const getSa2Transacts = async () => {
 
-    await fetch(`${config.apiUrl}/sa2/tr`, {
+    await fetch(`${config.apiUrl}/sa/get-sa2-transactions`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {

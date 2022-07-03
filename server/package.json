@@ -6,6 +6,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server/server.js",
+    "devt": "nodemon server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -16,10 +17,11 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "mariadb": "^2.5.5",
     "mysql2": "^2.2.5",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.14"
+    "nodemon": "^2.0.16"
   }
 }

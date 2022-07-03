@@ -129,7 +129,7 @@ export default {
       }
 
       const checkChoice = (val) => {
-        console.log(val)
+        // console.log(val)
         if(val == 1) {
             getSa1Transacts()
             //setMobileHeaders("#table-style")

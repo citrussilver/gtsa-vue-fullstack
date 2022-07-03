@@ -48,7 +48,8 @@ import {
     newGCashAdjustment,
     newGCashSendMoney,
     newGCashRefund,
-    newPayQr
+    newPayQr,
+    newReceivedMoney
 } from '../controllers/gcashController.js';
 
 // import {
@@ -60,44 +61,45 @@ import {
 
 const router = express.Router();
 
-router.get('/sa/sa-accs', showAllSavingsAccs);
-router.get('/sa1/tr', showSa1Transacts);
-router.get('/sa2/tr', showSa2Transacts);
+router.get('/api/sa/get-sa-accounts', showAllSavingsAccs);
+router.get('/api/sa/get-sa1-transactions', showSa1Transacts);
+router.get('/api/sa/get-sa2-transactions', showSa2Transacts);
 
-router.get('/cc/cc-accs', showAllCcs);
-router.get('/cc/tr', showCcTransacts);
+router.get('/api/cc/get-cc-accounts', showAllCcs);
+router.get('/api/cc/get-cc-transacts', showCcTransacts);
 
-router.get('/gc/gc-accs', showGCashAccts);
-router.get('/gc/tr', showGCashTransacts);
-router.get('/gc/tr/:flStr', filterRemarksGCashTransacts);
-router.get('/gc/gc-custs', showGCashCustomers)
+router.get('/api/gcash/get-gcash-accounts', showGCashAccts);
+router.get('/api/gcash/get-gcash-transactions', showGCashTransacts);
+router.get('/api/gcash/get-gcash-transactions:flStr', filterRemarksGCashTransacts);
+router.get('/api/gcash/get-gcash-customers', showGCashCustomers)
 
-router.post('/tr/new-sa-transaction', newSavingsAcctTransaction);
-router.post('/tr/new-sa-depo', newBankCashDeposit);
-router.post('/tr/new-sa-wdraw', newBankCashWithdraw);
-router.post('/tr/new-sa-billspay', newBankBillsPayment);
-router.post('/tr/new-sa-gc-ci', newGCashCashIn);
-router.post('/tr/new-sa-prepaid-reload', newBankPrepaidReload);
-router.post('/tr/new-sa-transfer-money', newTransferMoney);
-router.post('/tr/new-sa-adjustment', newAdjustment);
-router.post('/tr/new-sa-ei', newEarnInterest);
-router.post('/tr/new-sa-tw', newTaxWithheld);
-router.post('/tr/new-sa-inc', newSalaryIncome);
+router.post('/api/new-sa-transaction', newSavingsAcctTransaction);
+router.post('/api/sa/save-sa-depo', newBankCashDeposit);
+router.post('/api/sa/save-sa-wdraw', newBankCashWithdraw);
+router.post('/api/sa/save-sa-billspay', newBankBillsPayment);
+router.post('/api/sa/save-gc-cash-in', newGCashCashIn);
+router.post('/api/sa/save-sa-prepaid-reload', newBankPrepaidReload);
+router.post('/api/sa/save-sa-transfer-money', newTransferMoney);
+router.post('/api/sa/save-sa-adjustment', newAdjustment);
+router.post('/api/sa/save-sa-earn-interest', newEarnInterest);
+router.post('/api/sa/save-sa-taxwh', newTaxWithheld);
+router.post('/api/sa/save-sa-sale-income', newSalaryIncome);
 
-router.post('/tr/new-gc-loadsale', newLoadSale);
-router.post('/tr/new-gc-billspay', newGCashBillsPayment);
-router.post('/tr/new-gc-income', newGCashIncomeSale);
-router.post('/tr/new-gc-selfbuyload', newSelfBuyLoad);
-router.post('/tr/new-gc-btr', newBankTransfer);
-router.post('/tr/new-gc-ol-shop-pay', newOnlineShopPay);
-router.post('/tr/new-gc-adjustment', newGCashAdjustment);
-router.post('/tr/new-gc-sendmoney', newGCashSendMoney);
-router.post('/tr/new-gc-refund', newGCashRefund);
-router.post('/tr/new-gc-pay-qr', newPayQr);
+router.post('/api/gcash/save-loadsale', newLoadSale);
+router.post('/api/gcash/save-gc-billspay', newGCashBillsPayment);
+router.post('/api/gcash/save-gc-income', newGCashIncomeSale);
+router.post('/api/gcash/save-selfbuyload', newSelfBuyLoad);
+router.post('/api/gcash/save-gc-banktransfer', newBankTransfer);
+router.post('/api/gcash/save-ol-shop-pay', newOnlineShopPay);
+router.post('/api/gcash/save-gc-adjustment', newGCashAdjustment);
+router.post('/api/gcash/save-gc-sendmoney', newGCashSendMoney);
+router.post('/api/gcash/save-gc-refund', newGCashRefund);
+router.post('/api/gcash/save-pay-qr', newPayQr);
+router.post('/api/gcash/save-received-money', newReceivedMoney);
 
-router.post('/tr/new-cc-op', newCcOnlinePay);
-router.post('/tr/new-cc-nop', newCcNonOnlinePay);
-router.post('/tr/new-cc-loan', newCcPromoLoan);
+router.post('/api/cc/save-cc-op', newCcOnlinePay);
+router.post('/api/cc/save-cc-nop', newCcNonOnlinePay);
+router.post('/api/cc/save-cc-loan', newCcPromoLoan);
 
 router.post('/login', handlelogin);
 router.post('/signup', validateRegister, signUpUser);

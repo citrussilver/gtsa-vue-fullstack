@@ -8,7 +8,7 @@ export let gCash1BalWc = ref(0)
 
 export const getGCashInfo = async () => {
   
-    await fetch(`${config.apiUrl}/gc/gc-accs`, {
+    await fetch(`${config.apiUrl}/gcash/get-gcash-accounts`, {
       method: 'GET',
       body: JSON.stringify(),
       headers: {

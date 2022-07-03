@@ -12,7 +12,8 @@ import {
     insertGCashAdjustment,
     insertGCashSendMoney,
     insertGCashRefund,
-    insertPayQr
+    insertPayQr,
+    insertGCashReceivedMoney
 } from '../models/gcashModel.js'
 
 export const showGCashTransacts = (req, res) => {
@@ -159,10 +160,21 @@ export const newGCashRefund = (req, res) => {
 export const newPayQr = (req, res) => {
     const data = req.body;
     insertPayQr(data, (err, results) => {
-    if (err){
-        res.send(err);
-    } else{
-        res.json(results);
-    }
-});
+        if (err){
+            res.send(err);
+        } else{
+            res.json(results);
+        }
+    });
+}
+
+export const newReceivedMoney = (req, res) => {
+    const data = req.body;
+    insertGCashReceivedMoney(data, (err, results) => {
+        if (err){
+            res.send(err);
+        } else{
+            res.json(results);
+        }
+    });
 }

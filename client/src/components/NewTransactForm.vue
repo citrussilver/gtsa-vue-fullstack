@@ -134,6 +134,7 @@
                 <option value="Shopee">Shopee Pay Top-up</option>
                 <option value="Lazada">Lazada Wallet Top-up</option>
                 <option value="Google Play">Google Play</option>
+                <option value="Food Panda PH">Food Panda</option>
                 <option value="GrabPay">GrabPay</option>
                 <option value="Youtube Membership">Youtube Membership</option>
                 <option value="Twitch Membership">Twitch Membership</option>
@@ -306,7 +307,7 @@ export default {
       }
       
       const trackSelection = (val, flag) => {
-        console.log(val, flag)
+        // console.log(val, flag)
         if(flag === 'sa') {
           setSavingsAcc(val)
         }
@@ -322,6 +323,25 @@ export default {
 
       const digitOnlyInput = (event) => {
         return event.charCode >= 48 && event.charCode <= 57
+      }
+
+      const handleAxios = async (route, objData, type, specific) => {
+        await axios.post(`${route}`, objData)
+        .then(response => {
+
+          toast({
+            message: `[${type}] New ${specific} successfully posted to database`,
+            duration: 3000,
+            type: 'is-warning',
+            position: "top-center",
+            dismissible: true,
+            pauseOnHover: true,
+            closeOnClick: true
+          })
+        })
+        .catch(err => {
+          console.log(err);
+        })
       }
 
       const handleSubmit = async () => {
@@ -343,106 +363,36 @@ export default {
             console.log(newBankData)
             
             if(commonProps.transactType === 1) {
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-sa-depo`, newBankData)
-                toast({
-                  message: '[Savings Account] New Cash Deposit successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+
+              handleAxios(`${config.apiUrl}/sa/save-sa-depo`, newBankData, 'Savings Account', 'Cash Deposit')
+
             } else if(commonProps.transactType === 2) {
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-sa-wdraw`, newBankData)
-                toast({
-                  message: '[Savings Account] New Cash Withdraw successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+
+              handleAxios(`${config.apiUrl}/sa/save-sa-wdraw`, newBankData, 'Savings Account', 'Cash Withdraw')
+
             } else if(commonProps.transactType === 3) {
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-sa-billspay`, newBankData)
-                toast({
-                  message: '[Savings Account] New Bills Payment successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+
+              handleAxios(`${config.apiUrl}/sa/save-sa-billspay`, newBankData, 'Savings Account', 'Bills Payment')
+
             } else if(commonProps.transactType === 4) {
 
               newBankData.gcash_id = commonProps.gCashId
               newBankData.remarks = '[GCash Cash-in]' + commonProps.remarks
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-sa-gc-ci`, newBankData)
-                toast({
-                  message: '[Savings Account] New GCash Cash-in successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
-              //end of Bank Transactions
+              handleAxios(`${config.apiUrl}/sa/save-gc-cash-in`, newBankData, 'Savings Account', 'GCash Cash-in')
+
             } else if(commonProps.transactType === 5) {
 
               newBankData.receipient_acct_no = commonProps.receipientAcctNo
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-sa-prepaid-reload`, newBankData)
-                toast({
-                  message: '[Savings Account] New Reload Prepaid successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              handleAxios(`${config.apiUrl}/sa/save-sa-prepaid-reload`, newBankData, 'Savings Account', 'Reload Prepaid')
+
             } else if(commonProps.transactType === 6) {
 
               newBankData.receipient_acct_no = commonProps.receipientAcctNo
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-sa-transfer-money`, newBankData)
-                toast({
-                  message: '[Savings Account] New Transfer Money successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              handleAxios(`${config.apiUrl}/sa/save-sa-transfer-money`, newBankData, 'Savings Account', 'Transfer Money')
+
             } else if(commonProps.transactType === 7) {
 
               // Adjustment
@@ -450,67 +400,21 @@ export default {
               newBankData.credit = commonProps.credit
               newBankData.remarks = '[Adjustment] ' + newBankData.remarks
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-sa-adjustment`, newBankData)
-                toast({
-                  message: '[Savings Account] New Adjustment successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              handleAxios(`${config.apiUrl}/sa/save-sa-adjustment`, newBankData, 'Savings Account', 'Adjustment')
+
             } else if(commonProps.transactType === 8) {
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-sa-ei`, newBankData)
-                toast({
-                  message: '[Savings Account] New Earn Interest successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+
+              handleAxios(`${config.apiUrl}/sa/save-sa-earn-interest`, newBankData, 'Savings Account', 'Earn Interest')
+
             }  else if(commonProps.transactType === 9) {
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-sa-tw`, newBankData)
-                toast({
-                  message: '[Savings Account] New Tax Witheld successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+
+              handleAxios(`${config.apiUrl}/sa/save-sa-taxwh`, newBankData, 'Savings Account', 'Tax Witheld')
+
             } else if(commonProps.transactType === 10) {
               // Salary / Income
+
+              handleAxios(`${config.apiUrl}/sa/save-sa-sale-income`, newBankData, 'Savings Account', 'Salary / Income')
               
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-sa-inc`, newBankData)
-                toast({
-                  message: '[Savings Account] New Salary / Income successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
             }
           } else if(props.formDetails.componentId === 2) {
 
@@ -531,76 +435,21 @@ export default {
                 newGCashData.payment_date = null
               }
               newGCashData.remarks = '[Load Sale] ' + newGCashData.remarks
+              
+              handleAxios(`${config.apiUrl}/gcash/save-loadsale`, newGCashData, 'GCash', 'Load Sale')
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-gc-loadsale`, newGCashData)
-                toast({
-                  message: '[GCash] New Load Sale successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
-
-            } else if(commonProps.transactType === 2) {
-
-              newGCashData.remarks = '[Cash-In] ' + newGCashData.remarks
-
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-gc-cash-in`, newGCashData)
-                toast({
-                  message: '[GCash] New Cash-in successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
             } else if(commonProps.transactType === 3) {
               
               newGCashData.remarks = '[Bills Payment] ' + newGCashData.remarks
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-gc-billspay`, newGCashData)
-                toast({
-                  message: '[GCash] New Bills payment successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              handleAxios(`${config.apiUrl}/gcash/save-gc-billspay`, newGCashData, 'GCash', 'Bills payment')
+
             } else if(commonProps.transactType === 4) {
 
               newGCashData.remarks = '[Sale / Income] ' + newGCashData.remarks
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-gc-income`, newGCashData)
-                toast({
-                  message: '[GCash] New Sale / Income successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              handleAxios(`${config.apiUrl}/gcash/save-gc-income`, newGCashData, 'GCash', 'New Sale / Income')
+
             } else if(commonProps.transactType === 5) {
               
               newGCashData.mobile_number = commonProps.mobileNo
@@ -608,20 +457,8 @@ export default {
 
               newGCashData.remarks = '[Self Buy Load] ' + newGCashData.remarks
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-gc-selfbuyload`, newGCashData)
-                toast({
-                  message: '[GCash] New Self Buy Load successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              handleAxios(`${config.apiUrl}/gcash/save-selfbuyload`, newGCashData, 'GCash', 'Self Buy Load')
+
             } else if(commonProps.transactType === 6) {
               
               newGCashData.acct_no = commonProps.acctNo
@@ -629,58 +466,22 @@ export default {
 
               newGCashData.remarks = '[Bank Transfer] ' + newGCashData.remarks
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-gc-btr`, newGCashData)
-                toast({
-                  message: '[GCash] New Bank Transfer successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              handleAxios(`${config.apiUrl}/gcash/save-gc-banktransfer`, newGCashData, 'GCash', 'Bank Transfer')
+
             } else if(commonProps.transactType === 7) {
               
               newGCashData.online_shop_website = commonProps.onlineShopWebsite
               newGCashData.remarks = '[Online Payment] ' + newGCashData.remarks
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-gc-ol-shop-pay`, newGCashData)
-                toast({
-                  message: '[GCash] New Online Payment successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              handleAxios(`${config.apiUrl}/gcash/save-ol-shop-pay`, newGCashData, 'GCash', 'Online Payment')
+
             } else if(commonProps.transactType === 8) {
 
               newGCashData.credit = commonProps.credit
               newGCashData.remarks = '[Adjustment] ' + newGCashData.remarks
+
+              handleAxios(`${config.apiUrl}/gcash/save-gc-adjustment`, newGCashData, 'GCash', 'New Adjustment')
               
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-gc-adjustment`, newGCashData)
-                toast({
-                  message: '[GCash] New Adjustment successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
             } else if(commonProps.transactType === 9) {
 
               newGCashData.mobile_number = commonProps.mobileNo
@@ -705,58 +506,27 @@ export default {
               
               newGCashData.remarks = `[${newGCashData.type}] ${newGCashData.remarks}`
               console.log(newGCashData.remarks)
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-gc-sendmoney`, newGCashData)
-                toast({
-                  message: '[GCash] New Send Money successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+
+              handleAxios(`${config.apiUrl}/gcash/save-gc-sendmoney`, newGCashData, 'GCash', 'Send Money')
+
             } else if(commonProps.transactType === 10) {
 
               newGCashData.remarks = '[Refund] ' + newGCashData.remarks
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-gc-refund`, newGCashData)
-                toast({
-                  message: '[GCash] New Refund successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              handleAxios(`${config.apiUrl}/gcash/save-gc-refund`, newGCashData, 'GCash', 'Refund')
+
             } else if(commonProps.transactType === 11) {
 
               newGCashData.store_name = commonProps.storeName
               newGCashData.description = '[Pay QR] ' + commonProps.description
               newGCashData.remarks = newGCashData.description
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-gc-pay-qr`, newGCashData)
-                toast({
-                  message: '[GCash] New Pay QR successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              handleAxios(`${config.apiUrl}/gcash/save-pay-qr`, newGCashData, 'GCash', 'Pay QR')
+
+            } else if (commonProps.transactType === 12) {
+              newGCashData.remarks = '[Received Money] ' + newGCashData.remarks
+
+              handleAxios(`${config.apiUrl}/gcash/save-received-money`, newGCashData, 'GCash', 'Received Money')
             }
           } else if(props.formDetails.componentId === 3) {
             let newCCData = {
@@ -772,38 +542,14 @@ export default {
               newCCData.online_shop_website = commonProps.onlineShopWebsite
               newCCData.remarks = '[Online Payment] ' + newCCData.remarks
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-cc-op`, newCCData)
-                toast({
-                  message: '[Credit Card] New Online Payment successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              handleAxios(`${config.apiUrl}/cc/save-cc-op`, newCCData, 'Credit Card', 'Online Payment')
+
             } else if (commonProps.transactType === 2){
               newCCData.store_name = commonProps.storeName
               newCCData.remarks = '[Non-Online Payment] ' + newCCData.remarks
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-cc-nop`, newCCData)
-                toast({
-                  message: '[Credit Card] New Non-Online Payment successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              handleAxios(`${config.apiUrl}/cc/new-cc-nop`, newCCData, 'Credit Card', 'Non-Online Payment')
+
             } else {
               if(!newCCData.description) {
                 newCCData.description =  '[Credit-to-Cash Promo Loan]'
@@ -814,20 +560,7 @@ export default {
               newCCData.term = commonProps.term
               newCCData.term_pay = commonProps.termPay
 
-              try {
-                await axios.post(`${config.apiUrl}/tr/new-cc-loan`, newCCData)
-                toast({
-                  message: '[Credit Card] New Credit-to-Cash Loan successfully posted to database',
-                  duration: 3000,
-                  type: 'is-warning',
-                  position: "top-center",
-                  dismissible: true,
-                  pauseOnHover: true,
-                  closeOnClick: true
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              handleAxios(`${config.apiUrl}/cc/save-cc-loan`, newCCData, 'Credit Card', 'Credit-to-Cash Loan')
 
             }
           }
