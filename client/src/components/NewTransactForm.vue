@@ -526,7 +526,7 @@ export default {
             } else if (commonProps.transactType === 12) {
               newGCashData.remarks = '[Received Money] ' + newGCashData.remarks
 
-              handleAxios(`${config.apiUrl}/gcash/save-received-money`, newGCashData, 'GCash', 'Received Money')
+              handleAxios('/gcash/save-received-money', newGCashData, 'GCash', 'Received Money')
             }
           } else if(props.formDetails.componentId === 3) {
             let newCCData = {
