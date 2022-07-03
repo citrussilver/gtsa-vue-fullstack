@@ -19,7 +19,7 @@
 
 <script>
 import { ref } from 'vue'
-import Sidebar from '../Sidebar'
+import Sidebar from '../Sidebar.vue'
 import Navbar from '../Navbar.vue'
 
 export default {

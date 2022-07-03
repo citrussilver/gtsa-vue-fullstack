@@ -1,4 +1,4 @@
 export default {
-    apiUrl: 'http://192.168.0.188:8080/api'
+    apiUrl: 'http://localhost:5000/api'
     // apiUrl: 'http://192.168.1.12:8080'
 }
