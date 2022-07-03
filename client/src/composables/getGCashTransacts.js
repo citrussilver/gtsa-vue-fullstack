@@ -6,7 +6,7 @@ export let filterRemarksGCashTransacts = ref([])
 
 export const getGCashTransacts = async () => {
 
-    await fetch(`${config.apiUrl}/gc/tr`, {
+    await fetch(`${config.apiUrl}/gcash/get-gcash-transactions`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {
@@ -23,7 +23,7 @@ export const getGCashTransacts = async () => {
 
 export const getFilterRemarksGCashTransacts = async (param) => {
     gCashTransacts.value = [];
-    await fetch(`${config.apiUrl}/gc/tr/:${param}`, {
+    await fetch(`${config.apiUrl}/gcash/get-gcash-transactions:${param}`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {

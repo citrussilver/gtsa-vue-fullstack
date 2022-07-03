@@ -21,7 +21,6 @@ export default {
         transactType: [
           { val: 0, title: '-- Select Transaction Type --' },
           { val: 1, title: 'Load Sale' },
-          { val: 2, title: 'Cash-in' },
           { val: 3, title: 'Bills Payment' },
           { val: 4, title: 'Income / Sale' },
           { val: 5, title: 'Self Buy Load' },
@@ -31,6 +30,7 @@ export default {
           { val: 9, title: 'Send Money' },
           { val: 10, title: 'Refund' },
           { val: 11, title: 'Pay QR' },
+          { val: 12, title: 'Receive Money' },
         ],
       }
     )

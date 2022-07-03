@@ -402,3 +402,29 @@ export const insertPayQr = (data, result) => {
         }
     });
 }
+
+export const insertGCashReceivedMoney = (data, result) => {
+    dbConnection.query("INSERT INTO gcash_transactions SET ?", data, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const received_money_data = {
+                gcash_transact_id: results.insertId,
+                date_time: data.date_time,
+                amount: data.amount,
+                description: data.remarks
+            };
+
+            dbConnection.query("INSERT INTO gcash_received_money SET ?", received_money_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[GCash] New Received money successfully posted to database')
+                }
+            });
+        }
+    });
+}

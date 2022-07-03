@@ -7,7 +7,7 @@ export let cc1AvailCreditLimit = ref(0)
 
 export const getCreditCards = async () => {
 
-    await fetch(`${config.apiUrl}/cc/cc-accs`, {
+    await fetch(`${config.apiUrl}/cc/get-cc-accounts`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {

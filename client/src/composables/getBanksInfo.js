@@ -5,7 +5,7 @@ export let savingsAccs = ref([])
 
 export const getSavingsAccs = async () => {
 
-    await fetch(`${config.apiUrl}/sa/sa-accs`, {
+    await fetch(`${config.apiUrl}/sa/get-sa-accounts`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {
