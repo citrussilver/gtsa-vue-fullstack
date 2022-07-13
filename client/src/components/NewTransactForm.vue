@@ -284,7 +284,7 @@ export default {
       const setSavingsAcc = (val) => {
         let index = ref(0)
         index.value = val-1
-        console.log(commonProps.bankId)
+        // console.log(commonProps.bankId)
         commonProps.saBalance = savingsAccs.value[index.value].balance
         if(val === 1) {
           commonProps.location = 'BPI App'
@@ -298,7 +298,7 @@ export default {
         index.value = val-1
         console.log(creditCards.value[index.value].avail_credit_limit)
         ccProps.ccId = creditCards.value[index.value].credit_card_id
-        console.log('cc id is ' + ccProps.ccId)
+        // console.log('cc id is ' + ccProps.ccId)
         ccProps.availCreditLimit = creditCards.value[index.value].avail_credit_limit
       }
 
