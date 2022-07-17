@@ -230,9 +230,15 @@ import { savingsAccs, getSavingsAccs } from '../composables/getBanksInfo.js'
 import { creditCards, getCreditCards  } from '../composables/getCcsInfo.js'
 import { customers, getCustomers } from '../composables/getCustomers.js'
 
+import { confirm } from '../ts/dialogs.ts'
+
 export default {
     props: ['formDetails'],
     setup(props) {
+
+      let axiosReqConfirmed = ref(false)
+
+      console.log(axiosReqConfirmed.value)
 
       let commonProps = reactive(
         {
@@ -326,22 +332,37 @@ export default {
       }
 
       const handleAxios = async (route, objData, type, specific) => {
-        await axios.post(`${route}`, objData)
-        .then(response => {
 
-          toast({
-            message: `[${type}] New ${specific} successfully posted to database`,
-            duration: 3000,
-            type: 'is-warning',
-            position: "top-center",
-            dismissible: true,
-            pauseOnHover: true,
-            closeOnClick: true
-          })
-        })
-        .catch(err => {
-          console.log(err);
-        })
+          const res = await confirm(`Are you sure to save this ${specific} entry?`);
+
+          if (res) {
+
+            console.log('YES')
+            
+            await axios.post(`${route}`, objData)
+            .then(response => {
+    
+              toast({
+                message: `[${type}] New ${specific} successfully posted to database`,
+                duration: 3000,
+                type: 'is-warning',
+                position: "top-center",
+                dismissible: true,
+                pauseOnHover: true,
+                closeOnClick: true
+              })
+            })
+            .catch(err => {
+              console.log(err);
+            })
+  
+
+          } else {
+            console.log('NO')
+          }
+
+          return res
+
       }
 
       const handleSubmit = async () => {
@@ -364,34 +385,34 @@ export default {
             
             if(commonProps.transactType === 1) {
 
-              handleAxios(`${config.apiUrl}/sa/save-sa-depo`, newBankData, 'Savings Account', 'Cash Deposit')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-depo`, newBankData, 'Savings Account', 'Cash Deposit')
 
             } else if(commonProps.transactType === 2) {
 
-              handleAxios(`${config.apiUrl}/sa/save-sa-wdraw`, newBankData, 'Savings Account', 'Cash Withdraw')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-wdraw`, newBankData, 'Savings Account', 'Cash Withdraw')
 
             } else if(commonProps.transactType === 3) {
 
-              handleAxios(`${config.apiUrl}/sa/save-sa-billspay`, newBankData, 'Savings Account', 'Bills Payment')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-billspay`, newBankData, 'Savings Account', 'Bills Payment')
 
             } else if(commonProps.transactType === 4) {
 
               newBankData.gcash_id = commonProps.gCashId
               newBankData.remarks = '[GCash Cash-in]' + commonProps.remarks
 
-              handleAxios(`${config.apiUrl}/sa/save-gc-cash-in`, newBankData, 'Savings Account', 'GCash Cash-in')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-gc-cash-in`, newBankData, 'Savings Account', 'GCash Cash-in')
 
             } else if(commonProps.transactType === 5) {
 
               newBankData.receipient_acct_no = commonProps.receipientAcctNo
 
-              handleAxios(`${config.apiUrl}/sa/save-sa-prepaid-reload`, newBankData, 'Savings Account', 'Reload Prepaid')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-prepaid-reload`, newBankData, 'Savings Account', 'Reload Prepaid')
 
             } else if(commonProps.transactType === 6) {
 
               newBankData.receipient_acct_no = commonProps.receipientAcctNo
 
-              handleAxios(`${config.apiUrl}/sa/save-sa-transfer-money`, newBankData, 'Savings Account', 'Transfer Money')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-transfer-money`, newBankData, 'Savings Account', 'Transfer Money')
 
             } else if(commonProps.transactType === 7) {
 
@@ -400,20 +421,20 @@ export default {
               newBankData.credit = commonProps.credit
               newBankData.remarks = '[Adjustment] ' + newBankData.remarks
 
-              handleAxios(`${config.apiUrl}/sa/save-sa-adjustment`, newBankData, 'Savings Account', 'Adjustment')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-adjustment`, newBankData, 'Savings Account', 'Adjustment')
 
             } else if(commonProps.transactType === 8) {
 
-              handleAxios(`${config.apiUrl}/sa/save-sa-earn-interest`, newBankData, 'Savings Account', 'Earn Interest')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-earn-interest`, newBankData, 'Savings Account', 'Earn Interest')
 
             }  else if(commonProps.transactType === 9) {
 
-              handleAxios(`${config.apiUrl}/sa/save-sa-taxwh`, newBankData, 'Savings Account', 'Tax Witheld')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-taxwh`, newBankData, 'Savings Account', 'Tax Witheld')
 
             } else if(commonProps.transactType === 10) {
               // Salary / Income
 
-              handleAxios(`${config.apiUrl}/sa/save-sa-sale-income`, newBankData, 'Savings Account', 'Salary / Income')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-sale-income`, newBankData, 'Savings Account', 'Salary / Income')
               
             }
           } else if(props.formDetails.componentId === 2) {
@@ -436,19 +457,19 @@ export default {
               }
               newGCashData.remarks = '[Load Sale] ' + newGCashData.remarks
               
-              handleAxios(`${config.apiUrl}/gcash/save-loadsale`, newGCashData, 'GCash', 'Load Sale')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-loadsale`, newGCashData, 'GCash', 'Load Sale')
 
             } else if(commonProps.transactType === 3) {
               
               newGCashData.remarks = '[Bills Payment] ' + newGCashData.remarks
 
-              handleAxios(`${config.apiUrl}/gcash/save-gc-billspay`, newGCashData, 'GCash', 'Bills payment')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-billspay`, newGCashData, 'GCash', 'Bills payment')
 
             } else if(commonProps.transactType === 4) {
 
               newGCashData.remarks = '[Sale / Income] ' + newGCashData.remarks
 
-              handleAxios(`${config.apiUrl}/gcash/save-gc-income`, newGCashData, 'GCash', 'New Sale / Income')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-income`, newGCashData, 'GCash', 'New Sale / Income')
 
             } else if(commonProps.transactType === 5) {
               
@@ -457,7 +478,7 @@ export default {
 
               newGCashData.remarks = '[Self Buy Load] ' + newGCashData.remarks
 
-              handleAxios(`${config.apiUrl}/gcash/save-selfbuyload`, newGCashData, 'GCash', 'Self Buy Load')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-selfbuyload`, newGCashData, 'GCash', 'Self Buy Load')
 
             } else if(commonProps.transactType === 6) {
               
@@ -466,21 +487,21 @@ export default {
 
               newGCashData.remarks = '[Bank Transfer] ' + newGCashData.remarks
 
-              handleAxios(`${config.apiUrl}/gcash/save-gc-banktransfer`, newGCashData, 'GCash', 'Bank Transfer')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-banktransfer`, newGCashData, 'GCash', 'Bank Transfer')
 
             } else if(commonProps.transactType === 7) {
               
               newGCashData.online_shop_website = commonProps.onlineShopWebsite
               newGCashData.remarks = '[Online Payment] ' + newGCashData.remarks
 
-              handleAxios(`${config.apiUrl}/gcash/save-ol-shop-pay`, newGCashData, 'GCash', 'Online Payment')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-ol-shop-pay`, newGCashData, 'GCash', 'Online Payment')
 
             } else if(commonProps.transactType === 8) {
 
               newGCashData.credit = commonProps.credit
               newGCashData.remarks = '[Adjustment] ' + newGCashData.remarks
 
-              handleAxios(`${config.apiUrl}/gcash/save-gc-adjustment`, newGCashData, 'GCash', 'New Adjustment')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-adjustment`, newGCashData, 'GCash', 'New Adjustment')
               
             } else if(commonProps.transactType === 9) {
 
@@ -507,13 +528,13 @@ export default {
               newGCashData.remarks = `[${newGCashData.type}] ${newGCashData.remarks}`
               console.log(newGCashData.remarks)
 
-              handleAxios(`${config.apiUrl}/gcash/save-gc-sendmoney`, newGCashData, 'GCash', 'Send Money')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-sendmoney`, newGCashData, 'GCash', 'Send Money')
 
             } else if(commonProps.transactType === 10) {
 
               newGCashData.remarks = '[Refund] ' + newGCashData.remarks
 
-              handleAxios(`${config.apiUrl}/gcash/save-gc-refund`, newGCashData, 'GCash', 'Refund')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-refund`, newGCashData, 'GCash', 'Refund')
 
             } else if(commonProps.transactType === 11) {
 
@@ -521,7 +542,7 @@ export default {
               newGCashData.description = '[Pay QR] ' + commonProps.description
               newGCashData.remarks = newGCashData.description
 
-              handleAxios(`${config.apiUrl}/gcash/save-pay-qr`, newGCashData, 'GCash', 'Pay QR')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-pay-qr`, newGCashData, 'GCash', 'Pay QR')
 
             } else if (commonProps.transactType === 12) {
               newGCashData.remarks = '[Received Money] ' + newGCashData.remarks
@@ -542,13 +563,13 @@ export default {
               newCCData.online_shop_website = commonProps.onlineShopWebsite
               newCCData.remarks = '[Online Payment] ' + newCCData.remarks
 
-              handleAxios(`${config.apiUrl}/cc/save-cc-op`, newCCData, 'Credit Card', 'Online Payment')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/cc/save-cc-op`, newCCData, 'Credit Card', 'Online Payment')
 
             } else if (commonProps.transactType === 2){
               newCCData.store_name = commonProps.storeName
               newCCData.remarks = '[Non-Online Payment] ' + newCCData.remarks
 
-              handleAxios(`${config.apiUrl}/cc/new-cc-nop`, newCCData, 'Credit Card', 'Non-Online Payment')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/cc/new-cc-nop`, newCCData, 'Credit Card', 'Non-Online Payment')
 
             } else {
               if(!newCCData.description) {
@@ -560,7 +581,7 @@ export default {
               newCCData.term = commonProps.term
               newCCData.term_pay = commonProps.termPay
 
-              handleAxios(`${config.apiUrl}/cc/save-cc-loan`, newCCData, 'Credit Card', 'Credit-to-Cash Loan')
+              axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/cc/save-cc-loan`, newCCData, 'Credit Card', 'Credit-to-Cash Loan')
 
             }
           }
@@ -577,7 +598,13 @@ export default {
           commonProps.message = '',
           commonProps.attachment = 'Photo',
           commonProps.location = ''
-          router.push('/')
+
+          console.log(axiosReqConfirmed.value);
+
+          if(axiosReqConfirmed.value == true) {
+            router.push('/')
+          }
+
         } catch (error) {
           console.log(error);
           router.push('/')
