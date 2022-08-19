@@ -7,8 +7,14 @@ npm install
 ```
 
 ### Compiles and hot-reloads for development
+
+Client directory (Vue 3 x Vite)
 ```
-npm run serve
+npm run dev
+```
+Server directory
+```
+npm run devt
 ```
 
 ### Compiles and minifies for production
