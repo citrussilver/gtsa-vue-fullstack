@@ -130,6 +130,7 @@
           <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 7">
             <label class="control-label white">Online Service / Shop Website:</label>
             <select class="custom-select" v-model="commonProps.onlineShopWebsite">
+                <option value="GCash A+ Rewards">GCash A+ Rewards</option>
                 <option value="Steam">Steam</option>
                 <option value="Shopee">Shopee Pay Top-up</option>
                 <option value="Lazada">Lazada Wallet Top-up</option>
@@ -138,7 +139,7 @@
                 <option value="GrabPay">GrabPay</option>
                 <option value="Youtube Membership">Youtube Membership</option>
                 <option value="Twitch Membership">Twitch Membership</option>
-                <option value="OF Subscription">OF Subscription</option>
+                <option value="OF Sub">OF Subscription</option>
               </select>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 3 && (commonProps.transactType === 1 || commonProps.transactType === 2)">
@@ -492,7 +493,7 @@ export default {
             } else if(commonProps.transactType === 7) {
               
               newGCashData.online_shop_website = commonProps.onlineShopWebsite
-              newGCashData.remarks = '[Online Payment] ' + newGCashData.remarks
+              newGCashData.remarks = `[Online Payment - ${commonProps.onlineShopWebsite}]` + newGCashData.remarks
 
               axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-ol-shop-pay`, newGCashData, 'GCash', 'Online Payment')
 
