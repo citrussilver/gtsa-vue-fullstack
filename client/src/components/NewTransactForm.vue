@@ -9,13 +9,13 @@
             <input type="datetime-local" class="form-control" v-model="commonProps.dateTime" required>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 1">
-            <select class="custom-select" v-model="commonProps.bankId" @change="trackSelection(commonProps.bankId, 'sa')">
-              <option v-for="bank in savingsAccs" :key="bank.bank_id" :value="bank.bank_id">{{ bank.bank_name }} - {{ bank.bank_abbrev }}</option>
+            <select class="custom-select" v-model="commonProps.bankId" @change="trackSelection($event.target.selectedIndex, 'sa')">
+              <option v-for="(bank, index) in savingsAcctArray" :key="index" :value="bank.bank_id">{{ bank.bank_name }} - {{ bank.bank_abbrev }}</option>
             </select>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 3">
             <select class="custom-select" v-model="ccProps.ccId" @change="trackSelection(ccProps.ccId, 'cc')">
-              <option v-for="creditCard in creditCards" :key="creditCard.credit_card_id" :value="creditCard.credit_card_id">{{ creditCard.last_4_digits }} - {{ creditCard.cc_name }}</option>
+              <option v-for="(creditCard, index) in creditCards" :key="index" :value="creditCard.credit_card_id">{{ creditCard.last_4_digits }} - {{ creditCard.cc_name }}</option>
             </select>
           </div>
           <div class="form-group">
@@ -35,7 +35,7 @@
             <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 1">
               <label class="col-form-label white">Customer</label><br>
               <select class="custom-select customer-select-style" v-model="commonProps.customer" @change="trackSelection(commonProps.customer, 'gcash')">
-                <option v-for="customer in customers" :key="customer.customer_id" :value="customer.customer_id">{{ customer.name }}</option>
+                <option v-for="(customer, index) in customersArray" :key="index" :value="customer.customer_id">{{ customer.name }}</option>
               </select>
             </div>
             <div class="form-group" v-if="formDetails.componentId === 2 && (commonProps.transactType === 5 || commonProps.transactType === 1 || commonProps.transactType === 9)">
@@ -79,7 +79,12 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">₱</span>
                 </div>
-                <input type="text" class="form-control border-success" style="background-color: #303030; color: white;" v-model="commonProps.saBalance" disabled>
+                <input 
+                  type="text" 
+                  class="form-control border-success" 
+                  style="background-color: #303030; color: white;" 
+                  v-model="commonProps.saBalance" disabled
+                >
               </div>
             </div>
           </div>
@@ -205,7 +210,7 @@
           </div>
           <div class="form-group" v-if="formDetails.componentId === 1">
             <label class="col-form-label white">Location</label><br>
-            <select class="custom-select" v-model="commonProps.location">
+            <select class="custom-select" v-model="commonProps.location" >
               <option value="Select">-- Select App / Location --</option>
               <option value="App">App</option>
               <option value="ATM">ATM</option>
@@ -227,9 +232,9 @@ import { toast } from 'bulma-toast'
 import config from '../config'
 
 import { gCash1Bal, getGCashInfo } from '../composables/getGCashInfo.js'
-import { savingsAccs, getSavingsAccs } from '../composables/getBanksInfo.js'
+import { getSavingsAccs } from '../composables/getBanksInfo.js'
 import { creditCards, getCreditCards  } from '../composables/getCcsInfo.js'
-import { customers, getCustomers } from '../composables/getCustomers.js'
+import { getCustomers } from '../composables/getCustomers.js'
 
 import { confirm } from '../ts/dialogs.ts'
 
@@ -286,18 +291,39 @@ export default {
         }
       )
 
+      let savingsAcctArray = ref([])
+
+      let customersArray = ref([])
+
       const router = useRouter()
 
-      const setSavingsAcc = (val) => {
-        let index = ref(0)
-        index.value = val-1
-        // console.log(commonProps.bankId)
-        commonProps.saBalance = savingsAccs.value[index.value].balance
-        if(val === 1) {
-          commonProps.location = 'BPI App'
-        } else {
-          commonProps.location = 'SB App'
-        }
+      const initializeSavingsAcc = async () => {
+
+        let response = []
+        response = await getSavingsAccs()
+          .then(res => res)
+        
+        console.log(response)
+        savingsAcctArray.value = response
+        // savingsAcctArray.value = [...response]
+        savingsAcctArray.value.forEach(sa => {
+          commonProps.saBalance = sa.balance
+          // commonProps.location = `${sa.bank_abbrev} App`
+        })
+      }
+
+      const fetchSavingsAcc = (val) => {
+        commonProps.saBalance = savingsAcctArray.value[val].balance
+        commonProps.location = savingsAcctArray.value[val].bank_abbrev + ' App'
+        return commonProps.saBalance
+      }
+
+      const initializeCustomers = async () => {
+        let response = []
+        response = await getCustomers()
+          .then(res => res)
+        
+        customersArray.value = [...response]
       }
 
       const setCc = (val) => {
@@ -314,9 +340,10 @@ export default {
       }
       
       const trackSelection = (val, flag) => {
-        // console.log(val, flag)
+        console.log(val, flag)
+
         if(flag === 'sa') {
-          setSavingsAcc(val)
+          fetchSavingsAcc(val)
         }
 
         if(flag === 'cc') {
@@ -614,16 +641,16 @@ export default {
       }
 
       onMounted(async () => {
-         if(props.formDetails.componentId === 1) {
-          await getSavingsAccs()
-          setSavingsAcc(1)
+
+        if(props.formDetails.componentId === 1) {
+          await initializeSavingsAcc()
           setGCashAcc()
         }
 
         if(props.formDetails.componentId === 2) {
           await getGCashInfo()
           setGCashAcc()
-          getCustomers()
+          await initializeCustomers()
         }
         
         if(props.formDetails.componentId === 3) {
@@ -633,9 +660,9 @@ export default {
       })
 
       return { 
-        savingsAccs,
+        savingsAcctArray,
         creditCards,
-        customers,
+        customersArray,
         commonProps, 
         ccProps, 
         trackSelection, 
