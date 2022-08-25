@@ -4,35 +4,29 @@
       <div class="grid-tile-item blue-1">
         <p class="tile-title">
           <ArticleTitleSlot>
-            {{ gCashObj.nick }}
+            {{ gCashData.account_nick }}
           </ArticleTitleSlot>
         </p>
         <details>
           <summary>Balance</summary>
-          {{ gCashObj.balance_wc }}
+          {{ gCashData.balance_wc }}
         </details>
       </div>
-      <div class="grid-tile-item red-1">
-        <p class="tile-title">
-          <ArticleTitleSlot>
-            {{ sa1Obj.name }}
-          </ArticleTitleSlot>
-        </p>
-        <details>
-          <summary>Balance</summary>
-          {{ sa1Obj.balance }}
-        </details>
-      </div>
-      <div class="grid-tile-item yellow-1 dark-grey">
-        <p class="tile-title dark-grey">
-          <ArticleTitleSlot>
-            {{ sa2Obj.name }}
-          </ArticleTitleSlot>
-        </p>
-        <details>
-          <summary>Balance</summary>
-          {{ sa2Obj.balance }}
-        </details>
+      <div 
+        class="grid-tile-item" 
+        :class="{ 'red-1' : index === 0, 'security-bank dark-grey' :  index === 1, 'union-bank' : index === 2}" 
+        v-for="(sa, index) in saArray" 
+        key="sa.bank_id" 
+      >
+          <p class="tile-title">
+            <ArticleTitleSlot>
+              {{ sa.bank_name }}
+            </ArticleTitleSlot>
+          </p>
+          <details>
+            <summary>Balance</summary>
+            {{ sa.balance_wc }}
+          </details>
       </div>
       <div class="grid-tile-item purple-1">
         <p class="tile-title">
@@ -95,9 +89,9 @@ import { onMounted, ref, reactive } from 'vue'
 import ArticleTitleSlot from './slots/ArticleTitleSlot.vue'
 import ArticleSubtitleSlot from './slots/ArticleSubtitleSlot.vue'
 
-import { savingsAccs, getSavingsAccs } from '../composables/getBanksInfo.js'
+import { getSavingsAccs } from '../composables/getBanksInfo.js'
 import { creditCards, getCreditCards  } from '../composables/getCcsInfo.js'
-import { gCash1Nick, gCash1BalWc, getGCashInfo } from '../composables/getGCashInfo'
+import { getGCashInfo } from '../composables/getGCashInfo'
 import { aniQuote, generateAniQuote } from '../composables/getAniQuote'
 
 export default {
@@ -109,15 +103,17 @@ export default {
 
       let loading = ref(false)
 
-      let sa1Obj = reactive({
-        name: '',
-        balance: 1
-      })
+      let savingsAcctArray = ref([])
 
-      let sa2Obj = reactive({
-        name: '',
-        balance: 1
-      })
+      const makeSavingsAcctObj = (name, balance) => {
+        let savingsAcct = reactive({
+          name: '',
+          balance: 1
+        });
+        savingsAcct.name = name;
+        savingsAcct.balance = balance;
+        return savingsAcct;
+      }
 
       let cc1Obj = reactive({
         name: '',
@@ -125,24 +121,12 @@ export default {
         avail_cl: 1
       })
 
-      let gCashObj = reactive({
-        nick: '',
-        balance: 1
+      let gCashData = reactive({
+        account_nick: '',
+        balance_wc: 0
       })
 
-
-
-      const setSavingsAcc = (val) => {
-        let index = ref(0)
-        index.value = val-1
-        if(val === 1) {  
-          sa1Obj.name = savingsAccs.value[index.value].bank_name
-          sa1Obj.balance = savingsAccs.value[index.value].balance_wc
-        } else {
-          sa2Obj.name = savingsAccs.value[index.value].bank_name
-          sa2Obj.balance = savingsAccs.value[index.value].balance_wc
-        }
-      }
+      let saArray = ref([])
 
       const setCc = (val) => {
         let index = ref(0)
@@ -163,18 +147,27 @@ export default {
       }
 
       onMounted(async () => {
-        await getGCashInfo()
-        gCashObj.nick = gCash1Nick.value
-        gCashObj.balance_wc = gCash1BalWc.value
+        let response = []
+        response = await getGCashInfo().then(res => res)
+        gCashData.account_nick = response[0].account_nick
+        gCashData.balance_wc = response[0].balance_wc
         loadAniQuote()
-        await getSavingsAccs()
-        setSavingsAcc(1)
-        setSavingsAcc(2)
+        response = await getSavingsAccs().then(res => res)
+        saArray.value = response
+
+        // saArray.forEach((element, index) => {
+        //   console.log(`index: ${index-1}`)
+        //   console.table(element)
+        //   savingsAcctArray[(index-1)].name = element.name
+        //   savingsAcctArray[(index-1)].balance = element.balance_wc
+        // });
+        // console.log(savingsAcctArray)
+        
         await getCreditCards()
         setCc(1)
       })
       
-      return { sa1Obj, sa2Obj, cc1Obj, gCashObj, loading, aniQuote, loadAniQuote }
+      return { saArray, cc1Obj, gCashData, loading, aniQuote, loadAniQuote }
     }
 }
 </script>
@@ -224,12 +217,26 @@ export default {
     background-color: #3e8ed0;
   }
 
+  .security-bank {
+    background-color: #016cae;
+    background-image: linear-gradient(to right, #a0cf67 , #016cae);
+  }
+
+  .union-bank {
+    background-color: #fd8506;
+    background-image: linear-gradient(-269deg, rgb(204, 130, 0) 7%, rgb(204, 130, 0) 17%, rgb(190, 43, 4) 98%);
+  }
+
   .red-1 {
     background-color: #f14668;
   }
 
   .yellow-1 {
     background-color: #ffe08a;
+  }
+
+  .orange-1 {
+    background-color: #fd8506;
   }
 
   .purple-1 {
@@ -260,18 +267,18 @@ export default {
     /* box-shadow: 2.5rem 3.75rem 3rem 1rem; */
   }
 
-  .grid-tile-span-2 {
+  /* .grid-tile-span-2 {
     grid-column: span 2;
-  }
+  } */
 
-  .grid-tile-item:nth-child(3) {
+  .grid-tile-item:nth-child(3), .grid-tile-item:nth-child(5)  {
     grid-column-start: 1;
   }
 
   .grid-tile-item:last-child {
     grid-column-start: 3;
     grid-row-start: 1;
-    grid-row-end: 3;
+    grid-row-end: 4;
   }
 
   .tile-title {

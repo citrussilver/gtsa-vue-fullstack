@@ -1,14 +1,12 @@
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import config from '../config'
 
-export let gCashAccts = ref([])
-export let gCash1Nick = ref('')
-export let gCash1Bal = ref(0)
-export let gCash1BalWc = ref(0)
+export const gCash1Bal = ref(0)
 
 export const getGCashInfo = async () => {
   
-    await fetch(`${config.apiUrl}/gcash/get-gcash-accounts`, {
+  // `${config.apiUrl}/gcash/get-gcash-accounts`
+    let response = await fetch(`${config.apiUrl}/gcash/get-gcash-accounts`, {
       method: 'GET',
       body: JSON.stringify(),
       headers: {
@@ -18,12 +16,10 @@ export const getGCashInfo = async () => {
       return res.json()
     })
     .then(data => {
-      //console.log(data)
-      gCashAccts.value = [...data]
-      gCash1Nick.value = data[0].account_nick
-      gCash1Bal.value = data[0].balance
-      gCash1BalWc.value = data[0].balance_wc
-
+      gCash1Bal.value = data[0].balance_wc
+      return data
     })
-    .catch(error => console.log(error))
+    .catch(err => err)
+
+    return response
 }
