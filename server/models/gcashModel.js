@@ -52,7 +52,7 @@ export const getFilterRemarksGCashTransacts = (flStr, result) => {
 }
 
 export const getGCashAccts = (result) => {
-    dbConnection.query('SELECT id, account_nick, balance, FORMAT(balance, 2) as balance_wc FROM gcash_account', (err, results) => {
+    dbConnection.query('SELECT id, account_nick, last_4_digits, balance, FORMAT(balance, 2) as balance_wc FROM gcash_account', (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);

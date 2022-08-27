@@ -10,12 +10,12 @@
           </div>
           <div class="form-group" v-if="formDetails.componentId === 1">
             <select class="custom-select" v-model="commonProps.bankId" @change="trackSelection($event.target.selectedIndex, 'sa')">
-              <option v-for="(bank, index) in savingsAcctArray" :key="index" :value="bank.bank_id">{{ bank.bank_name }} - {{ bank.bank_abbrev }}</option>
+              <option v-for="(bank, index) in savingsAcctData" :key="index" :value="bank.bank_id">{{ bank.bank_name }} - {{ bank.bank_abbrev }}</option>
             </select>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 3">
-            <select class="custom-select" v-model="ccProps.ccId" @change="trackSelection(ccProps.ccId, 'cc')">
-              <option v-for="(creditCard, index) in creditCards" :key="index" :value="creditCard.credit_card_id">{{ creditCard.last_4_digits }} - {{ creditCard.cc_name }}</option>
+            <select class="custom-select" v-model="ccProps.ccId" @change="trackSelection($event.target.selectedIndex, 'cc')">
+              <option v-for="(creditCard, index) in creditCardsData" :key="index" :value="creditCard.credit_card_id">{{ creditCard.last_4_digits }} - {{ creditCard.cc_name }}</option>
             </select>
           </div>
           <div class="form-group">
@@ -95,7 +95,13 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">₱</span>
                 </div>
-                <input type="text" class="form-control border-danger" style="background-color: #303030; color: white;" v-model="ccProps.availCreditLimit" disabled>
+                <input 
+                  type="text" 
+                  class="form-control border-danger" 
+                  style="background-color: #303030; color: white;" 
+                  v-model="ccProps.availCreditLimit" 
+                  disabled
+                >
               </div>
               <div id="cl-notice"></div>
             </div>
@@ -226,14 +232,16 @@
 
 <script>
 import { onBeforeMount, onMounted, reactive, ref } from 'vue'
-import axios from 'axios'
+
 import { useRouter } from 'vue-router'
-import { toast } from 'bulma-toast'
+
 import config from '../config'
+
+import { invokerInitializer, handleAxios } from '../helpers/helpers.service.js'
 
 import { gCash1Bal, getGCashInfo } from '../composables/getGCashInfo.js'
 import { getSavingsAccs } from '../composables/getBanksInfo.js'
-import { creditCards, getCreditCards  } from '../composables/getCcsInfo.js'
+import { getCreditCards  } from '../composables/getCcsInfo.js'
 import { getCustomers } from '../composables/getCustomers.js'
 
 import { confirm } from '../ts/dialogs.ts'
@@ -244,7 +252,7 @@ export default {
 
       let axiosReqConfirmed = ref(false)
 
-      console.log(axiosReqConfirmed.value)
+      // console.log(axiosReqConfirmed.value)
 
       let commonProps = reactive(
         {
@@ -254,7 +262,7 @@ export default {
           transactType: 0,
           customer: '',
           mobileNo: '0',
-          network: 'Globe',
+          network: 'TM',
           paymentDateTime: '',
           credit: 1,
           saName: '',
@@ -291,32 +299,26 @@ export default {
         }
       )
 
-      let savingsAcctArray = ref([])
+      let savingsAcctData = ref([])
+
+      let creditCardsData = ref([])
 
       let customersArray = ref([])
 
       const router = useRouter()
 
-      const initializeSavingsAcc = async () => {
-
-        let response = []
-        response = await getSavingsAccs()
-          .then(res => res)
-        
-        console.log(response)
-        savingsAcctArray.value = response
-        // savingsAcctArray.value = [...response]
-        savingsAcctArray.value.forEach(sa => {
-          commonProps.saBalance = sa.balance
-          // commonProps.location = `${sa.bank_abbrev} App`
-        })
-      }
-
       const fetchSavingsAcc = (val) => {
-        commonProps.saBalance = savingsAcctArray.value[val].balance
-        commonProps.location = savingsAcctArray.value[val].bank_abbrev + ' App'
+        // console.log(`savingsAcctData.value[val].balance: ${savingsAcctData.value[val].balance}`);
+        commonProps.saBalance = savingsAcctData.value[val].balance
+        commonProps.location = savingsAcctData.value[val].bank_abbrev + ' App'
         return commonProps.saBalance
       }
+
+      const fetchCc = (val) => {
+        ccProps.availCreditLimit = creditCardsData.value[val].avail_credit_limit
+        return ccProps.availCreditLimit
+      }
+
 
       const initializeCustomers = async () => {
         let response = []
@@ -324,15 +326,6 @@ export default {
           .then(res => res)
         
         customersArray.value = [...response]
-      }
-
-      const setCc = (val) => {
-        let index = ref(0)
-        index.value = val-1
-        console.log(creditCards.value[index.value].avail_credit_limit)
-        ccProps.ccId = creditCards.value[index.value].credit_card_id
-        // console.log('cc id is ' + ccProps.ccId)
-        ccProps.availCreditLimit = creditCards.value[index.value].avail_credit_limit
       }
 
       const setGCashAcc = () => {
@@ -347,7 +340,7 @@ export default {
         }
 
         if(flag === 'cc') {
-          setCc(val)
+          fetchCc(val)
         }
 
         if(flag === 'tt') {
@@ -357,40 +350,6 @@ export default {
 
       const digitOnlyInput = (event) => {
         return event.charCode >= 48 && event.charCode <= 57
-      }
-
-      const handleAxios = async (route, objData, type, specific) => {
-
-          const res = await confirm(`Are you sure to save this ${specific} entry?`);
-
-          if (res) {
-
-            console.log('YES')
-            
-            await axios.post(`${route}`, objData)
-            .then(response => {
-    
-              toast({
-                message: `[${type}] New ${specific} successfully posted to database`,
-                duration: 3000,
-                type: 'is-warning',
-                position: "top-center",
-                dismissible: true,
-                pauseOnHover: true,
-                closeOnClick: true
-              })
-            })
-            .catch(err => {
-              console.log(err);
-            })
-  
-
-          } else {
-            console.log('NO')
-          }
-
-          return res
-
       }
 
       const handleSubmit = async () => {
@@ -627,14 +586,14 @@ export default {
           commonProps.attachment = 'Photo',
           commonProps.location = ''
 
-          console.log(axiosReqConfirmed.value);
+          // console.log(axiosReqConfirmed.value);
 
           if(axiosReqConfirmed.value == true) {
             router.push('/')
           }
 
         } catch (error) {
-          console.log(error);
+          // console.log(error);
           router.push('/')
         }
 
@@ -643,7 +602,8 @@ export default {
       onMounted(async () => {
 
         if(props.formDetails.componentId === 1) {
-          await initializeSavingsAcc()
+          savingsAcctData.value = await invokerInitializer(getSavingsAccs)
+          trackSelection(0, 'sa')
           setGCashAcc()
         }
 
@@ -654,14 +614,14 @@ export default {
         }
         
         if(props.formDetails.componentId === 3) {
-          await getCreditCards()
-          setCc(1)
+          creditCardsData.value = await invokerInitializer(getCreditCards)
+          trackSelection(0, 'cc')
         }
       })
 
       return { 
-        savingsAcctArray,
-        creditCards,
+        savingsAcctData,
+        creditCardsData,
         customersArray,
         commonProps, 
         ccProps, 
