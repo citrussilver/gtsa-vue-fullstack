@@ -1,22 +1,31 @@
 <template>
   <div id="main-content">
     <div class="grid-tile">
-      <div class="grid-tile-item blue-1">
+      <div 
+        class="grid-tile-item blue-1" 
+        v-for="(gCash, index) in gCashData" 
+        key="index" 
+      >
         <p class="tile-title">
           <ArticleTitleSlot>
-            {{ gCashData.account_nick }}
+            {{ gCash.account_nick }}
           </ArticleTitleSlot>
+        </p>
+        <p class="tile-subtitle">
+            <ArticleSubtitleSlot>
+              Last 4 digits: {{ gCash.last_4_digits }}
+            </ArticleSubtitleSlot>
         </p>
         <details>
           <summary>Balance</summary>
-          {{ gCashData.balance_wc }}
+          {{ gCash.balance_wc }}
         </details>
       </div>
       <div 
         class="grid-tile-item" 
         :class="{ 'red-1' : index === 0, 'security-bank dark-grey' :  index === 1, 'union-bank' : index === 2}" 
-        v-for="(sa, index) in saArray" 
-        key="sa.bank_id" 
+        v-for="(sa, index) in savingsAcctData" 
+        key="index" 
       >
           <p class="tile-title">
             <ArticleTitleSlot>
@@ -28,20 +37,24 @@
             {{ sa.balance_wc }}
           </details>
       </div>
-      <div class="grid-tile-item purple-1">
+      <div 
+        class="grid-tile-item purple-1" 
+        v-for="(cc, index) in creditCardsData" 
+        key="index" 
+      >
         <p class="tile-title">
           <ArticleTitleSlot>
-            {{ cc1Obj.name }}
+            {{ cc.cc_name }}
           </ArticleTitleSlot>
         </p>
         <p class="tile-subtitle">
             <ArticleSubtitleSlot>
-              Last 4 digits: {{ cc1Obj.last4d }}
+              Last 4 digits: {{ cc.last_4_digits }}
             </ArticleSubtitleSlot>
         </p>
         <details>
           <summary>Available Credit Limit</summary>
-          {{ cc1Obj.avail_cl }}
+          {{ cc.avail_credit_limit }}
         </details>
       </div>
       <div class="grid-tile-item purple-1">
@@ -85,12 +98,14 @@
 </template>
 
 <script>
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, ref } from 'vue'
 import ArticleTitleSlot from './slots/ArticleTitleSlot.vue'
 import ArticleSubtitleSlot from './slots/ArticleSubtitleSlot.vue'
 
+import { invokerInitializer } from '../helpers/helpers.service.js'
+
 import { getSavingsAccs } from '../composables/getBanksInfo.js'
-import { creditCards, getCreditCards  } from '../composables/getCcsInfo.js'
+import { getCreditCards  } from '../composables/getCcsInfo.js'
 import { getGCashInfo } from '../composables/getGCashInfo'
 import { aniQuote, generateAniQuote } from '../composables/getAniQuote'
 
@@ -103,38 +118,11 @@ export default {
 
       let loading = ref(false)
 
-      let savingsAcctArray = ref([])
+      let gCashData = ref([])
 
-      const makeSavingsAcctObj = (name, balance) => {
-        let savingsAcct = reactive({
-          name: '',
-          balance: 1
-        });
-        savingsAcct.name = name;
-        savingsAcct.balance = balance;
-        return savingsAcct;
-      }
+      let savingsAcctData = ref([])
 
-      let cc1Obj = reactive({
-        name: '',
-        last4d: 1,
-        avail_cl: 1
-      })
-
-      let gCashData = reactive({
-        account_nick: '',
-        balance_wc: 0
-      })
-
-      let saArray = ref([])
-
-      const setCc = (val) => {
-        let index = ref(0)
-        index.value = val-1
-        cc1Obj.name = creditCards.value[index.value].cc_name
-        cc1Obj.last4d = creditCards.value[index.value].last_4_digits
-        cc1Obj.avail_cl = creditCards.value[index.value].avail_credit_limit_wc
-      }
+      let creditCardsData = ref([])
 
       const loadAniQuote = async () => {
         try {
@@ -147,27 +135,17 @@ export default {
       }
 
       onMounted(async () => {
-        let response = []
-        response = await getGCashInfo().then(res => res)
-        gCashData.account_nick = response[0].account_nick
-        gCashData.balance_wc = response[0].balance_wc
-        loadAniQuote()
-        response = await getSavingsAccs().then(res => res)
-        saArray.value = response
 
-        // saArray.forEach((element, index) => {
-        //   console.log(`index: ${index-1}`)
-        //   console.table(element)
-        //   savingsAcctArray[(index-1)].name = element.name
-        //   savingsAcctArray[(index-1)].balance = element.balance_wc
-        // });
-        // console.log(savingsAcctArray)
+        gCashData.value = await invokerInitializer(getGCashInfo)
         
-        await getCreditCards()
-        setCc(1)
+        loadAniQuote()
+        
+        savingsAcctData.value = await invokerInitializer(getSavingsAccs)
+  
+        creditCardsData.value = await invokerInitializer(getCreditCards)
       })
       
-      return { saArray, cc1Obj, gCashData, loading, aniQuote, loadAniQuote }
+      return { gCashData, savingsAcctData, creditCardsData, loading, aniQuote, loadAniQuote }
     }
 }
 </script>

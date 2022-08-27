@@ -1,13 +1,9 @@
 import { ref } from 'vue'
 import config from '../config'
 
-export let creditCards = ref([])
-export let cc1Alias = ref('')
-export let cc1AvailCreditLimit = ref(0)
-
 export const getCreditCards = async () => {
 
-    await fetch(`${config.apiUrl}/cc/get-cc-accounts`, {
+    let response = await fetch(`${config.apiUrl}/cc/get-cc-accounts`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {
@@ -17,7 +13,10 @@ export const getCreditCards = async () => {
         return res.json()
     })
     .then(data => {
-        creditCards.value = [...data]
+        // creditCards.value = [...data]
+        return data
     })
     .catch(error => console.log(error))
+
+    return response
 }
