@@ -1,4 +1,3 @@
-import { ref } from 'vue'
 import config from '../config'
 
 export const getCreditCards = async () => {
@@ -9,14 +8,9 @@ export const getCreditCards = async () => {
         headers: {
             'Content-type': 'application/json; charset=UTF-8',
         },
-    }).then(res => {
-        return res.json()
-    })
-    .then(data => {
-        // creditCards.value = [...data]
-        return data
-    })
+    }).then(res => res.json())
+    .then(data => data)
     .catch(error => console.log(error))
 
-    return response
+    return response;
 }

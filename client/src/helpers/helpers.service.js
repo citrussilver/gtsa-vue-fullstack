@@ -8,7 +8,7 @@ export const invokerInitializer = async (composableCallback) => {
 
   // console.log(response)
 
-  return response
+  return response;
 }
 
 export const handleAxios = async (route, objData, type, specific) => {
@@ -38,11 +38,22 @@ export const handleAxios = async (route, objData, type, specific) => {
 
 
   } else {
-    console.log('NO')
+    console.log('NO');
   }
 
-  return res
+  return res;
+}
 
+export const executeHash = () => {
+  let length = 16;
+  let result = '';
+  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let charactersLength = characters.length;
+  for ( let i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+
+  return result;
 }
 
 // factory sample
