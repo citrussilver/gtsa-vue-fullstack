@@ -23,143 +23,187 @@
               <div id="btn-container"><button class="btn btn-outline-success styled-button" @click="handleFilter">Submit</button></div>
           </div>
         </div>
-        <table id="table-style" v-if="choice == 1 || choice == 2">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Transact Type</th>
-                    <th>Amount</th>
-                    <th>Balance</th>
-                    <th>Remarks</th>
-                    <th>Post Balance</th>
-                    <th>App / Location</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="transaction in sa1Transacts" :key="transaction.sa_transact_id">
-                <td data-label="Date">{{ transaction.date_time }}</td>
-                <td data-label="Transact Type">{{ transaction.transact_type }}</td>
-                <td data-label="Amount">{{ transaction.amount }}</td>
-                <td data-label="Balance">{{ transaction.current_balance }}</td>
-                <td data-label="Remarks">{{ transaction.remarks }}</td>
-                <td data-label="Post Balance">{{ transaction.post_transact_balance }}</td>
-                <td data-label="App / Location">{{ transaction.location }}</td>
-                </tr>
-            </tbody>
-        </table>
-        <table id="table-style" v-else-if="choice == 3">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Transact Type</th>
-                    <th>Amount</th>
-                    <th>Balance</th>
-                    <th>Post Balance</th>
-                    <th>Remarks</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="transaction in gCashTransacts" :key="transaction.gcash_transact_id">
-                  <td data-label="Date">{{ transaction.date_time }}</td>
-                  <td data-label="Transact Type">{{ transaction.transact_type }}</td>
-                  <td data-label="Amount">{{ transaction.amount }}</td>
-                  <td data-label="GCash Balance">{{ transaction.current_gcash_balance }}</td>
-                  <td data-label="Post Balance">{{ transaction.post_gcash_balance }}</td>
-                  <td data-label="Remarks">{{ transaction.remarks }}</td>
-                </tr>
-            </tbody>
-        </table>
-        <table id="table-style" v-else-if="choice == 4">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Transact Type</th>
-                    <th>Description</th>
-                    <th>Amount</th>
-                    <th>Remarks</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="transaction in ccTransacts" :key="transaction.cc_transact_id">
-                  <td data-label="Date">{{ transaction.date_time }}</td>
-                  <td data-label="Transact Type">{{ transaction.transact_type }}</td>
-                  <td data-label="Description">{{ transaction.description }}</td>
-                  <td data-label="Amount">{{ transaction.amount }}</td>
-                  <td data-label="Remarks">{{ transaction.remarks }}</td>
-                </tr>
-            </tbody>
-        </table>
-        <table id="table-style" v-else>
-            <tbody>
-                <tr>
-                <td>No records to show.</td>
-                </tr>
-            </tbody>
-        </table>
+
+        <DataTable :tableDataConfig="componentData.savingAccTableConfig" v-if="choice == 1 || choice == 2"/>
+        <DataTable :tableDataConfig="gCashTableConfig" v-if="choice == 3"/>
+        <DataTable :tableDataConfig="ccTableConfig" v-if="choice == 4"/>
+
       </div>
     </div>
   </div>
 </div>
 </template>
 
-<script>
-import { ref} from 'vue'
+<script setup>
+import { ref, reactive } from 'vue'
 
-import { sa1Transacts, getSa1Transacts, sa2Transacts, getSa2Transacts } from '../composables/getSaTransacts'
-import { ccTransacts, getCcTransacts } from '../composables/getCcTransacts'
-import { gCashTransacts, getGCashTransacts, getFilterRemarksGCashTransacts } from '../composables/getGCashTransacts'
+import DataTable from '../components/DataTable.vue'
 
-export default {
+import { getSa1Transacts, getSa2Transacts } from '../composables/getSaTransacts'
+import { getCcTransacts } from '../composables/getCcTransacts'
+import { getGCashTransacts, getFilterRemarksGCashTransacts } from '../composables/getGCashTransacts'
 
-    setup() {
+let choice = ref(0)
+let filterString = ref('')
 
-      let choice = ref(0)
-      let filterString = ref('')
+const componentData = reactive({})
 
-      const setMobileHeaders = (selector) => {
-        const tableEl = document.querySelector(selector);
-        console.log(tableEl)
-        const thEls = tableEl.querySelectorAll('thead th');
-        const tdLabels = Array.from(thEls).map(el => el.innerText);
-        tableEl.querySelectorAll('tbody tr').forEach( tr => {
-          Array.from(tr.children).forEach( 
-            (td, ndx) =>  td.setAttribute('data-label', tdLabels[ndx])
-          );
-        });
-      }
+componentData.savingAccTableConfig = {
+  data_table_title: 'Savings Account Transactions Data',
+  headers: [
+        'Date',
+        'Transact Type',
+        'Amount',
+        'Balance',
+        'Remarks',
+        'Post Balance',
+        'App / Location'
+  ],
+  columns: {
+    date: (data) => data.date_time,
+    transactType: (data) => data.transact_type,
+    amount: (data) => data.amount,
+    balance: (data) => data.current_balance,
+    remarks: (data) => data.remarks,
+    postBalance: (data) => data.post_transact_balance,
+    appLocation: (data) => data.location
+  },
+  column_count: () => Object.keys(componentData.savingAccTableConfig.columns).length,
+  total_records: 0,
+  report_data: [],
+  page_number_count: 6,
+  data_source: function() {
+      let res = getSa1Transacts()
+      return res
+  },
+  pagination_data: {
+      totalItems: 0,
+      currentPage: 1,
+      rowCount: 10,
+      maxPages: 6
+  },
+  operation_hash: ''
+}
 
-      const checkChoice = (val) => {
-        // console.log(val)
-        if(val == 1) {
-            getSa1Transacts()
-            //setMobileHeaders("#table-style")
-        } else if(val == 2) {
-            getSa2Transacts()
-            //setMobileHeaders("#table-style")
-        } else if(val == 3) {
-            getGCashTransacts()
-            //setMobileHeaders("#table-style")
-        } else if(val == 4) {
-            getCcTransacts()
-            //setMobileHeaders("#table-style")
-        }
-      }
+componentData.gCashTableConfig = {
+  data_table_title: 'GCash Transactions Data',
+  headers: [
+    'Date',
+    'Transact Type',
+    'Amount',
+    'Balance',
+    'Post Balance',
+    'Remarks'
+  ],
+  columns: {
+    date: (data) => data.date_time,
+    transactType: (data) => data.transact_type,
+    amount: (data) => data.amount,
+    balance: (data) => data.current_gcash_balance,
+    postBalance: (data) => data.post_gcash_balance,
+    remarks: (data) => data.remarks,
+  },
+  total_records: 0,
+  report_data: [],
+  page_number_count: 6,
+  data_source: function() {
+      let res = getGCashTransacts()
+      console.log(res)
+      return res
+  },
+  pagination_data: {
+      totalItems: 0,
+      currentPage: 1,
+      rowCount: 10,
+      maxPages: 6
+  },
+  operation_hash: ''
+}
 
-      const handleFilter = () => {
-        console.log(filterString.value)
-        if(choice.value == 3) {
-          if(filterString.value) {
-            getFilterRemarksGCashTransacts(filterString.value)
-          } else {
-            alert('Please input something!')
-          }
-        } else {
-          alert('Sorry, the filter is currently a work in progress..')
-        }
-      }
+componentData.ccTableConfig = {
+    headers: [
+      'Date',
+      'Transact Type',
+      'Description',
+      'Amount',
+      'Remarks'
+    ],
+    columns: {
+      date: (data) => data.date_time,
+      transactType: (data) => data.transact_type,
+      description: (data) => data.description,
+      amount: (data) => data.amount,
+      remarks: (data) => data.remarks,
+    },
+    total_records: 0,
+    page_number_count: 6,
+    data_source: function() {
+        let res = getCcTransacts()
+        console.log(res)
+        return res
+    },
+    pagination_data: {
+        totalItems: 0,
+        currentPage: 1,
+        rowCount: 10,
+        maxPages: 6
+    },
+    operation_hash: ''
+}
 
-      return { choice, filterString, checkChoice, handleFilter, sa1Transacts, sa2Transacts, gCashTransacts, ccTransacts, setMobileHeaders }
+const checkChoice = (val) => {
+  console.log(val)
+  if(val == 1) {
+
+      // getSa1Transacts()
+      //setMobileHeaders("#table-style")
+  } else if(val == 2) {
+      getSa2Transacts()
+      //setMobileHeaders("#table-style")
+  } else if(val == 3) {
+      getGCashTransacts()
+      //setMobileHeaders("#table-style")
+  } else if(val == 4) {
+      getCcTransacts()
+      //setMobileHeaders("#table-style")
+  }
+}
+
+// const identifyChoice = () => {
+//   if(choice == 1 || 2) {
+//     return savingAccTableConfig
+//   } else if(choice == 3) {
+//     return gCashTableConfig
+//   } else {
+//     return ccTableConfig
+//   }
+// }
+
+const setMobileHeaders = (selector) => {
+  const tableEl = document.querySelector(selector);
+  console.log(tableEl)
+  const thEls = tableEl.querySelectorAll('thead th');
+  const tdLabels = Array.from(thEls).map(el => el.innerText);
+  tableEl.querySelectorAll('tbody tr').forEach( tr => {
+    Array.from(tr.children).forEach( 
+      (td, ndx) =>  td.setAttribute('data-label', tdLabels[ndx])
+    );
+  });
+}
+
+
+
+const handleFilter = () => {
+  console.log(filterString.value)
+  if(choice.value == 3) {
+    if(filterString.value) {
+      getFilterRemarksGCashTransacts(filterString.value)
+    } else {
+      alert('Please input something!')
     }
+  } else {
+    alert('Sorry, the filter is currently a work in progress..')
+  }
 }
 </script>
 
@@ -169,9 +213,9 @@ export default {
   display: flex;  
 }
 
-#table-style {
+/* #table-style {
   color: #fff;
-}
+} */
 
 .cselect-style {
   width: 12.5rem;
@@ -183,24 +227,24 @@ export default {
     width: 86vw;
   }
 
-  #table-style {
+  /* #table-style {
     margin: 0;
     width: 100%;
-  }
+  } */
 
-  table thead {
+  /* table thead {
     display: none;
   }
 
   table td {
     display: flex;
-  }
+  } */
 
   #main-form select, table td {
       font-size: 1.5rem;
   }
   
-  tbody td::before {
+  /* tbody td::before {
     content: attr(data-label);
     color: #000;
     text-shadow: 0 0 5px #E36005, 0 0 5px #E36005, 0 0 5px #E36005, 0 0 5px #E36005;
@@ -208,7 +252,7 @@ export default {
     width: 7.5rem;
     min-width: 7.5rem;
     margin-right: 1rem;
-  }
+  } */
   
 }
 </style>

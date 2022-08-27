@@ -51,25 +51,25 @@ nav h1 {
     text-decoration: none;
 }
 
-#table-style {
+.table-style {
     border-collapse: collapse;
     background-color: #3b3b3b;
 }
 
-#table-style th, #table-style td {
+.table-style th, .table-style td {
     padding: 1rem;
 }
 
-#table-style tr:nth-child(even) {
+.table-style tr:nth-child(even) {
     background-color: var(--item-color);
 }
 
-#table-style tr:hover {
+.table-style tr:hover {
     background-color: var(--blue-highlight);
     color: #000;
 }
 
-#table-style th {
+.table-style th {
     text-align: left;
     background-color: var(--green);
     padding-top: 12px;

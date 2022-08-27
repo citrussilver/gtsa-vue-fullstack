@@ -1,39 +1,31 @@
-import { ref } from 'vue'
 import config from '../config'
-
-export let gCashTransacts = ref([])
-export let filterRemarksGCashTransacts = ref([])
 
 export const getGCashTransacts = async () => {
 
-    await fetch(`${config.apiUrl}/gcash/get-gcash-transactions`, {
+    let response = await fetch(`${config.apiUrl}/gcash/get-gcash-transactions`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {
             'Content-type': 'application/json; charset=UTF-8',
         },
-    }).then(res => {
-        return res.json()
-    })
-    .then(data => {
-        gCashTransacts.value = [...data]
-    })
+    }).then(res => res.json())
+    .then(data => data)
     .catch(error => console.log(error))
+
+    return response;
 }
 
 export const getFilterRemarksGCashTransacts = async (param) => {
-    gCashTransacts.value = [];
-    await fetch(`${config.apiUrl}/gcash/get-gcash-transactions:${param}`, {
+    
+    let response = await fetch(`${config.apiUrl}/gcash/get-gcash-transactions:${param}`, {
         method: 'GET',
         body: JSON.stringify(),
         headers: {
             'Content-type': 'application/json; charset=UTF-8',
         },
-    }).then(res => {
-        return res.json()
-    })
-    .then(data => {
-        gCashTransacts.value = [...data]
-    })
+    }).then(res => res.json())
+    .then(data => data)
     .catch(error => console.log(error))
+
+    return response;
 }
