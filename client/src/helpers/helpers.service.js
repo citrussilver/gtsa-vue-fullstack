@@ -17,7 +17,7 @@ export const handleAxios = async (route, objData, type, specific) => {
 
   if (res) {
 
-    console.log('YES')
+    // console.log('YES')
     
     await axios.post(`${route}`, objData)
     .then(response => {

@@ -80,7 +80,7 @@ export const insertLoadSale = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: data.remarks
+        remarks: `[Load Sale] ${data.remarks}`
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -103,7 +103,7 @@ export const insertLoadSale = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log('[GCash] New Load Sale successfully posted to database')
+                    console.log(`[GCash] New Mobile Load Sale to ${data.mobile_number} successfully posted to database`)
                 }
             });
         }
@@ -111,7 +111,15 @@ export const insertLoadSale = (data, result) => {
 }
 
 export const insertGCashBillsPayment = (data, result) => {
-    dbConnection.query("INSERT INTO gcash_transactions SET ?", data, (err, results) => {
+    dbConnection.query("INSERT INTO gcash_transactions SET ?", {
+        gcash_id: data.gcash_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        current_gcash_balance: data.current_gcash_balance,
+        amount: data.amount,
+        remarks: `[Bills Payment] ${data.remarks}`,
+        ref_no: data.ref_no
+    }, (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -119,6 +127,7 @@ export const insertGCashBillsPayment = (data, result) => {
             const bills_payment_data = {
                 gcash_transact_id: results.insertId,
                 date_time: data.date_time,
+                biller_merchant: data.biller_merchant,
                 amount: data.amount,
                 remarks: data.remarks
             };
@@ -129,7 +138,7 @@ export const insertGCashBillsPayment = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log('[GCash] New Bills payment successfully posted to database')
+                    console.log(`[GCash] New Bills payment to ${data.biller_merchant} successfully posted to database`)
                 }
             });
         }
@@ -138,7 +147,15 @@ export const insertGCashBillsPayment = (data, result) => {
 
 // Insert GCash Sale / Income
 export const insertGCashIncomeSale = (data, result) => {
-    dbConnection.query("INSERT INTO gcash_transactions SET ?", data, (err, results) => {
+    dbConnection.query("INSERT INTO gcash_transactions SET ?", {
+        gcash_id: data.gcash_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        current_gcash_balance: data.current_gcash_balance,
+        amount: data.amount,
+        remarks: `[Sale / Income] ${data.remarks}`,
+        ref_no: data.ref_no
+    }, (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -172,7 +189,7 @@ export const insertSelfBuyLoad = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: data.remarks
+        remarks: `[Self Buy Load] ${data.remarks}`
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -207,7 +224,7 @@ export const insertBankTransfer = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: data.remarks
+        remarks: `[Bank Transfer] ${data.remarks}`
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -242,7 +259,8 @@ export const insertOnlineShopPay = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: data.remarks
+        remarks: `[Online Payment - ${data.online_shop_website}] ${data.remarks}`,
+        ref_no: data.ref_no
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -262,7 +280,7 @@ export const insertOnlineShopPay = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log('[GCash] New Online Shop Payment successfully posted to database')
+                    console.log(`[GCash] Payment to ${data.online_shop_website} successfully posted to database`)
                 }
             });
         }
@@ -279,7 +297,7 @@ export const insertGCashAdjustment = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: data.remarks
+        remarks: `[Adjustment] ${data.remarks}`
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -313,7 +331,7 @@ export const insertGCashSendMoney = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: data.remarks
+        remarks: `[Send Money] ${data.remarks}`
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -344,7 +362,14 @@ export const insertGCashSendMoney = (data, result) => {
 }
 
 export const insertGCashRefund = (data, result) => {
-    dbConnection.query("INSERT INTO gcash_transactions SET ?", data, (err, results) => {
+    dbConnection.query("INSERT INTO gcash_transactions SET ?", {
+        gcash_id: data.gcash_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        current_gcash_balance: data.current_gcash_balance,
+        amount: data.amount,
+        remarks: `[Refund] ${data.remarks}`
+    }, (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -376,7 +401,7 @@ export const insertPayQr = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: data.remarks
+        remarks: `[Pay QR] ${data.remarks}`
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -404,7 +429,14 @@ export const insertPayQr = (data, result) => {
 }
 
 export const insertGCashReceivedMoney = (data, result) => {
-    dbConnection.query("INSERT INTO gcash_transactions SET ?", data, (err, results) => {
+    dbConnection.query("INSERT INTO gcash_transactions SET ?", {
+        gcash_id: data.gcash_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        current_gcash_balance: data.current_gcash_balance,
+        amount: data.amount,
+        remarks: `[Received Money] ${data.remarks}`
+    }, (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
