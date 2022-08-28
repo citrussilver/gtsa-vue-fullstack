@@ -8,7 +8,7 @@ const dbConnection = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
-    database: 'gc_sa'
+    database: 'test_gc_sa'
 });
 
 export default dbConnection;

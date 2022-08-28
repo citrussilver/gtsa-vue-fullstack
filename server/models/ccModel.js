@@ -29,7 +29,7 @@ export const insertCcOnlinePay = (data, result) => {
         transact_type_id: data.transact_type_id,
         description: data.description,
         amount: data.amount,
-        remarks: data.remarks,
+        remarks: `[Online Payment - ${data.online_shop_website}] data.remarks`
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -51,7 +51,7 @@ export const insertCcOnlinePay = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log('[Credit Card] New Online payment successfully posted to database')
+                    console.log(`[Credit Card] ${data.online_shop_website} transaction successfully posted to database`)
                 }
             });
         }
@@ -65,7 +65,7 @@ export const insertCcNonOnlinePay = (data, result) => {
         transact_type_id: data.transact_type_id,
         description: data.description,
         amount: data.amount,
-        remarks: data.remarks,
+        remarks: `[Store Payment - ${data.store_name}] ${data.remarks}`,
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -87,7 +87,7 @@ export const insertCcNonOnlinePay = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log('[Credit Card] New Non-Online payment successfully posted to database')
+                    console.log(`[Credit Card] Payment to ${data.store_name} successfully posted to database`)
                 }
             });
         }
@@ -101,7 +101,7 @@ export const insertCcPromoLoan = (data, result) => {
         transact_type_id: data.transact_type_id,
         description: data.description,
         amount: data.amount,
-        remarks: data.remarks,
+        remarks: `[Loan (Promo)] ${data.remarks}`,
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -128,7 +128,7 @@ export const insertCcPromoLoan = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log('[Credit Card] New Promo Loan successfully posted to database')
+                    console.log('[Credit Card] New Loan (Promo) successfully posted to database')
                 }
             });
         }

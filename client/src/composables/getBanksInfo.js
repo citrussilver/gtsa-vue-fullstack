@@ -10,7 +10,7 @@ export const getSavingsAccs = async () => {
         },
     }).then(res => res.json())
     .then(data => data)
-    .catch(error => err)
+    .catch(err => err)
 
     return response;
 }
