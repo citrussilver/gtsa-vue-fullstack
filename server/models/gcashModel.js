@@ -103,7 +103,7 @@ export const insertLoadSale = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log(`[GCash] New Mobile Load Sale to ${data.mobile_number} successfully posted to database`)
+                    console.log(`[GCash] New Mobile Load Sale to ${load_sale_data.mobile_number} successfully posted to database`)
                 }
             });
         }
@@ -111,6 +111,7 @@ export const insertLoadSale = (data, result) => {
 }
 
 export const insertGCashBillsPayment = (data, result) => {
+
     dbConnection.query("INSERT INTO gcash_transactions SET ?", {
         gcash_id: data.gcash_id,
         date_time: data.date_time,
@@ -124,6 +125,9 @@ export const insertGCashBillsPayment = (data, result) => {
             console.log(err);
             result(err, null);
         } else {
+
+            console.log(`data.biller_merchant: ${data.biller_merchant}`)
+
             const bills_payment_data = {
                 gcash_transact_id: results.insertId,
                 date_time: data.date_time,
@@ -138,7 +142,7 @@ export const insertGCashBillsPayment = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log(`[GCash] New Bills payment to ${data.biller_merchant} successfully posted to database`)
+                    console.log(`[GCash] New Bills payment to ${bills_payment_data.biller_merchant} successfully posted to database`)
                 }
             });
         }
@@ -266,6 +270,9 @@ export const insertOnlineShopPay = (data, result) => {
             console.log(err);
             result(err, null);
         } else {
+
+            console.log(`data.online_shop_website: ${data.online_shop_website}`)
+
             const online_shop_payment_data = {
                 gcash_transact_id: results.insertId,
                 date_time: data.date_time,
@@ -280,7 +287,7 @@ export const insertOnlineShopPay = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log(`[GCash] Payment to ${data.online_shop_website} successfully posted to database`)
+                    console.log(`[GCash] Payment to ${online_shop_payment_data.online_shop_website} successfully posted to database`)
                 }
             });
         }
@@ -354,7 +361,7 @@ export const insertGCashSendMoney = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log('[GCash] New Send Money successfully posted to database')
+                    console.log(`[GCash] New Send Money sent to ${send_money_data.mobile_number} successfully posted to database`)
                 }
             });
         }
@@ -421,7 +428,7 @@ export const insertPayQr = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log('[GCash] New Pay QR successfully posted to database')
+                    console.log(`[GCash] New Pay QR to ${pay_qr_data.store_name} successfully posted to database`)
                 }
             });
         }

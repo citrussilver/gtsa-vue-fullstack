@@ -148,7 +148,7 @@ export const insertBankBillsPayment = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log(`[Savings Acct] New Bills Payment to ${data.biller_merchant} successfully posted to database`)
+                    console.log(`[Savings Acct] New Bills Payment to ${billspay_data.biller_merchant} successfully posted to database`)
                 }
             });
         }
