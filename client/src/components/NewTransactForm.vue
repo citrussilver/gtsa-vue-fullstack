@@ -228,7 +228,7 @@
           </div>
           <div class="form-group" v-if="formDetails.componentId === 2">
             <label class="control-label white">Ref. No.</label><br>
-            <input type="text" class="form-control" v-model="gCashObject.refNo"/>
+            <input type="text" class="form-control" v-model="gCashObject.refNo" required/>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 1">
             <label class="col-form-label white">Location</label><br>
@@ -348,7 +348,8 @@ const fetchCc = (val) => {
 }
 
 const fetchGCashAcc = () => {
-  gCashObject.gcBalance = gCashData.value[0].balance_wc
+  // make sure this is an integer type to prevent Data truncated MySQL error
+  gCashObject.gcBalance = gCashData.value[0].balance
 }
 
 const handleGCashInitialization = async () => {
@@ -374,6 +375,10 @@ const trackSelection = (val, flag) => {
 
 const digitOnlyInput = (event) => {
   return event.charCode >= 48 && event.charCode <= 57
+}
+
+const trackDropDown = (param) => {
+  console.log(param)
 }
 
 const handleSubmit = async () => {
@@ -403,6 +408,8 @@ const handleSubmit = async () => {
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-wdraw`, newBankData, 'Savings Account', 'Cash Withdraw')
 
       } else if(commonProps.transactType === 3) {
+
+        newBankData.biller_merchant = commonProps.billerMerchant
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-billspay`, newBankData, 'Savings Account', 'Bills Payment')
 
@@ -469,7 +476,9 @@ const handleSubmit = async () => {
 
       } else if(commonProps.transactType === 3) {
 
-        newGCashData.billerMerchant = commonProps.billerMerchant
+        newGCashData.biller_merchant = commonProps.billerMerchant
+
+        console.log(newGCashData)
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-billspay`, newGCashData, 'GCash', 'Bills payment')
 

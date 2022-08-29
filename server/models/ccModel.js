@@ -51,7 +51,7 @@ export const insertCcOnlinePay = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log(`[Credit Card] ${data.online_shop_website} transaction successfully posted to database`)
+                    console.log(`[Credit Card] ${online_pay_data.online_shop_website} transaction successfully posted to database`)
                 }
             });
         }
@@ -87,7 +87,7 @@ export const insertCcNonOnlinePay = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log(`[Credit Card] Payment to ${data.store_name} successfully posted to database`)
+                    console.log(`[Credit Card] Payment to ${non_online_pay_data.store_name} successfully posted to database`)
                 }
             });
         }
