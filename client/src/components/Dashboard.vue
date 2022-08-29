@@ -3,6 +3,7 @@
     <div class="grid-tile">
       <div 
         class="grid-tile-item blue-1" 
+        :class="{ 'gcash': gCash.account_nick.includes('GCash'), 'mora' : gCash.account_nick.includes('MoraCash') }"
         v-for="(gCash, index) in gCashData" 
         key="index" 
       >
@@ -23,7 +24,13 @@
       </div>
       <div 
         class="grid-tile-item" 
-        :class="{ 'red-1' : index === 0, 'security-bank dark-grey' :  index === 1, 'union-bank' : index === 2}" 
+        :class="{ 
+          'blue-1' : sa.bank_name, 
+          'bpi-red' : sa.bank_abbrev.includes('BPI'), 
+          'security-bank dark-grey' :  sa.bank_abbrev.includes('SB'), 
+          'union-bank' : sa.bank_abbrev.includes('UB'),
+          'liyue' : sa.bank_name.includes('Liyue')
+        }" 
         v-for="(sa, index) in savingsAcctData" 
         key="index" 
       >
@@ -39,6 +46,11 @@
       </div>
       <div 
         class="grid-tile-item purple-1" 
+        :class="{ 
+          'blue-master-card' : cc.cc_name.includes('Blue Mastercard'),
+          'liyue-platinum' : cc.cc_name.includes('Platinum'),
+          'liyue-gold' : cc.cc_name.includes('Gold')
+        }"
         v-for="(cc, index) in creditCardsData" 
         key="index" 
       >
@@ -195,14 +207,49 @@ export default {
     background-color: #3e8ed0;
   }
 
+  .gcash {
+    /* rgb(0, 39, 181) */
+    background-image: linear-gradient(-269deg, rgb(44, 0, 144) 7%, rgb(44, 0, 144) 17%, rgb(111, 186, 247) 98%);
+  }
+
+  .mora {
+    /* rgb(234, 211, 87) */
+    background-image: linear-gradient(-269deg, rgb(177, 123, 50) 7%, rgb(177, 123, 50) 17%, rgb(234, 211, 87) 98%);
+  }
+
+  .bpi-red {
+    /* #b11116 */
+    background-color: #b11116;
+  }
+
   .security-bank {
     background-color: #016cae;
-    background-image: linear-gradient(to right, #a0cf67 , #016cae);
+    background-image: linear-gradient(-269deg, rgb(160, 207, 103) 7%, rgb(160, 207, 103) 17%, rgb(1, 108, 174) 98%);
+    /* background-image: linear-gradient(to right, #a0cf67 , #016cae); */
   }
 
   .union-bank {
     background-color: #fd8506;
     background-image: linear-gradient(-269deg, rgb(204, 130, 0) 7%, rgb(204, 130, 0) 17%, rgb(190, 43, 4) 98%);
+  }
+
+  .liyue {
+    /* rgb(193, 83, 66) */
+    background-image: linear-gradient(-269deg, rgb(193, 83, 66) 7%, rgb(193, 83, 66) 17%, rgb(234, 211, 87) 98%);
+  }
+
+  .liyue-platinum {
+    /* rgb(229, 228, 225) */
+    background-image: linear-gradient(-269deg, rgb(193, 83, 66) 7%, rgb(193, 83, 66) 17%, rgb(229, 228, 225) 98%);
+  }
+
+  .liyue-gold {
+    background-image: linear-gradient(-269deg, rgb(193, 83, 66) 7%, rgb(193, 83, 66) 17%, rgb(255, 230, 136) 98%);
+  }
+
+  .blue-master-card {
+    background-image: linear-gradient(-269deg, rgb(3, 47, 115) 7%, rgb(3, 47, 115) 17%, rgb(0, 94, 168) 98%);
+    /* background-image: linear-gradient(to right, rgb(0, 94, 168) , #f79f14); */
   }
 
   .red-1 {
@@ -256,7 +303,7 @@ export default {
   .grid-tile-item:last-child {
     grid-column-start: 3;
     grid-row-start: 1;
-    grid-row-end: 4;
+    grid-row-end: 3;
   }
 
   .tile-title {

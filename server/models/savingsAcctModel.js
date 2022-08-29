@@ -2,7 +2,8 @@ import dbConnection from '../config/database.js';
 
 // Get All Savings Acc Transactions
 export const getSa1Transacts = (result) => {
-    dbConnection.query('SELECT sa_transact_id, date_time AS date_time_og, DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, bt.description as transact_type, FORMAT(amount,2) AS amount, FORMAT(current_balance,2) AS current_balance, remarks, FORMAT(post_transact_balance,2) AS post_transact_balance, location FROM savings_acct_transactions sa JOIN bank_transaction_type bt ON sa.bank_transact_type_id = bt.id WHERE bank_id = 1 ORDER BY date_time_og DESC LIMIT 30', (err, results) => {
+    // DESC LIMIT 30
+    dbConnection.query('SELECT sa_transact_id, date_time AS date_time_og, DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, bt.description as transact_type, FORMAT(amount,2) AS amount, FORMAT(current_balance,2) AS current_balance, remarks, FORMAT(post_transact_balance,2) AS post_transact_balance, location FROM savings_acct_transactions sa JOIN bank_transaction_type bt ON sa.bank_transact_type_id = bt.id WHERE bank_id = 1 ORDER BY date_time_og', (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -42,7 +43,7 @@ export const insertBankCashDeposit = (data, result) => {
         bank_transact_type_id: data.bank_transact_type_id,
         amount: data.amount,
         current_balance: data.current_balance,
-        remarks: data.remarks,
+        remarks: `[Cash Deposit] ${data.remarks}`,
         location: data.location,
     }, (err, results) => {
         if(err) {
@@ -77,7 +78,7 @@ export const insertBankCashWithdraw = (data, result) => {
         bank_transact_type_id: data.bank_transact_type_id,
         amount: data.amount,
         current_balance: data.current_balance,
-        remarks: data.remarks,
+        remarks: `[Cash Withdraw] ${data.remarks}`,
         location: data.location,
     }, (err, results) => {
         if(err) {
@@ -125,7 +126,7 @@ export const insertBankBillsPayment = (data, result) => {
         bank_transact_type_id: data.bank_transact_type_id,
         amount: data.amount,
         current_balance: data.current_balance,
-        remarks: data.remarks,
+        remarks: `[Bills Payment] ${data.remarks}`,
         location: data.location,
     }, (err, results) => {
         if(err) {
@@ -135,6 +136,8 @@ export const insertBankBillsPayment = (data, result) => {
 
             const billspay_data = {
                 sa_transact_id: results.insertId,
+                date_time: data.date_time,
+                biller_merchant: data.biller_merchant,
                 remarks: data.remarks,
                 amount: data.amount
             }
@@ -145,7 +148,7 @@ export const insertBankBillsPayment = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log('[Savings Acct] New Bills Payment successfully posted to database')
+                    console.log(`[Savings Acct] New Bills Payment to ${billspay_data.biller_merchant} successfully posted to database`)
                 }
             });
         }
@@ -159,7 +162,7 @@ export const insertGCashCashIn = (data, result) => {
         bank_transact_type_id: data.bank_transact_type_id,
         amount: data.amount,
         current_balance: data.current_balance,
-        remarks: data.remarks,
+        remarks: `[GCash Cash-in] ${data.remarks}`,
         location: data.location,
     }, (err, results) => {
         if(err) {
@@ -174,7 +177,8 @@ export const insertGCashCashIn = (data, result) => {
                 transact_type_id: 2,
                 current_gcash_balance: data.current_gcash_balance,
                 amount: data.amount,
-                remarks: data.remarks,
+                ref_no: data.gcash_ref_no,
+                remarks: `[GCash Cash-in from Savings Account] ${data.remarks}`,
             };
 
             dbConnection.query("INSERT INTO gcash_transactions SET ?", cash_in_data, (err, results) => {
@@ -185,7 +189,7 @@ export const insertGCashCashIn = (data, result) => {
                     const gcash_in_data = {
                         gcash_transact_id: results.insertId,
                         sa_transact_id: saTransactId,
-                        remarks: data.remarks,
+                        remarks: `[Savings Account] ${data.remarks}`,
                         amount: data.amount
                     }
                     dbConnection.query("INSERT INTO gcash_cash_in SET ?", gcash_in_data, (err, results) => {
@@ -194,7 +198,7 @@ export const insertGCashCashIn = (data, result) => {
                             result(err, null);
                         } else {
                             result(null, results);
-                            console.log('[Savings Acct] New GCash cash-in successfully posted to database')
+                            console.log('[Savings Acct] New GCash cash-in from bank successfully posted to database')
                         }
                     });
                 }
@@ -210,7 +214,7 @@ export const insertBankPrepaidReload = (data, result) => {
         bank_transact_type_id: data.bank_transact_type_id,
         amount: data.amount,
         current_balance: data.current_balance,
-        remarks: data.remarks,
+        remarks: `[Prepaid Reload] ${data.remarks}`,
         location: data.location,
     }, (err, results) => {
         if(err) {
@@ -245,7 +249,7 @@ export const insertTransferMoney = (data, result) => {
         bank_transact_type_id: data.bank_transact_type_id,
         amount: data.amount,
         current_balance: data.current_balance,
-        remarks: data.remarks,
+        remarks: `[Transfer Money] ${data.remarks}`,
         location: data.location,
     }, (err, results) => {
         if(err) {
@@ -282,7 +286,7 @@ export const insertAdjustment = (data, result) => {
         bank_transact_type_id: data.bank_transact_type_id,
         amount: data.amount,
         current_balance: data.current_balance,
-        remarks: data.remarks,
+        remarks: `[Adjustment] ${data.remarks}`,
         location: data.location,
     }, (err, results) => {
         if(err) {
@@ -319,7 +323,7 @@ export const insertEarnInterest = (data, result) => {
         bank_transact_type_id: data.bank_transact_type_id,
         amount: data.amount,
         current_balance: data.current_balance,
-        remarks: data.remarks,
+        remarks: `[Earn Interest] ${data.remarks}`,
         location: data.location,
     }, (err, results) => {
         if(err) {
@@ -355,7 +359,7 @@ export const insertTaxWithheld = (data, result) => {
         bank_transact_type_id: data.bank_transact_type_id,
         amount: data.amount,
         current_balance: data.current_balance,
-        remarks: data.remarks,
+        remarks: `[Tax Witheld] ${data.remarks}`,
         location: data.location,
     }, (err, results) => {
         if(err) {
@@ -391,7 +395,7 @@ export const insertSalaryIncome = (data, result) => {
         bank_transact_type_id: data.bank_transact_type_id,
         amount: data.amount,
         current_balance: data.current_balance,
-        remarks: data.remarks,
+        remarks: `[Salary / Income] ${data.remarks}`,
         location: data.location,
     }, (err, results) => {
         if(err) {

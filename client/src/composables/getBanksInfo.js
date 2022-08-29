@@ -1,4 +1,3 @@
-import { ref } from 'vue'
 import config from '../config'
 
 export const getSavingsAccs = async () => {
@@ -9,15 +8,10 @@ export const getSavingsAccs = async () => {
         headers: {
             'Content-type': 'application/json; charset=UTF-8',
         },
-    }).then(res => {
-        return res.json()
-    })
-    .then(data => {
-        // savingsAccs.value = [...data]
-        return data
-    })
-    .catch(error => err)
+    }).then(res => res.json())
+    .then(data => data)
+    .catch(err => err)
 
-    return response
+    return response;
 }
 
