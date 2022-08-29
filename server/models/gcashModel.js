@@ -193,7 +193,8 @@ export const insertSelfBuyLoad = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: `[Self Buy Load] ${data.remarks}`
+        remarks: `[Self Buy Load] ${data.remarks}`,
+        ref_no: data.ref_no
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -202,7 +203,7 @@ export const insertSelfBuyLoad = (data, result) => {
             const self_buy_load_data = {
                 gcash_transact_id: results.insertId,
                 date_time: data.date_time,
-                mobile_number: data.mobile_number,
+                mobile_number: data.own_mobile_number,
                 network: data.network,
                 remarks: data.remarks,
                 amount: data.amount
@@ -408,7 +409,8 @@ export const insertPayQr = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: `[Pay QR] ${data.remarks}`
+        remarks: `[Pay QR] ${data.remarks}`,
+        ref_no: data.ref_no
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -442,7 +444,8 @@ export const insertGCashReceivedMoney = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: `[Received Money] ${data.remarks}`
+        remarks: `[Received Money] ${data.remarks}`,
+        ref_no: data.ref_no
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -451,6 +454,8 @@ export const insertGCashReceivedMoney = (data, result) => {
             const received_money_data = {
                 gcash_transact_id: results.insertId,
                 date_time: data.date_time,
+                mobile_number: data.mobile_number,
+                money_sender: data.money_sender,
                 amount: data.amount,
                 description: data.remarks
             };

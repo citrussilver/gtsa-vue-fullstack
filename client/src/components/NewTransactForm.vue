@@ -23,6 +23,17 @@
                   <option v-for="transact in formDetails.transactType" :key="transact.val" :value="transact.val">{{transact.title}}</option>
               </select>
           </div>
+          <div class="form-group" v-if="formDetails.componentId === 2">
+            <label class="col-form-label white">Current GCash Balance</label>
+            <div class="form-group">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">₱</span>
+                </div>
+                <input type="text" class="form-control border-primary" style="background-color: #303030; color: white;" v-model="gCashObject.gcBalance" disabled>
+              </div>
+            </div>
+          </div>
           <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 9">
             <select class="custom-select send-money-type" v-model="commonProps.sendMoneyType">
               <option value="1">Express Send</option>
@@ -38,10 +49,28 @@
                 <option v-for="(customer, index) in customersArray" :key="index" :value="customer.customer_id">{{ customer.name }}</option>
               </select>
             </div>
-            <div class="form-group" v-if="formDetails.componentId === 2 && (commonProps.transactType === 5 || commonProps.transactType === 1 || commonProps.transactType === 9)">
-              <label class="col-form-label white">{{ commonProps.transactType === 5 ? 'Own Mobile Numbers':'Mobile Number' }}</label><br>
-              <input type="number" v-if="(formDetails.componentId === 2  && commonProps.transactType != 5 )" class="form-control customer-select-style" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keydown="digitOnlyInput" v-model="gCashObject.mobileNo">
-              <select v-else class="custom-select own-numbers" v-model="gCashObject.mobileNo">
+            <div 
+              class="form-group" 
+              v-if="
+                formDetails.componentId === 2 && 
+                ( commonProps.transactType === 5 || 
+                  commonProps.transactType === 1 || 
+                  commonProps.transactType === 9 || 
+                  commonProps.transactType === 12
+                )
+              "
+            >
+              <label class="col-form-label white">
+                {{ commonProps.transactType === 5 ? 'Own Mobile Numbers' : 'Mobile Number' }}
+              </label><br>
+              <input type="number" 
+                v-if="(formDetails.componentId === 2  && commonProps.transactType != 5 )" 
+                class="form-control customer-select-style" 
+                pattern=" 0+\.[0-9]*[1-9][0-9]*$" 
+                @keydown="digitOnlyInput" 
+                v-model="gCashObject.mobileNo"
+              >
+              <select v-else class="custom-select own-numbers" v-model="gCashObject.ownMobileNo">
                 <option value="0">-- Select Mobile No. --</option>
                 <option value="09755512192">TM - 09755512192</option>
                 <option value="09369700679">GCash No. - 0936970679</option>
@@ -107,17 +136,6 @@
               <div id="cl-notice"></div>
             </div>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 2">
-            <label class="col-form-label white">Current GCash Balance</label>
-            <div class="form-group">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">₱</span>
-                </div>
-                <input type="text" class="form-control border-primary" style="background-color: #303030; color: white;" v-model="gCashObject.gcBalance" disabled>
-              </div>
-            </div>
-          </div>
           <div class="form-group" v-if="(formDetails.componentId === 1 || formDetails.componentId === 2) && commonProps.transactType === 3">
             <label class="control-label white">Biller / Merchant</label>
             <select class="custom-select" v-model="commonProps.billerMerchant">
@@ -133,6 +151,11 @@
             <label class="control-label white">Description</label><br>
             <input type="text" class="form-control" v-model="commonProps.description"/>
           </div>
+          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 12">
+            <label class="control-label white">Sender</label><br>
+            <input type="text" class="form-control" v-model="gCashObject.moneySender" required/>
+          </div>
+          <!-- Amount -->
           <div class="form-group">
             <label class="control-label white">{{ (formDetails.componentId === 2 && commonProps.transactType === 4) ? 'Sale / Income Received:' : 'Amount'}}</label>
             <div class="form-group">
@@ -226,8 +249,8 @@
             <label class="control-label white">Remarks</label><br>
             <textarea class="form-control" rows="3" v-model="commonProps.remarks"/>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 2">
-            <label class="control-label white">Ref. No.</label><br>
+          <div class="form-group" v-if="formDetails.componentId === 2 || bankObject.location === 'GCash App'">
+            <label class="control-label white">{{ bankObject.location == 'GCash App' ? 'GCash ' : '' }}Ref. No.</label><br>
             <input type="text" class="form-control" v-model="gCashObject.refNo" required/>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 1">
@@ -235,6 +258,7 @@
             <select class="custom-select" v-model="bankObject.location" >
               <option value="Select">-- Select App / Location --</option>
               <option :value="bankObject.location">{{ bankObject.location }}</option>
+              <option value="GCash App">GCash App</option>
               <option value="ATM">ATM</option>
               <option value="Automatic Activity">Automatic Activity</option>
             </select>
@@ -284,10 +308,12 @@ let gCashObject = reactive({
   gcBalance: 1, 
   acctName: '', 
   customer: '', 
-  mobileNo: '09755512192', 
+  mobileNo: '',
+  ownMobileNo: '09755512192', 
   network: 'TM', 
   paymentDateTime: '', 
   refNo: '', 
+  moneySender: '',
   message: '', 
   attachment: 'Photo'
 })
@@ -392,6 +418,7 @@ const handleSubmit = async () => {
         bank_transact_type_id: commonProps.transactType,
         current_balance: bankObject.saBalance,
         current_gcash_balance: gCashObject.gcBalance,
+        gcash_ref_no: gCashObject.refNo,
         amount: commonProps.amount,
         remarks: commonProps.remarks,
         location: bankObject.location
@@ -488,7 +515,7 @@ const handleSubmit = async () => {
 
       } else if(commonProps.transactType === 5) {
         
-        newGCashData.mobile_number = gCashObject.mobileNo
+        newGCashData.own_mobile_number = gCashObject.ownMobileNo
         newGCashData.network = gCashObject.network
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-selfbuyload`, newGCashData, 'GCash', 'Self Buy Load')
@@ -553,7 +580,10 @@ const handleSubmit = async () => {
 
       } else if (commonProps.transactType === 12) {
 
-        handleAxios('/gcash/save-received-money', newGCashData, 'GCash', 'Received Money')
+        newGCashData.money_sender = gCashObject.moneySender
+        newGCashData.mobile_number = gCashObject.mobileNo
+
+        axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-received-money`, newGCashData, 'GCash', 'Received Money')
       }
     } else if(props.formDetails.componentId === 3) {
 
