@@ -177,7 +177,8 @@ export const insertGCashCashIn = (data, result) => {
                 transact_type_id: 2,
                 current_gcash_balance: data.current_gcash_balance,
                 amount: data.amount,
-                remarks: data.remarks,
+                ref_no: data.gcash_ref_no,
+                remarks: `[GCash Cash-in from Savings Account] ${data.remarks}`,
             };
 
             dbConnection.query("INSERT INTO gcash_transactions SET ?", cash_in_data, (err, results) => {
