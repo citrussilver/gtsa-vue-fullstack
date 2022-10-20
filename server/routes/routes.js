@@ -101,7 +101,7 @@ router.post('/api/cc/save-cc-op', newCcOnlinePay);
 router.post('/api/cc/save-cc-nop', newCcNonOnlinePay);
 router.post('/api/cc/save-cc-loan', newCcPromoLoan);
 
-router.post('/login', handlelogin);
+router.post('/api/auth/login', handlelogin);
 router.post('/signup', validateRegister, signUpUser);
 
 // router.get('/secret-route', (req, res, next) => {

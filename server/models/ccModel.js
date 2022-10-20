@@ -29,7 +29,7 @@ export const insertCcOnlinePay = (data, result) => {
         transact_type_id: data.transact_type_id,
         description: data.description,
         amount: data.amount,
-        remarks: `[Online Payment - ${data.online_shop_website}] data.remarks`
+        remarks: `[Online Payment - ${data.online_shop_website}] ${data.remarks}`
     }, (err, results) => {
         if(err) {
             console.log(err);
