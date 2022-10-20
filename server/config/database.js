@@ -11,4 +11,14 @@ const dbConnection = mysql.createConnection({
     database: process.env.DB_DATABASE
 });
 
+// Make the connection
+dbConnection.connect(function (err) {
+    if (err) {
+        console.log("connection error", err.stack);
+        return;
+    }
+
+    console.log(`Connected to MySQL Database`);
+});
+
 export default dbConnection;

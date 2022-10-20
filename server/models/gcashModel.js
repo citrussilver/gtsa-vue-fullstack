@@ -80,7 +80,8 @@ export const insertLoadSale = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: `[Load Sale] ${data.remarks}`
+        remarks: `[Load Sale] ${data.remarks}`,
+        ref_no: data.ref_no
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -229,7 +230,8 @@ export const insertBankTransfer = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: `[Bank Transfer] ${data.remarks}`
+        remarks: `[Bank Transfer] ${data.remarks}`,
+        ref_no: data.ref_no
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -271,8 +273,6 @@ export const insertOnlineShopPay = (data, result) => {
             console.log(err);
             result(err, null);
         } else {
-
-            console.log(`data.online_shop_website: ${data.online_shop_website}`)
 
             const online_shop_payment_data = {
                 gcash_transact_id: results.insertId,
@@ -339,7 +339,8 @@ export const insertGCashSendMoney = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: `[Send Money] ${data.remarks}`
+        remarks: `[Send Money] ${data.remarks}`,
+        ref_no: data.ref_no
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -376,7 +377,7 @@ export const insertGCashRefund = (data, result) => {
         transact_type_id: data.transact_type_id,
         current_gcash_balance: data.current_gcash_balance,
         amount: data.amount,
-        remarks: `[Refund] ${data.remarks}`
+        remarks: `[Refund] ${data.remarks}`,
     }, (err, results) => {
         if(err) {
             console.log(err);

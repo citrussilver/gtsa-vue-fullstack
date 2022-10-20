@@ -185,7 +185,7 @@
                 <option value="GrabPay">GrabPay</option>
                 <option value="Youtube Membership">Youtube Membership</option>
                 <option value="Twitch Membership">Twitch Membership</option>
-                <option value="OF Sub">OF Subscription</option>
+                <option value="Spotify">Spotify</option>
               </select>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 3 && (commonProps.transactType === 1 || commonProps.transactType === 2)">
