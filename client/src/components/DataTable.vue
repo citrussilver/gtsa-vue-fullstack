@@ -34,7 +34,7 @@ const props = defineProps({
 });
 
 const report_data = ref([])
-const pagination_data = reactive({})
+let pagination_data = reactive({})
 const report_data_length = ref(0)
 const operation_hash = ref('')
 
@@ -43,25 +43,32 @@ operation_hash.value = props.tableDataConfig.operation_hash
 async function test() {
     await props.tableDataConfig.data_source()
     .then(res => {
+        // console.dir(res);
+
+        report_data.value = res
+
+        console.dir(report_data.value)
 
         report_data_length.value = res.length
 
-        console.log(`report_data_length.value: ${report_data_length.value}`)
 
         if(report_data_length.value > 0) {
 
-            report_data.value = res
+            // pagination_data.totalItems = report_data_length.value
 
-            console.log(report_data.value)
-
-            pagination_data.totalItems = report_data_length.value
-
+            // doesn't proceed to console.log after this code
             // pagination_data = {
             //     totalItems: report_data_length.value,
             //     currentPage: self.search.currentPage,
             //     rowCount: self.search.limit,
             //     maxPages: self.$scope.componentData.cdtConfig.page_number_count
             // };
+            pagination_data.totalItems = report_data_length.value
+            // pagination_data.currentPage = self.search.currentPage,
+            // pagination_data.rowCount = self.search.limit,
+            pagination_data.maxPages = props.tableDataConfig.page_number_count
+
+            console.log(pagination_data)
 
             
             operation_hash.value = executeHash()

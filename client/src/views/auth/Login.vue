@@ -26,33 +26,39 @@
 </div>
 </template>
 
-<script>
-import { ref } from 'vue'
+<script setup>
 import config from '../../config'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useActions } from 'vuex-composition-helpers/dist'
 
-export default {
-    setup() {
+const router = useRouter()
 
-        let username = ref('')
-        let password = ref('')
+const { setUser } = useActions(['setUser'])
+const { setToken } = useActions(['setToken'])
 
-        const handleSubmit = async () => {
-            console.log('Login clicked.')
-            await fetch(`${config.apiUrl}/login`, {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username: username.value,
-                    password: password.value,
-                }),
-            });
-        }
+let username = ref('')
+let password = ref('')
 
-        return { username, password, handleSubmit }
-    }
+const handleSubmit = async () => {
+
+    const response = await fetch(`${config.apiUrl}/auth/login`, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            username: username.value,
+            password: password.value,
+        }),
+    })
+    const { user, token } = await response.json()
+
+    setUser(user)
+    setToken(token)
+    router.push('/')
 }
+
 </script>
 
 <style scoped>
