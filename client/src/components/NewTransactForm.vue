@@ -179,13 +179,14 @@
                 <option value="GCash A+ Rewards">GCash A+ Rewards</option>
                 <option value="Steam">Steam</option>
                 <option value="Shopee">Shopee Pay Top-up</option>
-                <option value="Lazada">Lazada Wallet Top-up</option>
+                <option value="Lazada">Lazada payment - GCash</option>
                 <option value="Google Play">Google Play</option>
                 <option value="Food Panda PH">Food Panda</option>
                 <option value="GrabPay">GrabPay</option>
                 <option value="Youtube Membership">Youtube Membership</option>
                 <option value="Twitch Membership">Twitch Membership</option>
                 <option value="Spotify">Spotify</option>
+                <option value="Lalamove">Lalamove</option>
               </select>
           </div>
           <div class="form-group" v-if="formDetails.componentId === 3 && (commonProps.transactType === 1 || commonProps.transactType === 2)">

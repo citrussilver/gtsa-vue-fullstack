@@ -127,8 +127,6 @@ export const insertGCashBillsPayment = (data, result) => {
             result(err, null);
         } else {
 
-            console.log(`data.biller_merchant: ${data.biller_merchant}`)
-
             const bills_payment_data = {
                 gcash_transact_id: results.insertId,
                 date_time: data.date_time,
