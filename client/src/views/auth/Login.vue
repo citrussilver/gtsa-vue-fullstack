@@ -52,11 +52,18 @@ const handleSubmit = async () => {
             password: password.value,
         }),
     })
-    const { user, token } = await response.json()
 
-    setUser(user)
-    setToken(token)
-    router.push('/')
+    if(response.status == 403) {
+        console.log(response.status);
+    } else {
+        const { user, token } = await response.json()
+    
+        setUser(user)
+        setToken(token)
+        router.push('/')
+    }
+
+
 }
 
 </script>

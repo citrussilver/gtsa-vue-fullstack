@@ -7,11 +7,27 @@ import NewCreditCardTransact from '../views/NewCreditCardTransact.vue'
 import NewGCashTransact from '../views/NewGCashTransact.vue'
 import TransactsList from '../views/TransactsList.vue'
 
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+
+const requireAuth = (to, from, next) => {
+  // let user = projectAuth.currentUser
+  const user = computed(() => store.state.user)
+
+  console.log(user)
+
+  if(!user) {
+    next({ name: 'Login'})
+  } else {
+    next()
+  }
+}
+
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
   },
   {
     path: '/login',
@@ -26,22 +42,22 @@ const routes = [
   {
     path: '/new-sa-tr',
     name: 'NewBankTransact',
-    component: NewBankTransact
+    component: NewBankTransact,
   },
   {
     path: '/new-cc-tr',
     name: 'NewCreditCardTransact',
-    component: NewCreditCardTransact
+    component: NewCreditCardTransact,
   },
   {
     path: '/new-gcash-tr',
     name: 'NewGCashTransact',
-    component: NewGCashTransact
+    component: NewGCashTransact,
   },
   {
     path: '/view-recs',
     name: 'TransactsList',
-    component: TransactsList
+    component: TransactsList,
   }
 ]
 
