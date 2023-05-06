@@ -207,6 +207,58 @@ export const insertGCashCashIn = (data, result) => {
     });
 }
 
+export const insertMayaCashIn = (data, result) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
+        bank_id: data.bank_id,
+        date_time: data.date_time,
+        bank_transact_type_id: data.bank_transact_type_id,
+        amount: data.amount,
+        current_balance: data.current_balance,
+        remarks: `[Maya Cash-in] ${data.remarks}`,
+        location: data.location,
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            let saTransactId = results.insertId;
+
+            const cash_in_data = {
+                maya_id: 1,
+                date_time: data.date_time,
+                transact_type_id: 0, // Maya Cash-in for now
+                current_maya_balance: data.current_maya_balance,
+                amount: data.amount,
+                ref_no: data.maya_ref_no,
+                remarks: `[Maya Cash-in from Savings Account] ${data.remarks}`,
+            };
+
+            dbConnection.query("INSERT INTO maya_transactions SET ?", cash_in_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    const maya_cash_in_data = {
+                        maya_transact_id: results.insertId,
+                        sa_transact_id: saTransactId,
+                        remarks: `[Savings Account] ${data.remarks}`,
+                        amount: data.amount
+                    }
+                    dbConnection.query("INSERT INTO maya_cash_in SET ?", maya_cash_in_data, (err, results) => {
+                        if(err) {
+                            console.log(err);
+                            result(err, null);
+                        } else {
+                            result(null, results);
+                            console.log('[Savings Acct] New Maya cash-in from bank successfully posted to database')
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
+
 export const insertBankPrepaidReload = (data, result) => {
     dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
         bank_id: data.bank_id,

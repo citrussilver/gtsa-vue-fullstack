@@ -4,33 +4,24 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { reactive } from 'vue'
 import NewTransactForm from '../components/NewTransactForm.vue'
+import consts from '../constants/constants.js'
 
-export default {
-  components: {
-    NewTransactForm
-  },
-  setup() {
-
-    const ccFormDetails = reactive(
-      {
-        componentId: 3,
-        cardBorder: 'card border-danger',
-        header: 'New Credit Card Transaction',
-        transactType: [
-          { val: 0, title: '-- Select Transaction Type --' },
-          { val: 1, title: 'Online Payment' },
-          { val: 2, title: 'Non-online Payment' },
-          { val: 3, title: 'Loan - Credit to Cash Promo' },
-        ],
-      }
-    )
-
-    return { ccFormDetails }
+const ccFormDetails = reactive(
+  {
+    componentId: consts.cc_component_id,
+    cardBorder: 'card border-danger',
+    header: 'New Credit Card Transaction',
+    transactType: [
+      { val: 0, title: '-- Select Transaction Type --' },
+      { val: 1, title: 'Online Payment' },
+      { val: 2, title: 'Non-online Payment' },
+      { val: 3, title: 'Loan - Credit to Cash Promo' },
+    ],
   }
-}
+)
 </script>
 
 <style scoped>

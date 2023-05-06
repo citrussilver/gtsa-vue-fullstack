@@ -8,12 +8,12 @@
             <label class="col-form-label white">Date</label>
             <input type="datetime-local" class="form-control" v-model="commonProps.dateTime" required>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 1">
+          <div class="form-group" v-if="formDetails.componentId === consts.bank_component_id">
             <select class="custom-select" v-model="bankObject.bankId" @change="trackSelection($event.target.selectedIndex, 'sa')">
               <option v-for="(bank, index) in savingsAcctData" :key="index" :value="bank.bank_id">{{ bank.bank_name }} - {{ bank.bank_abbrev }}</option>
             </select>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 3">
+          <div class="form-group" v-if="formDetails.componentId === consts.cc_component_id">
             <select class="custom-select" v-model="ccProps.ccId" @change="trackSelection($event.target.selectedIndex, 'cc')">
               <option v-for="(creditCard, index) in creditCardsData" :key="index" :value="creditCard.credit_card_id">{{ creditCard.last_4_digits }} - {{ creditCard.cc_name }}</option>
             </select>
@@ -23,7 +23,7 @@
                   <option v-for="transact in formDetails.transactType" :key="transact.val" :value="transact.val">{{transact.title}}</option>
               </select>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 2">
+          <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id">
             <label class="col-form-label white">Current GCash Balance</label>
             <div class="form-group">
               <div class="input-group mb-3">
@@ -34,7 +34,23 @@
               </div>
             </div>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 9">
+          <div class="form-group" v-if="formDetails.componentId === consts.maya_component_id">
+            <label class="col-form-label white">Current Maya Balance</label>
+            <div class="form-group">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">₱</span>
+                </div>
+                <input 
+                  type="text" 
+                  class="form-control border-success" 
+                  style="background-color: #303030; color: white;" 
+                  v-model="mayaObject.mayaBalance" disabled
+                >
+              </div>
+            </div>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 9">
             <select class="custom-select send-money-type" v-model="commonProps.sendMoneyType">
               <option value="1">Express Send</option>
               <option value="2">Send via QR</option>
@@ -43,7 +59,7 @@
             </select>
           </div>
           <div class="flex-group">
-            <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 1">
+            <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 1">
               <label class="col-form-label white">Customer</label><br>
               <select class="custom-select customer-select-style" v-model="gCashObject.customer" @change="trackSelection(gCashObject.customer, 'gcash')">
                 <option v-for="(customer, index) in customersArray" :key="index" :value="customer.customer_id">{{ customer.name }}</option>
@@ -52,7 +68,7 @@
             <div 
               class="form-group" 
               v-if="
-                formDetails.componentId === 2 && 
+                formDetails.componentId === consts.gcash_component_id && 
                 ( commonProps.transactType === 5 || 
                   commonProps.transactType === 1 || 
                   commonProps.transactType === 9 || 
@@ -64,7 +80,7 @@
                 {{ commonProps.transactType === 5 ? 'Own Mobile Numbers' : 'Mobile Number' }}
               </label><br>
               <input type="number" 
-                v-if="(formDetails.componentId === 2  && commonProps.transactType != 5 )" 
+                v-if="(formDetails.componentId === consts.gcash_component_id  && commonProps.transactType != 5 )" 
                 class="form-control customer-select-style" 
                 pattern=" 0+\.[0-9]*[1-9][0-9]*$" 
                 @keydown="digitOnlyInput" 
@@ -81,7 +97,7 @@
             </div>
           </div>
           <div class="flex-group">
-            <div class="form-group" v-if="formDetails.componentId === 2 && (commonProps.transactType === 5 || commonProps.transactType === 1)" style="width: 5rem;">
+            <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && (commonProps.transactType === 5 || commonProps.transactType === 1)" style="width: 5rem;">
               <label class="col-form-label white">Network</label><br>
               <select class="custom-select" v-model="gCashObject.network" style="width: 6.5rem;">
                 <option value="TM">TM</option>
@@ -90,19 +106,19 @@
                 <option value="Smart">Smart</option>
               </select>
             </div>
-            <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 1">
+            <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 1">
               <label class="col-form-label white">Payment Date / Time</label>
               <input type="datetime-local" class="form-control pay-mobile-res" v-model="gCashObject.paymentDateTime">
             </div>
           </div>
-          <div class="form-group" v-if="(formDetails.componentId === 1 && commonProps.transactType === 7 || formDetails.componentId === 2 && commonProps.transactType === 8)">
+          <div class="form-group" v-if="(formDetails.componentId === consts.bank_component_id && commonProps.transactType === 7 || formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 8)">
             <label class="col-form-label white">Credit or Debit?</label><br>
             <select class="custom-select" v-model="commonProps.credit" style="width: 6rem;">
               <option value="1" selected>Credit</option>
               <option value="0">Debit</option>
             </select>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 1">
+          <div class="form-group" v-if="formDetails.componentId === consts.bank_component_id">
             <label class="col-form-label white">Current Bank Balance</label>
             <div class="form-group">
               <div class="input-group mb-3">
@@ -118,7 +134,7 @@
               </div>
             </div>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 3">
+          <div class="form-group" v-if="formDetails.componentId === consts.cc_component_id">
             <label class="col-form-label white">Current Available Credit Limit</label>
             <div class="form-group">
               <div class="input-group">
@@ -136,28 +152,28 @@
               <div id="cl-notice"></div>
             </div>
           </div>
-          <div class="form-group" v-if="(formDetails.componentId === 1 || formDetails.componentId === 2) && commonProps.transactType === 3">
+          <div class="form-group" v-if="(formDetails.componentId === consts.bank_component_id || formDetails.componentId === consts.gcash_component_id) && commonProps.transactType === 3">
             <label class="control-label white">Biller / Merchant</label>
             <select class="custom-select" v-model="commonProps.billerMerchant">
-                <option v-if="formDetails.componentId === 1" value="BPI-BEC MC">BPI-BEC MC</option>
-                <option v-if="formDetails.componentId === 1" value="BPI-AIAPH">BPI-AIAPH</option>
-                <option v-if="formDetails.componentId === 1" value="BPI-COL">BPI-COL</option>
+                <option v-if="formDetails.componentId === consts.bank_component_id" value="BPI - BEC MC">BPI - BEC MC</option>
+                <option v-if="formDetails.componentId === consts.bank_component_id" value="BPI - AIAPH">BPI - AIAPH</option>
+                <option v-if="formDetails.componentId === consts.bank_component_id" value="BPI - COL">BPI - COL</option>
                 <option value="Primewater">Primewater</option>
                 <option value="Meralco">Meralco</option>
                 <option value="Dasca">Dasca</option>
               </select>
           </div>
-          <div class="form-group" v-if="(formDetails.componentId === 3) || (formDetails.componentId === 2 && commonProps.transactType === 11 )">
+          <div class="form-group" v-if="(formDetails.componentId === consts.cc_component_id) || (formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 11 )">
             <label class="control-label white">Description</label><br>
             <input type="text" class="form-control" v-model="commonProps.description"/>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 12">
+          <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 12">
             <label class="control-label white">Sender</label><br>
             <input type="text" class="form-control" v-model="gCashObject.moneySender" required/>
           </div>
           <!-- Amount -->
           <div class="form-group">
-            <label class="control-label white">{{ (formDetails.componentId === 2 && commonProps.transactType === 4) ? 'Sale / Income Received:' : 'Amount'}}</label>
+            <label class="control-label white">{{ (formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 4) ? 'Sale / Income Received:' : 'Amount'}}</label>
             <div class="form-group">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
@@ -167,19 +183,19 @@
               </div>
             </div>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 6">
+          <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 6">
             <label class="control-label white">Acct Name</label><br>
             <input type="text" class="form-control" v-model="gCashObject.acctName"/>
             <label class="control-label white">Acct Number</label><br>
             <input type="text" class="form-control" v-model="commonProps.acctNo"/>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 7">
+          <div class="form-group" v-if="(formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 7) || formDetails.componentId === consts.maya_component_id">
             <label class="control-label white">Online Service / Shop Website:</label>
             <select class="custom-select" v-model="commonProps.onlineShopWebsite">
-                <option value="GCash A+ Rewards">GCash A+ Rewards</option>
+                <option v-if="formDetails.componentId === consts.gcash_component_id" value="GCash A+ Rewards">GCash A+ Rewards</option>
                 <option value="Steam">Steam</option>
-                <option value="Shopee">Shopee Pay Top-up</option>
-                <option value="Lazada">Lazada payment - GCash</option>
+                <option value="Shopee">Shopee Pay - {{ formDetails.name }}</option>
+                <option value="Lazada">Lazada payment - {{ formDetails.name }}</option>
                 <option value="Google Play">Google Play</option>
                 <option value="Food Panda PH">Food Panda</option>
                 <option value="GrabPay">GrabPay</option>
@@ -187,9 +203,10 @@
                 <option value="Twitch Membership">Twitch Membership</option>
                 <option value="Spotify">Spotify</option>
                 <option value="Lalamove">Lalamove</option>
+                <option value="Mobapay">Mobapay</option>
               </select>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 3 && (commonProps.transactType === 1 || commonProps.transactType === 2)">
+          <div class="form-group" v-if="formDetails.componentId === consts.cc_component_id && (commonProps.transactType === 1 || commonProps.transactType === 2)">
             <label class="control-label white">{{ commonProps.transactType === 1 ? 'Online Shop Website:' : 'Physical Store Name'}}</label>
             <select v-if="commonProps.transactType === 1" class="custom-select" v-model="commonProps.onlineShopWebsite">
                 <option value="Google Play">Google Play</option>
@@ -202,11 +219,11 @@
             </select>
             <input v-else type="text" class="form-control" v-model="commonProps.storeName">
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 11">
+          <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 11">
             <label class="control-label white">Store Name:</label><br>
             <input type="text" class="form-control" v-model="commonProps.storeName"/>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 3 && commonProps.transactType === 3">
+          <div class="form-group" v-if="formDetails.componentId === consts.cc_component_id && commonProps.transactType === 3">
             <label class="control-label white">Term</label>
             <select class="custom-select" v-model="ccObject.term">
                 <option value="Monthly">Monthly</option>
@@ -214,30 +231,30 @@
                 <option value="12 Months">12 Months</option>
               </select>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 3 && commonProps.transactType === 3">
+          <div class="form-group" v-if="formDetails.componentId === consts.cc_component_id && commonProps.transactType === 3">
             <label class="control-label white">Term Payment</label><br>
             <input type="number" class="form-control" min="1" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="ccObject.termPay"/>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 3 && commonProps.transactType === 3">
+          <div class="form-group" v-if="formDetails.componentId === consts.cc_component_id && commonProps.transactType === 3">
             <label class="control-label white">Transaction No.</label><br>
             <input type="text" class="form-control" placeholder="Ask the agent about Transaction No." v-model="ccObject.loanTransactNo"/>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 3 && commonProps.transactType === 3">
+          <div class="form-group" v-if="formDetails.componentId === consts.cc_component_id && commonProps.transactType === 3">
             <label class="control-label white">Agent Name</label><br>
             <input type="text" class="form-control" v-model="ccObject.loanAgentName"/>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 3 && commonProps.transactType === 3">
+          <div class="form-group" v-if="formDetails.componentId === consts.cc_component_id && commonProps.transactType === 3">
             <label class="control-label white">Loan Thru</label>
             <select class="custom-select" v-model="ccObject.loanThru">
                 <option value="phone">Phone</option>
                 <option value="branch">Branch</option>
               </select>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 9">
+          <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 9">
             <label class="control-label white">Message</label><br>
             <textarea class="form-control" rows="3" v-model="gCashObject.message"/>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 2 && commonProps.transactType === 9 && commonProps.sendMoneyType === 3">
+          <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 9 && commonProps.sendMoneyType === 3">
             <label class="control-label white">Attachment:</label><br>
             <select class="custom-select" v-model="gCashObject.attachment">
               <option value="None">None</option>
@@ -246,20 +263,25 @@
               <option value="Audio">Audio</option>
             </select>
           </div>
-          <div class="form-group" v-if="((formDetails.componentId === 1) || (formDetails.componentId === 2 && commonProps.transactType != 11)) || (formDetails.componentId === 3)">
+          <div class="form-group" v-if="((formDetails.componentId === consts.bank_component_id) || (formDetails.componentId === consts.gcash_component_id && commonProps.transactType != 11)) || (formDetails.componentId === consts.cc_component_id) || (formDetails.componentId === consts.maya_component_id)">
             <label class="control-label white">Remarks</label><br>
             <textarea class="form-control" rows="3" v-model="commonProps.remarks"/>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 2 || bankObject.location === 'GCash App'">
+          <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id || bankObject.location === 'GCash App'">
             <label class="control-label white">{{ bankObject.location == 'GCash App' ? 'GCash ' : '' }}Ref. No.</label><br>
             <input type="text" class="form-control" v-model="gCashObject.refNo" required/>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === 1">
+          <div class="form-group" v-if="formDetails.componentId === consts.maya_component_id || bankObject.location === 'Maya App'">
+            <label class="control-label white">{{ bankObject.location == 'Maya App' ? 'Maya ' : '' }}Ref. ID.</label><br>
+            <input type="text" class="form-control" v-model="mayaObject.refNo" required/>
+          </div>
+          <div class="form-group" v-if="formDetails.componentId === consts.bank_component_id">
             <label class="col-form-label white">Location</label><br>
             <select class="custom-select" v-model="bankObject.location" >
               <option value="Select">-- Select App / Location --</option>
               <option :value="bankObject.location">{{ bankObject.location }}</option>
               <option value="GCash App">GCash App</option>
+              <option value="Maya App">Maya App</option>
               <option value="ATM">ATM</option>
               <option value="Automatic Activity">Automatic Activity</option>
             </select>
@@ -281,9 +303,12 @@ import config from '../config'
 import { invokerInitializer, handleAxios } from '../helpers/helpers.service.js'
 
 import { getGCashInfo } from '../composables/getGCashInfo.js'
+import { getMayaInfo } from '../composables/getMayaInfo.js'
 import { getSavingsAccs } from '../composables/getBanksInfo.js'
 import { getCreditCards  } from '../composables/getCcsInfo.js'
 import { getCustomers } from '../composables/getCustomers.js'
+
+import consts from '../constants/constants.js'
 
 // import { confirm } from '../ts/dialogs.ts'
 
@@ -292,8 +317,6 @@ const props = defineProps({
 });
 
 let axiosReqConfirmed = ref(false)
-
-// console.log(axiosReqConfirmed.value)
 
 
 let bankObject = reactive({
@@ -307,6 +330,21 @@ let bankObject = reactive({
 let gCashObject = reactive({
   gCashId: 1, 
   gcBalance: 1, 
+  acctName: '', 
+  customer: '', 
+  mobileNo: '',
+  ownMobileNo: '09755512192', 
+  network: 'TM', 
+  paymentDateTime: '', 
+  refNo: '', 
+  moneySender: '',
+  message: '', 
+  attachment: 'Photo'
+})
+
+let mayaObject = reactive({
+  mayaId: 1,
+  mayaBalance: 1,
   acctName: '', 
   customer: '', 
   mobileNo: '',
@@ -353,6 +391,8 @@ let initialIndex = 0
 
 let gCashData = ref([])
 
+let mayaData = ref([])
+
 let savingsAcctData = ref([])
 
 let creditCardsData = ref([])
@@ -362,10 +402,8 @@ let customersArray = ref([])
 const router = useRouter()
 
 const fetchSavingsAcc = (val) => {
-  // console.log(`savingsAcctData.value[val].balance: ${savingsAcctData.value[val].balance}`);
   bankObject.saBalance = savingsAcctData.value[val].balance
   bankObject.location = savingsAcctData.value[val].bank_abbrev + ' App'
-  console.log(bankObject.location)
   return bankObject.saBalance
 }
 
@@ -379,9 +417,19 @@ const fetchGCashAcc = () => {
   gCashObject.gcBalance = gCashData.value[0].balance
 }
 
+const fetchMayaAcc = () => {
+  // make sure this is an integer type to prevent Data truncated MySQL error
+  mayaObject.mayaBalance = mayaData.value[0].balance
+}
+
 const handleGCashInitialization = async () => {
   gCashData.value = await invokerInitializer(getGCashInfo)
   fetchGCashAcc()
+}
+
+const handleMayaInitialization = async () => {
+  mayaData.value = await invokerInitializer(getMayaInfo)
+  fetchMayaAcc()
 }
 
 const trackSelection = (val, flag) => {
@@ -411,55 +459,63 @@ const trackDropDown = (param) => {
 const handleSubmit = async () => {
   
   try {
-    if(props.formDetails.componentId === 1) {
+    if(props.formDetails.componentId === consts.bank_component_id) {
       
       let newBankData = {
         bank_id: bankObject.bankId,
         date_time: commonProps.dateTime,
         bank_transact_type_id: commonProps.transactType,
-        current_balance: bankObject.saBalance,
-        current_gcash_balance: gCashObject.gcBalance,
-        gcash_ref_no: gCashObject.refNo,
         amount: commonProps.amount,
+        current_balance: bankObject.saBalance,        
         remarks: commonProps.remarks,
         location: bankObject.location
       }
 
       // console.log(newBankData)
       
-      if(commonProps.transactType === 1) {
+      if(commonProps.transactType === consts.bank_transacts.deposit) {
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-depo`, newBankData, 'Savings Account', 'Cash Deposit')
 
-      } else if(commonProps.transactType === 2) {
+      } else if(commonProps.transactType === consts.bank_transacts.withdraw) {
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-wdraw`, newBankData, 'Savings Account', 'Cash Withdraw')
 
-      } else if(commonProps.transactType === 3) {
+      } else if(commonProps.transactType === consts.bank_transacts.bills_payment) {
 
         newBankData.biller_merchant = commonProps.billerMerchant
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-billspay`, newBankData, 'Savings Account', 'Bills Payment')
 
-      } else if(commonProps.transactType === 4) {
+      } else if(commonProps.transactType === consts.bank_transacts.gcash_cash_in) {
 
+        newBankData.current_gcash_balance = gCashObject.gcBalance
         newBankData.gcash_id = gCashObject.gCashId
+        newBankData.gcash_ref_no = gCashObject.refNo
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-gc-cash-in`, newBankData, 'Savings Account', 'GCash Cash-in')
 
-      } else if(commonProps.transactType === 5) {
+      } else if(commonProps.transactType === consts.bank_transacts.maya_cash_in) {
+
+        newBankData.current_maya_balance = mayaObject.mayaBalance
+        newBankData.maya_id = mayaObject.mayaId
+        newBankData.maya_ref_no = mayaObject.refNo
+
+        axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-maya-cash-in`, newBankData, 'Savings Account', 'Maya Cash-in')
+
+      }else if(commonProps.transactType === consts.bank_transacts.reload_prepaid_card) {
 
         newBankData.receipient_acct_no = bankObject.receipientAcctNo
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-prepaid-reload`, newBankData, 'Savings Account', 'Reload Prepaid')
 
-      } else if(commonProps.transactType === 6) {
+      } else if(commonProps.transactType === consts.bank_transacts.transfer_money) {
 
         newBankData.receipient_acct_no = bankObject.receipientAcctNo
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-transfer-money`, newBankData, 'Savings Account', 'Transfer Money')
 
-      } else if(commonProps.transactType === 7) {
+      } else if(commonProps.transactType === consts.bank_transacts.adjustment) {
 
         // Adjustment
         // properties are manually added which are unique only to this transaction
@@ -467,20 +523,20 @@ const handleSubmit = async () => {
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-adjustment`, newBankData, 'Savings Account', 'Adjustment')
 
-      } else if(commonProps.transactType === 8) {
+      } else if(commonProps.transactType === consts.bank_transacts.earn_interest) {
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-earn-interest`, newBankData, 'Savings Account', 'Earn Interest')
 
-      }  else if(commonProps.transactType === 9) {
+      }  else if(commonProps.transactType === consts.bank_transacts.tax_withheld) {
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-taxwh`, newBankData, 'Savings Account', 'Tax Witheld')
 
-      } else if(commonProps.transactType === 10) {
+      } else if(commonProps.transactType === consts.bank_transacts.salary_income) {
         // Salary / Income
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-sale-income`, newBankData, 'Savings Account', 'Salary / Income')
         
       }
-    } else if(props.formDetails.componentId === 2) {
+    } else if(props.formDetails.componentId === consts.gcash_component_id) {
 
       let newGCashData = {
         gcash_id: 1,
@@ -492,55 +548,55 @@ const handleSubmit = async () => {
         ref_no: gCashObject.refNo
       }
       
-      if(commonProps.transactType === 1) {
+      if(commonProps.transactType === consts.gcash_transacts.load_sale) {
+
         newGCashData.customer_id = gCashObject.customer
         newGCashData.mobile_number = gCashObject.mobileNo
         newGCashData.network = gCashObject.network
+
         if(!gCashObject.paymentDateTime) {
           newGCashData.payment_date = null
         }
         
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-loadsale`, newGCashData, 'GCash', 'Load Sale')
 
-      } else if(commonProps.transactType === 3) {
+      } else if(commonProps.transactType === consts.gcash_transacts.bills_payment) {
 
         newGCashData.biller_merchant = commonProps.billerMerchant
 
-        console.log(newGCashData)
-
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-billspay`, newGCashData, 'GCash', 'Bills payment')
 
-      } else if(commonProps.transactType === 4) {
+      } else if(commonProps.transactType === consts.gcash_transacts.income_sale) {
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-income`, newGCashData, 'GCash', 'New Sale / Income')
 
-      } else if(commonProps.transactType === 5) {
+      } else if(commonProps.transactType === consts.gcash_transacts.self_buy_load) {
         
         newGCashData.own_mobile_number = gCashObject.ownMobileNo
         newGCashData.network = gCashObject.network
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-selfbuyload`, newGCashData, 'GCash', 'Self Buy Load')
 
-      } else if(commonProps.transactType === 6) {
+      } else if(commonProps.transactType === consts.gcash_transacts.bank_transfer) {
         
         newGCashData.acct_no = commonProps.acctNo
         newGCashData.acct_name = gCashObject.acctName
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-banktransfer`, newGCashData, 'GCash', 'Bank Transfer')
 
-      } else if(commonProps.transactType === 7) {
+      } else if(commonProps.transactType === consts.gcash_transacts.online_payment) {
         
         newGCashData.online_shop_website = commonProps.onlineShopWebsite
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-ol-shop-pay`, newGCashData, 'GCash', 'Online Payment')
 
-      } else if(commonProps.transactType === 8) {
+      } else if(commonProps.transactType === consts.gcash_transacts.adjustment) {
 
         newGCashData.credit = commonProps.credit
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-adjustment`, newGCashData, 'GCash', 'New Adjustment')
         
-      } else if(commonProps.transactType === 9) {
+      } else if(commonProps.transactType === consts.gcash_transacts.send_money) {
 
         newGCashData.mobile_number = gCashObject.mobileNo
 
@@ -563,15 +619,14 @@ const handleSubmit = async () => {
         }
         
         newGCashData.remarks = `[${newGCashData.type}] ${newGCashData.remarks}`
-        console.log(newGCashData.remarks)
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-sendmoney`, newGCashData, 'GCash', 'Send Money')
 
-      } else if(commonProps.transactType === 10) {
+      } else if(commonProps.transactType === consts.gcash_transacts.refund) {
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-refund`, newGCashData, 'GCash', 'Refund')
 
-      } else if(commonProps.transactType === 11) {
+      } else if(commonProps.transactType === consts.gcash_transacts.pay_qr) {
 
         newGCashData.store_name = commonProps.storeName
         newGCashData.description = commonProps.description
@@ -579,14 +634,14 @@ const handleSubmit = async () => {
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-pay-qr`, newGCashData, 'GCash', 'Pay QR')
 
-      } else if (commonProps.transactType === 12) {
+      } else if (commonProps.transactType === consts.gcash_transacts.receive_money) {
 
         newGCashData.money_sender = gCashObject.moneySender
         newGCashData.mobile_number = gCashObject.mobileNo
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-received-money`, newGCashData, 'GCash', 'Received Money')
       }
-    } else if(props.formDetails.componentId === 3) {
+    } else if(props.formDetails.componentId === consts.cc_component_id) {
 
       let newCCData = {
         credit_card_id: ccProps.ccId,
@@ -620,6 +675,25 @@ const handleSubmit = async () => {
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/cc/save-cc-loan`, newCCData, 'Credit Card', 'Credit-to-Cash Loan')
 
       }
+    } else if(props.formDetails.componentId === consts.maya_component_id) {
+
+      let newMayaData = {
+        maya_id: 1,
+        date_time: commonProps.dateTime,
+        transact_type_id: commonProps.transactType,
+        current_maya_balance: mayaObject.mayaBalance,
+        amount: commonProps.amount,
+        remarks: commonProps.remarks,
+        ref_no: mayaObject.refNo
+      }
+
+      if(commonProps.transactType === consts.maya_transacts.online_payment) {
+        
+        newMayaData.online_shop_website = commonProps.onlineShopWebsite
+
+        axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-ol-shop-pay`, newMayaData, 'Maya', 'Online Payment')
+
+      }
     }
 
     bankObject.bankId = 1
@@ -640,7 +714,7 @@ const handleSubmit = async () => {
     gCashObject.message = '',
     gCashObject.attachment = 'Photo'
 
-    // console.log(axiosReqConfirmed.value);
+    mayaObject.refNo = ''
 
     if(axiosReqConfirmed.value == true) {
       router.push('/')
@@ -655,18 +729,23 @@ const handleSubmit = async () => {
 
 onMounted(async () => {
 
-  if(props.formDetails.componentId === 1) {
+  if(props.formDetails.componentId === consts.bank_component_id) {
     savingsAcctData.value = await invokerInitializer(getSavingsAccs)
     trackSelection(initialIndex, 'sa')
     handleGCashInitialization()
+    handleMayaInitialization()
   }
 
-  if(props.formDetails.componentId === 2) {
+  if(props.formDetails.componentId === consts.gcash_component_id) {
     await handleGCashInitialization()
     customersArray.value = await invokerInitializer(getCustomers)
   }
+
+  if(props.formDetails.componentId === consts.maya_component_id) {
+    await handleMayaInitialization()
+  }
   
-  if(props.formDetails.componentId === 3) {
+  if(props.formDetails.componentId === consts.cc_component_id) {
     creditCardsData.value = await invokerInitializer(getCreditCards)
     trackSelection(initialIndex, 'cc')
   }

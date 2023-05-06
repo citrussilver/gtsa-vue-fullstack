@@ -21,6 +21,7 @@
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewBankTransact' }">New Bank Transaction</router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewCreditCardTransact' }">New Credit Card Transaction</router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewGCashTransact' }">New GCash Transaction</router-link></li>
+            <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewMayaTransact' }">New Maya Transaction</router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'TransactsList' }">View Records</router-link></li>
           </ul>
         </div>
@@ -33,30 +34,22 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
 
-export default {
-  emits: ["stop-scroll"],
-  setup(props, { emit }) {
+const navTitle = ref('GCash & Savings Account')
+//const navTitle = ref('E-Wallet & Savings Account')
 
-    const navTitle = ref('GCash & Savings Account')
-    //const navTitle = ref('E-Wallet & Savings Account')
+const isAddClass = ref(false)
 
-    const isAddClass = ref(false)
+const hamburgerClick = () => {
+  isAddClass.value = !isAddClass.value
+  emit('stop-scroll', isAddClass.value)
+}
 
-    const hamburgerClick = () => {
-      isAddClass.value = !isAddClass.value
-      emit('stop-scroll', isAddClass.value)
-    }
-
-    const closeBurger = () => {
-      isAddClass.value = false;
-      emit('stop-scroll', false )
-    }
-
-    return { navTitle, isAddClass, hamburgerClick, closeBurger }
-  }
+const closeBurger = () => {
+  isAddClass.value = false;
+  emit('stop-scroll', false )
 }
 </script>
 

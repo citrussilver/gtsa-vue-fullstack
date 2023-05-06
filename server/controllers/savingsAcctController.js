@@ -5,7 +5,8 @@ import {
     insertBankCashDeposit, 
     insertBankCashWithdraw,  
     insertBankBillsPayment, 
-    insertGCashCashIn, 
+    insertGCashCashIn,
+    insertMayaCashIn, 
     insertBankPrepaidReload, 
     insertTransferMoney,
     insertAdjustment,
@@ -93,6 +94,17 @@ export const newBankBillsPayment = (req, res) => {
 export const newGCashCashIn = (req, res) => {
     const data = req.body;
     insertGCashCashIn(data, (err, results) => {
+        if (err){
+            res.send(err);
+        }else{
+            res.json(results);
+        }
+    });
+}
+
+export const newMayaCashIn = (req, res) => {
+    const data = req.body;
+    insertMayaCashIn(data, (err, results) => {
         if (err){
             res.send(err);
         }else{

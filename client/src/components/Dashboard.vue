@@ -23,6 +23,27 @@
         </details>
       </div>
       <div 
+        class="grid-tile-item blue-1" 
+        :class="{ 'maya': maya.account_nick.includes('Maya'), 'mora' : maya.account_nick.includes('MoraCash') }"
+        v-for="(maya, index) in mayaData" 
+        key="index" 
+      >
+        <p class="tile-title">
+          <ArticleTitleSlot>
+            {{ maya.account_nick }}
+          </ArticleTitleSlot>
+        </p>
+        <p class="tile-subtitle">
+            <ArticleSubtitleSlot>
+              Last 4 digits: {{ maya.last_4_digits }}
+            </ArticleSubtitleSlot>
+        </p>
+        <details>
+          <summary>Balance</summary>
+          {{ maya.balance_wc }}
+        </details>
+      </div>
+      <div 
         class="grid-tile-item" 
         :class="{ 
           'blue-1' : sa.bank_name, 
@@ -109,7 +130,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { onMounted, ref } from 'vue'
 import ArticleTitleSlot from './slots/ArticleTitleSlot.vue'
 import ArticleSubtitleSlot from './slots/ArticleSubtitleSlot.vue'
@@ -119,18 +140,15 @@ import { invokerInitializer } from '../helpers/helpers.service.js'
 import { getSavingsAccs } from '../composables/getBanksInfo.js'
 import { getCreditCards  } from '../composables/getCcsInfo.js'
 import { getGCashInfo } from '../composables/getGCashInfo'
+import { getMayaInfo } from '../composables/getMayaInfo.js'
+
 import { aniQuote, generateAniQuote } from '../composables/getAniQuote'
 
-export default {
-    components: {
-        ArticleTitleSlot,
-        ArticleSubtitleSlot
-    },
-    setup() {
-
-      let loading = ref(false)
+let loading = ref(false)
 
       let gCashData = ref([])
+
+      let mayaData = ref([])
 
       let savingsAcctData = ref([])
 
@@ -149,6 +167,8 @@ export default {
       onMounted(async () => {
 
         gCashData.value = await invokerInitializer(getGCashInfo)
+
+        mayaData.value = await invokerInitializer(getMayaInfo)
         
         loadAniQuote()
         
@@ -156,10 +176,7 @@ export default {
   
         creditCardsData.value = await invokerInitializer(getCreditCards)
       })
-      
-      return { gCashData, savingsAcctData, creditCardsData, loading, aniQuote, loadAniQuote }
-    }
-}
+
 </script>
 
 <style scoped>
@@ -210,6 +227,11 @@ export default {
   .gcash {
     /* rgb(0, 39, 181) */
     background-image: linear-gradient(-269deg, rgb(44, 0, 144) 7%, rgb(44, 0, 144) 17%, rgb(111, 186, 247) 98%);
+  }
+
+  .maya {
+    /* rgb(0, 39, 181) */
+    background-image: linear-gradient(-269deg, rgb(17, 36, 50) 7%, rgb(17, 36, 50) 17%, rgb(117, 238, 165) 98%);
   }
 
   .mora {
