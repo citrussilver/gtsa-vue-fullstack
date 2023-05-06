@@ -18,6 +18,7 @@ import {
     newBankCashWithdraw,
     newBankBillsPayment,
     newGCashCashIn,
+    newMayaCashIn,
     newBankPrepaidReload,
     newTransferMoney,
     newAdjustment,
@@ -52,6 +53,11 @@ import {
     newReceivedMoney
 } from '../controllers/gcashController.js';
 
+import {
+    showMayaAccts,
+    newMayaOnlineShopPay
+} from '../controllers/mayaController.js';
+
 // import {
 //     createSessionHandler,
 //     getSessionHandler,
@@ -73,11 +79,14 @@ router.get('/api/gcash/get-gcash-transactions', showGCashTransacts);
 router.get('/api/gcash/get-gcash-transactions:flStr', filterRemarksGCashTransacts);
 router.get('/api/gcash/get-gcash-customers', showGCashCustomers)
 
+router.get('/api/maya/get-maya-accounts', showMayaAccts);
+
 router.post('/api/new-sa-transaction', newSavingsAcctTransaction);
 router.post('/api/sa/save-sa-depo', newBankCashDeposit);
 router.post('/api/sa/save-sa-wdraw', newBankCashWithdraw);
 router.post('/api/sa/save-sa-billspay', newBankBillsPayment);
 router.post('/api/sa/save-gc-cash-in', newGCashCashIn);
+router.post('/api/sa/save-maya-cash-in', newMayaCashIn);
 router.post('/api/sa/save-sa-prepaid-reload', newBankPrepaidReload);
 router.post('/api/sa/save-sa-transfer-money', newTransferMoney);
 router.post('/api/sa/save-sa-adjustment', newAdjustment);
@@ -96,6 +105,8 @@ router.post('/api/gcash/save-gc-sendmoney', newGCashSendMoney);
 router.post('/api/gcash/save-gc-refund', newGCashRefund);
 router.post('/api/gcash/save-pay-qr', newPayQr);
 router.post('/api/gcash/save-received-money', newReceivedMoney);
+
+router.post('/api/maya/save-ol-shop-pay', newMayaOnlineShopPay);
 
 router.post('/api/cc/save-cc-op', newCcOnlinePay);
 router.post('/api/cc/save-cc-nop', newCcNonOnlinePay);
