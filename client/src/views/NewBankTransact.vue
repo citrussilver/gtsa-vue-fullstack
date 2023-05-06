@@ -4,40 +4,32 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { reactive } from 'vue'
 import NewTransactForm from '../components/NewTransactForm.vue'
+import consts from '../constants/constants.js'
 
-export default {
-  components: {
-    NewTransactForm
-  },
-  setup() {
-
-    const bankFormDetails = reactive(
-      {
-        componentId: 1,
-        cardBorder: 'card border-success',
-        header: 'New Bank Transaction',
-        transactType: [
-          { val: 0, title: '-- Select Transaction Type --' },
-          { val: 1, title: 'Deposit' },
-          { val: 2, title: 'Withdraw' },
-          { val: 3, title: 'Bills Payment' },
-          { val: 4, title: 'GCash Cash-in' },
-          { val: 5, title: 'Reload Prepaid Card' },
-          { val: 6, title: 'Transfer Money' },
-          { val: 7, title: 'Adjustment' },
-          { val: 8, title: 'Earn Interest' },
-          { val: 9, title: 'Tax Withheld' },
-          { val: 10, title: 'Salary / Income' },
-        ],
-      }
-    )
-
-    return { bankFormDetails }
+const bankFormDetails = reactive(
+  {
+    componentId: consts.bank_component_id,
+    cardBorder: 'card border-success',
+    header: 'New Bank Transaction',
+    transactType: [
+      { val: 0, title: '-- Select Transaction Type --' },
+      { val: consts.bank_transacts.deposit, title: 'Deposit' },
+      { val: consts.bank_transacts.withdraw, title: 'Withdraw' },
+      { val: consts.bank_transacts.bills_payment, title: 'Bills Payment' },
+      { val: consts.bank_transacts.gcash_cash_in, title: 'GCash Cash-in' },
+      { val: consts.bank_transacts.maya_cash_in, title: 'Maya Cash-in' },
+      { val: consts.bank_transacts.reload_prepaid_card, title: 'Reload Prepaid Card' },
+      { val: consts.bank_transacts.transfer_money, title: 'Transfer Money' },
+      { val: consts.bank_transacts.adjustment, title: 'Adjustment' },
+      { val: consts.bank_transacts.earn_interest, title: 'Earn Interest' },
+      { val: consts.bank_transacts.tax_withheld, title: 'Tax Withheld' },
+      { val: consts.bank_transacts.salary_income, title: 'Salary / Income' },
+    ],
   }
-}
+)
 </script>
 
 <style scoped>

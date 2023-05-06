@@ -5,6 +5,7 @@ import SignUp from '../views/auth/SignUp.vue'
 import NewBankTransact from '../views/NewBankTransact.vue'
 import NewCreditCardTransact from '../views/NewCreditCardTransact.vue'
 import NewGCashTransact from '../views/NewGCashTransact.vue'
+import NewMayaTransact from '../views/NewMayaTransact.vue'
 import TransactsList from '../views/TransactsList.vue'
 
 import { computed } from 'vue'
@@ -53,6 +54,11 @@ const routes = [
     path: '/new-gcash-tr',
     name: 'NewGCashTransact',
     component: NewGCashTransact,
+  },
+  {
+    path: '/new-maya-tr',
+    name: 'NewMayaTransact',
+    component: NewMayaTransact,
   },
   {
     path: '/view-recs',
