@@ -55,7 +55,8 @@ import {
 
 import {
     showMayaAccts,
-    newMayaOnlineShopPay
+    newMayaOnlineShopPay,
+    newQrPay
 } from '../controllers/mayaController.js';
 
 // import {
@@ -107,6 +108,7 @@ router.post('/api/gcash/save-pay-qr', newPayQr);
 router.post('/api/gcash/save-received-money', newReceivedMoney);
 
 router.post('/api/maya/save-ol-shop-pay', newMayaOnlineShopPay);
+router.post('/api/maya/save-qr-pay', newQrPay);
 
 router.post('/api/cc/save-cc-op', newCcOnlinePay);
 router.post('/api/cc/save-cc-nop', newCcNonOnlinePay);
