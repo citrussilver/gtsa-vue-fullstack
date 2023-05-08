@@ -163,7 +163,7 @@
                 <option value="Dasca">Dasca</option>
               </select>
           </div>
-          <div class="form-group" v-if="(formDetails.componentId === consts.cc_component_id) || (formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 11 )">
+          <div class="form-group" v-if="(formDetails.componentId === consts.cc_component_id) || (formDetails.componentId === consts.gcash_component_id && commonProps.transactType === consts.gcash_transacts.pay_qr) || (formDetails.componentId === consts.maya_component_id && commonProps.transactType === consts.maya_transacts.qr_pay)">
             <label class="control-label white">Description</label><br>
             <input type="text" class="form-control" v-model="commonProps.description"/>
           </div>
@@ -189,7 +189,7 @@
             <label class="control-label white">Acct Number</label><br>
             <input type="text" class="form-control" v-model="commonProps.acctNo"/>
           </div>
-          <div class="form-group" v-if="(formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 7) || formDetails.componentId === consts.maya_component_id">
+          <div class="form-group" v-if="(formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 7) || (formDetails.componentId === consts.maya_component_id && commonProps.transactType === consts.maya_transacts.online_payment)">
             <label class="control-label white">Online Service / Shop Website:</label>
             <select class="custom-select" v-model="commonProps.onlineShopWebsite">
                 <option v-if="formDetails.componentId === consts.gcash_component_id" value="GCash A+ Rewards">GCash A+ Rewards</option>
@@ -206,9 +206,9 @@
                 <option value="Mobapay">Mobapay</option>
               </select>
           </div>
-          <div class="form-group" v-if="formDetails.componentId === consts.cc_component_id && (commonProps.transactType === 1 || commonProps.transactType === 2)">
-            <label class="control-label white">{{ commonProps.transactType === 1 ? 'Online Shop Website:' : 'Physical Store Name'}}</label>
-            <select v-if="commonProps.transactType === 1" class="custom-select" v-model="commonProps.onlineShopWebsite">
+          <div class="form-group" v-if="formDetails.componentId === consts.cc_component_id && (commonProps.transactType === consts.cc_transacts.online_payment || commonProps.transactType === consts.cc_transacts.non_online_payment)">
+            <label class="control-label white">{{ commonProps.transactType === consts.cc_transacts.online_payment ? 'Online Shop Website:' : 'Physical Store Name'}}</label>
+            <select v-if="commonProps.transactType === consts.cc_transacts.online_payment" class="custom-select" v-model="commonProps.onlineShopWebsite">
                 <option value="Google Play">Google Play</option>
                 <option value="Steam">Steam</option>
                 <option value="GOG">GOG</option>
@@ -219,7 +219,7 @@
             </select>
             <input v-else type="text" class="form-control" v-model="commonProps.storeName">
           </div>
-          <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 11">
+          <div class="form-group" v-if="(formDetails.componentId === consts.gcash_component_id && commonProps.transactType === consts.gcash_transacts.pay_qr) || (formDetails.componentId === consts.maya_component_id && commonProps.transactType === consts.maya_transacts.qr_pay)">
             <label class="control-label white">Store Name:</label><br>
             <input type="text" class="form-control" v-model="commonProps.storeName"/>
           </div>
@@ -263,7 +263,7 @@
               <option value="Audio">Audio</option>
             </select>
           </div>
-          <div class="form-group" v-if="((formDetails.componentId === consts.bank_component_id) || (formDetails.componentId === consts.gcash_component_id && commonProps.transactType != 11)) || (formDetails.componentId === consts.cc_component_id) || (formDetails.componentId === consts.maya_component_id)">
+          <div class="form-group" v-if="((formDetails.componentId === consts.bank_component_id) || (formDetails.componentId === consts.gcash_component_id && commonProps.transactType != consts.gcash_transacts.pay_qr)) || (formDetails.componentId === consts.cc_component_id) || (formDetails.componentId === consts.maya_component_id && commonProps.transactType != consts.maya_transacts.qr_pay)">
             <label class="control-label white">Remarks</label><br>
             <textarea class="form-control" rows="3" v-model="commonProps.remarks"/>
           </div>
@@ -693,6 +693,13 @@ const handleSubmit = async () => {
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-ol-shop-pay`, newMayaData, 'Maya', 'Online Payment')
 
+      } else if (commonProps.transactType === consts.maya_transacts.qr_pay) {
+
+        newMayaData.store_name = commonProps.storeName
+        newMayaData.description = commonProps.description
+        newMayaData.remarks = newMayaData.description
+
+        axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-qr-pay`, newMayaData, 'Maya', 'QR Pay')
       }
     }
 
@@ -728,6 +735,8 @@ const handleSubmit = async () => {
 }
 
 onMounted(async () => {
+
+  console.log(`props.formDetails.componentId: ${props.formDetails.componentId}`)
 
   if(props.formDetails.componentId === consts.bank_component_id) {
     savingsAcctData.value = await invokerInitializer(getSavingsAccs)

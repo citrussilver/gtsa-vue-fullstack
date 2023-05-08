@@ -47,3 +47,38 @@ export const insertOnlineShopPay = (data, result) => {
         }
     });
 }
+
+export const insertQrPay = (data, result) => {
+    dbConnection.query("INSERT INTO maya_transactions SET ?", {
+        maya_id: data.maya_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        current_maya_balance: data.current_maya_balance,
+        amount: data.amount,
+        remarks: `[QR Pay] ${data.remarks}`,
+        ref_no: data.ref_no
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const qr_pay_data = {
+                maya_transact_id: results.insertId,
+                date_time: data.date_time,
+                store_name: data.store_name,
+                amount: data.amount,
+                description: data.description
+            };
+
+            dbConnection.query("INSERT INTO maya_qr_pay SET ?", qr_pay_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log(`[Maya] New QR Pay to ${qr_pay_data.store_name} successfully posted to database`)
+                }
+            });
+        }
+    });
+}
