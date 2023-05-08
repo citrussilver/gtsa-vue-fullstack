@@ -29,8 +29,14 @@ export default {
         pay_qr: 11,
         receive_money: 12
     },
+    cc_transacts: {
+        online_payment: 1,
+        non_online_payment: 2,
+        load_promo: 3
+    },
     maya_transacts: {
         cash_in: 0,
-        online_payment: 1
+        online_payment: 1,
+        qr_pay: 2
     }
  }
