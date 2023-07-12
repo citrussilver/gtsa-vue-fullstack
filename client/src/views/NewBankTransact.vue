@@ -23,10 +23,11 @@ const bankFormDetails = reactive(
       { val: consts.bank_transacts.maya_cash_in, title: 'Maya Cash-in' },
       { val: consts.bank_transacts.reload_prepaid_card, title: 'Reload Prepaid Card' },
       { val: consts.bank_transacts.transfer_money, title: 'Transfer Money' },
+      { val: consts.bank_transacts.store_payment, title: 'Store payment' },
       { val: consts.bank_transacts.adjustment, title: 'Adjustment' },
       { val: consts.bank_transacts.earn_interest, title: 'Earn Interest' },
       { val: consts.bank_transacts.tax_withheld, title: 'Tax Withheld' },
-      { val: consts.bank_transacts.salary_income, title: 'Salary / Income' },
+      { val: consts.bank_transacts.salary_income, title: 'Salary / Income' }
     ],
   }
 )

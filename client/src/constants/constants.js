@@ -11,6 +11,7 @@ export default {
         maya_cash_in: 11,
         reload_prepaid_card: 5,
         transfer_money: 6,
+        store_payment: 12,
         adjustment: 7,
         earn_interest: 8,
         tax_withheld: 9,

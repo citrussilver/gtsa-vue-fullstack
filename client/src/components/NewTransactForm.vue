@@ -219,7 +219,7 @@
             </select>
             <input v-else type="text" class="form-control" v-model="commonProps.storeName">
           </div>
-          <div class="form-group" v-if="(formDetails.componentId === consts.gcash_component_id && commonProps.transactType === consts.gcash_transacts.pay_qr) || (formDetails.componentId === consts.maya_component_id && commonProps.transactType === consts.maya_transacts.qr_pay)">
+          <div class="form-group" v-if="(formDetails.componentId === consts.bank_component_id && commonProps.transactType === consts.bank_transacts.store_payment) || (formDetails.componentId === consts.gcash_component_id && commonProps.transactType === consts.gcash_transacts.pay_qr) || (formDetails.componentId === consts.maya_component_id && commonProps.transactType === consts.maya_transacts.qr_pay)">
             <label class="control-label white">Store Name:</label><br>
             <input type="text" class="form-control" v-model="commonProps.storeName"/>
           </div>
@@ -514,6 +514,12 @@ const handleSubmit = async () => {
         newBankData.receipient_acct_no = bankObject.receipientAcctNo
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-transfer-money`, newBankData, 'Savings Account', 'Transfer Money')
+
+      } else if(commonProps.transactType === consts.bank_transacts.store_payment) {
+
+        newBankData.store_name = commonProps.storeName
+
+        axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-store-payment`, newBankData, 'Savings Account', 'Store payment')
 
       } else if(commonProps.transactType === consts.bank_transacts.adjustment) {
 

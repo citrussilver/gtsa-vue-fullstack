@@ -331,6 +331,42 @@ export const insertTransferMoney = (data, result) => {
     });
 }
 
+export const insertStorePayment = (data, result) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
+        bank_id: data.bank_id,
+        date_time: data.date_time,
+        bank_transact_type_id: data.bank_transact_type_id,
+        amount: data.amount,
+        current_balance: data.current_balance,
+        remarks: `[Store Payment] ${data.remarks}`,
+        location: data.location,
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+
+            const store_payment_data = {
+                sa_transact_id: results.insertId,
+                date_time: data.date_time,
+                store_name: data.store_name,
+                remarks: data.remarks,
+                amount: data.amount
+            }
+
+            dbConnection.query("INSERT INTO bank_store_payment SET ?", store_payment_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log(`[Savings Acct] New Store Payment to ${store_payment_data.biller_merchant} successfully posted to database`)
+                }
+            });
+        }
+    });
+}
+
 export const insertAdjustment = (data, result) => {
     dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
         bank_id: data.bank_id,

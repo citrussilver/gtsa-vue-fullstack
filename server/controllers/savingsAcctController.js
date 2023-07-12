@@ -9,6 +9,7 @@ import {
     insertMayaCashIn, 
     insertBankPrepaidReload, 
     insertTransferMoney,
+    insertStorePayment,
     insertAdjustment,
     insertEarnInterest,
     insertTaxWithheld,
@@ -127,6 +128,17 @@ export const newBankPrepaidReload = (req, res) => {
 export const newTransferMoney = (req, res) => {
     const data = req.body;
     insertTransferMoney(data, (err, results) => {
+        if (err){
+            res.send(err);
+        }else{
+            res.json(results);
+        }
+    });
+}
+
+export const newStorePayment = (req, res) => {
+    const data = req.body;
+    insertStorePayment(data, (err, results) => {
         if (err){
             res.send(err);
         }else{

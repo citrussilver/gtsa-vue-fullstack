@@ -21,6 +21,7 @@ import {
     newMayaCashIn,
     newBankPrepaidReload,
     newTransferMoney,
+    newStorePayment,
     newAdjustment,
     newEarnInterest,
     newTaxWithheld,
@@ -90,6 +91,7 @@ router.post('/api/sa/save-gc-cash-in', newGCashCashIn);
 router.post('/api/sa/save-maya-cash-in', newMayaCashIn);
 router.post('/api/sa/save-sa-prepaid-reload', newBankPrepaidReload);
 router.post('/api/sa/save-sa-transfer-money', newTransferMoney);
+router.post('/api/sa/save-sa-store-payment', newStorePayment);
 router.post('/api/sa/save-sa-adjustment', newAdjustment);
 router.post('/api/sa/save-sa-earn-interest', newEarnInterest);
 router.post('/api/sa/save-sa-taxwh', newTaxWithheld);
