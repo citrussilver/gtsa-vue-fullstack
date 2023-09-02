@@ -15,7 +15,8 @@ export default {
         adjustment: 7,
         earn_interest: 8,
         tax_withheld: 9,
-        salary_income: 10
+        salary_income: 10,
+        shopee_online_banking: 13
     },
     gcash_transacts: {
         load_sale: 1,
@@ -39,5 +40,9 @@ export default {
         cash_in: 0,
         online_payment: 1,
         qr_pay: 2
+    },
+    adjustment_types: {
+        credit: 71,
+        debit: 72
     }
  }

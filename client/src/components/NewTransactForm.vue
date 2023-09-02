@@ -106,12 +106,12 @@
                 <option value="Smart">Smart</option>
               </select>
             </div>
-            <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 1">
+            <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && commonProps.transactType === consts.gcash_transacts.load_sale">
               <label class="col-form-label white">Payment Date / Time</label>
               <input type="datetime-local" class="form-control pay-mobile-res" v-model="gCashObject.paymentDateTime">
             </div>
           </div>
-          <div class="form-group" v-if="(formDetails.componentId === consts.bank_component_id && commonProps.transactType === 7 || formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 8)">
+          <div class="form-group" v-if="(formDetails.componentId === consts.bank_component_id && commonProps.transactType === consts.bank_transacts.adjustment || formDetails.componentId === consts.gcash_component_id && commonProps.transactType === consts.gcash_transacts.adjustment)">
             <label class="col-form-label white">Credit or Debit?</label><br>
             <select class="custom-select" v-model="commonProps.credit" style="width: 6rem;">
               <option value="1" selected>Credit</option>
@@ -172,7 +172,7 @@
             <input type="text" class="form-control" v-model="gCashObject.moneySender" required/>
           </div>
           <!-- Amount -->
-          <div class="form-group">
+          <div class="form-group" v-if="commonProps.transactType != consts.bank_transacts.shopee_online_banking">
             <label class="control-label white">{{ (formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 4) ? 'Sale / Income Received:' : 'Amount'}}</label>
             <div class="form-group">
               <div class="input-group mb-3">
@@ -183,12 +183,14 @@
               </div>
             </div>
           </div>
+
           <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 6">
             <label class="control-label white">Acct Name</label><br>
             <input type="text" class="form-control" v-model="gCashObject.acctName"/>
             <label class="control-label white">Acct Number</label><br>
             <input type="text" class="form-control" v-model="commonProps.acctNo"/>
           </div>
+
           <div class="form-group" v-if="(formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 7) || (formDetails.componentId === consts.maya_component_id && commonProps.transactType === consts.maya_transacts.online_payment)">
             <label class="control-label white">Online Service / Shop Website:</label>
             <select class="custom-select" v-model="commonProps.onlineShopWebsite">
@@ -206,6 +208,7 @@
                 <option value="Mobapay">Mobapay</option>
               </select>
           </div>
+
           <div class="form-group" v-if="formDetails.componentId === consts.cc_component_id && (commonProps.transactType === consts.cc_transacts.online_payment || commonProps.transactType === consts.cc_transacts.non_online_payment)">
             <label class="control-label white">{{ commonProps.transactType === consts.cc_transacts.online_payment ? 'Online Shop Website:' : 'Physical Store Name'}}</label>
             <select v-if="commonProps.transactType === consts.cc_transacts.online_payment" class="custom-select" v-model="commonProps.onlineShopWebsite">
@@ -219,10 +222,66 @@
             </select>
             <input v-else type="text" class="form-control" v-model="commonProps.storeName">
           </div>
+
           <div class="form-group" v-if="(formDetails.componentId === consts.bank_component_id && commonProps.transactType === consts.bank_transacts.store_payment) || (formDetails.componentId === consts.gcash_component_id && commonProps.transactType === consts.gcash_transacts.pay_qr) || (formDetails.componentId === consts.maya_component_id && commonProps.transactType === consts.maya_transacts.qr_pay)">
             <label class="control-label white">Store Name:</label><br>
             <input type="text" class="form-control" v-model="commonProps.storeName"/>
           </div>
+
+          <div class="form-group" v-if="formDetails.componentId === consts.bank_component_id && commonProps.transactType === consts.bank_transacts.shopee_online_banking">
+            <label class="control-label white">Seller Name:</label><br>
+            <input type="text" class="form-control" v-model="commonProps.sellerName"/>
+          </div>
+
+          <!-- Merch Subtotal -->
+          <div class="form-group" v-if="commonProps.transactType === consts.bank_transacts.shopee_online_banking">
+            <label class="control-label white">Merch Subtotal</label>
+            <div class="form-group">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">₱</span>
+                </div>
+                <input type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="commonProps.merchSubtotal" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" v-if="formDetails.componentId === consts.bank_component_id && commonProps.transactType === consts.bank_transacts.shopee_online_banking">
+            <label class="control-label white">OL Bank Fee:</label><br>
+            <div class="form-group">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">₱</span>
+                </div>
+                <input type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="commonProps.shopeeOLBankFee" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" v-if="formDetails.componentId === consts.bank_component_id && commonProps.transactType === consts.bank_transacts.shopee_online_banking">
+            <label class="control-label white">Shipping Fee Subtotal:</label><br>
+            <div class="form-group">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">₱</span>
+                </div>
+                <input type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="commonProps.shippingFee" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" v-if="formDetails.componentId === consts.bank_component_id && commonProps.transactType === consts.bank_transacts.shopee_online_banking">
+            <label class="control-label white">Grand Subtotal:</label><br>
+            <div class="form-group">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">₱</span>
+                </div>
+                <input disabled type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" :value="commonProps.shopeeOLBSubTotal = (commonProps.merchSubtotal + commonProps.shopeeOLBankFee + commonProps.shippingFee)" required>
+              </div>
+            </div>
+          </div>
+
           <div class="form-group" v-if="formDetails.componentId === consts.cc_component_id && commonProps.transactType === 3">
             <label class="control-label white">Term</label>
             <select class="custom-select" v-model="ccObject.term">
@@ -263,18 +322,27 @@
               <option value="Audio">Audio</option>
             </select>
           </div>
+
           <div class="form-group" v-if="((formDetails.componentId === consts.bank_component_id) || (formDetails.componentId === consts.gcash_component_id && commonProps.transactType != consts.gcash_transacts.pay_qr)) || (formDetails.componentId === consts.cc_component_id) || (formDetails.componentId === consts.maya_component_id && commonProps.transactType != consts.maya_transacts.qr_pay)">
             <label class="control-label white">Remarks</label><br>
             <textarea class="form-control" rows="3" v-model="commonProps.remarks"/>
           </div>
+
           <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id || bankObject.location === 'GCash App'">
             <label class="control-label white">{{ bankObject.location == 'GCash App' ? 'GCash ' : '' }}Ref. No.</label><br>
             <input type="text" class="form-control" v-model="gCashObject.refNo" required/>
           </div>
+
           <div class="form-group" v-if="formDetails.componentId === consts.maya_component_id || bankObject.location === 'Maya App'">
             <label class="control-label white">{{ bankObject.location == 'Maya App' ? 'Maya ' : '' }}Ref. ID.</label><br>
             <input type="text" class="form-control" v-model="mayaObject.refNo" required/>
           </div>
+
+          <div class="form-group" v-if="formDetails.componentId === consts.bank_component_id && (!bankObject.location != 'Maya App' || !bankObject.location != 'GCash App') ">
+            <label class="control-label white">Transaction Ref No</label><br>
+            <input type="text" class="form-control" v-model="bankObject.refNo" required/>
+          </div>
+
           <div class="form-group" v-if="formDetails.componentId === consts.bank_component_id">
             <label class="col-form-label white">Location</label><br>
             <select class="custom-select" v-model="bankObject.location" >
@@ -283,6 +351,8 @@
               <option value="GCash App">GCash App</option>
               <option value="Maya App">Maya App</option>
               <option value="ATM">ATM</option>
+              <option value="Store Card Terminal">Store Card Terminal</option>
+              <option v-if="commonProps.transactType === consts.bank_transacts.shopee_online_banking" value="Shopee">Shopee</option>
               <option value="Automatic Activity">Automatic Activity</option>
             </select>
           </div>
@@ -324,7 +394,8 @@ let bankObject = reactive({
   saName: '', 
   saBalance: 1, 
   receipientAcctNo: '', 
-  location: 'Select'
+  location: 'Select',
+  refNo: '',
 })
 
 let gCashObject = reactive({
@@ -377,6 +448,11 @@ let commonProps = reactive(
     onlineShopWebsite: 'Google Play', // GCash, CC
     billerMerchant: '',
     storeName: '', // GCash, CC
+    sellerName: '', // Savings account,
+    merchSubtotal: 1,
+    shopeeOLBankFee: 10,
+    shippingFee: 40,
+    shopeeOLBSubTotal: 1,
     remarks: ''
   }
 )
@@ -468,7 +544,8 @@ const handleSubmit = async () => {
         amount: commonProps.amount,
         current_balance: bankObject.saBalance,        
         remarks: commonProps.remarks,
-        location: bankObject.location
+        location: bankObject.location,
+        reference_number: bankObject.refNo
       }
 
       // console.log(newBankData)
@@ -526,6 +603,7 @@ const handleSubmit = async () => {
         // Adjustment
         // properties are manually added which are unique only to this transaction
         newBankData.credit = commonProps.credit
+        newBankData.bank_transact_type_id = commonProps.credit == 1 ? consts.adjustment_types.credit : consts.adjustment_types.debit
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-adjustment`, newBankData, 'Savings Account', 'Adjustment')
 
@@ -540,7 +618,17 @@ const handleSubmit = async () => {
       } else if(commonProps.transactType === consts.bank_transacts.salary_income) {
         // Salary / Income
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-sale-income`, newBankData, 'Savings Account', 'Salary / Income')
-        
+
+      } else if(commonProps.transactType === consts.bank_transacts.shopee_online_banking) {
+
+        newBankData.seller_name = commonProps.sellerName
+        newBankData.merch_subtotal = commonProps.merchSubtotal
+        newBankData.fee = commonProps.shopeeOLBankFee
+        newBankData.shipping_fee = commonProps.shippingFee
+        newBankData.sub_total = commonProps.shopeeOLBSubTotal
+        newBankData.amount = commonProps.shopeeOLBSubTotal
+
+        axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-shopee-online-banking`, newBankData, 'Savings Account', 'Shopee - Online Banking')
       }
     } else if(props.formDetails.componentId === consts.gcash_component_id) {
 
