@@ -61,6 +61,8 @@ import {
     newQrPay
 } from '../controllers/mayaController.js';
 
+import { showAllOwnMobileNos } from '../controllers/ownMobileNosController.js';
+
 // import {
 //     createSessionHandler,
 //     getSessionHandler,
@@ -73,6 +75,8 @@ const router = express.Router();
 router.get('/api/sa/get-sa-accounts', showAllSavingsAccs);
 router.get('/api/sa/get-sa1-transactions', showSa1Transacts);
 router.get('/api/sa/get-sa2-transactions', showSa2Transacts);
+
+router.get('/api/misc/get-own-mobile-nos', showAllOwnMobileNos);
 
 router.get('/api/cc/get-cc-accounts', showAllCcs);
 router.get('/api/cc/get-cc-transacts', showCcTransacts);
