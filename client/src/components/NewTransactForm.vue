@@ -87,12 +87,7 @@
                 v-model="gCashObject.mobileNo"
               >
               <select v-else class="custom-select own-numbers" v-model="gCashObject.ownMobileNo">
-                <option value="0">-- Select Mobile No. --</option>
-                <option value="09755512192">TM - 09755512192</option>
-                <option value="09369700679">GCash No. - 0936970679</option>
-                <!-- inactive.. not sure if possible to restore -->
-                <!-- <option value="09157611994">Globe / BPI OTP - 09157611994</option> -->
-                <option value="09179561248">Globe / Grab - 09179561248</option>
+                <option v-for="(number, index) in ownMobileNosData" :key="index" :value="number.id">{{ number.alias }} - {{ number.mobile_number }}</option>
               </select>
             </div>
           </div>
@@ -377,6 +372,7 @@ import { getMayaInfo } from '../composables/getMayaInfo.js'
 import { getSavingsAccs } from '../composables/getBanksInfo.js'
 import { getCreditCards  } from '../composables/getCcsInfo.js'
 import { getCustomers } from '../composables/getCustomers.js'
+import { getOwnMobileNos  } from '../composables/getOwnMobileNosInfo.js'
 
 import consts from '../constants/constants.js'
 
@@ -474,6 +470,8 @@ let savingsAcctData = ref([])
 let creditCardsData = ref([])
 
 let customersArray = ref([])
+
+let ownMobileNosData = ref([])
 
 const router = useRouter()
 
@@ -830,7 +828,7 @@ const handleSubmit = async () => {
 
 onMounted(async () => {
 
-  console.log(`props.formDetails.componentId: ${props.formDetails.componentId}`)
+  // console.log(`props.formDetails.componentId: ${props.formDetails.componentId}`)
 
   if(props.formDetails.componentId === consts.bank_component_id) {
     savingsAcctData.value = await invokerInitializer(getSavingsAccs)
@@ -842,6 +840,7 @@ onMounted(async () => {
   if(props.formDetails.componentId === consts.gcash_component_id) {
     await handleGCashInitialization()
     customersArray.value = await invokerInitializer(getCustomers)
+    ownMobileNosData.value = await invokerInitializer(getOwnMobileNos)
   }
 
   if(props.formDetails.componentId === consts.maya_component_id) {
