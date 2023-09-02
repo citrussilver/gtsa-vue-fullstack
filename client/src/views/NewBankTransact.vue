@@ -27,7 +27,8 @@ const bankFormDetails = reactive(
       { val: consts.bank_transacts.adjustment, title: 'Adjustment' },
       { val: consts.bank_transacts.earn_interest, title: 'Earn Interest' },
       { val: consts.bank_transacts.tax_withheld, title: 'Tax Withheld' },
-      { val: consts.bank_transacts.salary_income, title: 'Salary / Income' }
+      { val: consts.bank_transacts.salary_income, title: 'Salary / Income' },
+      { val: consts.bank_transacts.shopee_online_banking, title: 'Shopee Online Banking'}
     ],
   }
 )

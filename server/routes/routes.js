@@ -25,7 +25,8 @@ import {
     newAdjustment,
     newEarnInterest,
     newTaxWithheld,
-    newSalaryIncome
+    newSalaryIncome,
+    newShopeeOLBanking
 } from '../controllers/savingsAcctController.js';
 
 import {
@@ -96,6 +97,7 @@ router.post('/api/sa/save-sa-adjustment', newAdjustment);
 router.post('/api/sa/save-sa-earn-interest', newEarnInterest);
 router.post('/api/sa/save-sa-taxwh', newTaxWithheld);
 router.post('/api/sa/save-sa-sale-income', newSalaryIncome);
+router.post('/api/sa/save-shopee-online-banking', newShopeeOLBanking);
 
 router.post('/api/gcash/save-loadsale', newLoadSale);
 router.post('/api/gcash/save-gc-billspay', newGCashBillsPayment);
