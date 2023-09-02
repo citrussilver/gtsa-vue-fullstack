@@ -45,6 +45,7 @@ export const insertBankCashDeposit = (data, result) => {
         current_balance: data.current_balance,
         remarks: `[Cash Deposit] ${data.remarks}`,
         location: data.location,
+        reference_number: data.reference_number
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -80,6 +81,7 @@ export const insertBankCashWithdraw = (data, result) => {
         current_balance: data.current_balance,
         remarks: `[Cash Withdraw] ${data.remarks}`,
         location: data.location,
+        reference_number: data.reference_number
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -128,6 +130,7 @@ export const insertBankBillsPayment = (data, result) => {
         current_balance: data.current_balance,
         remarks: `[Bills Payment] ${data.remarks}`,
         location: data.location,
+        reference_number: data.reference_number
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -164,6 +167,7 @@ export const insertGCashCashIn = (data, result) => {
         current_balance: data.current_balance,
         remarks: `[GCash Cash-in] ${data.remarks}`,
         location: data.location,
+        reference_number: data.reference_number
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -216,6 +220,7 @@ export const insertMayaCashIn = (data, result) => {
         current_balance: data.current_balance,
         remarks: `[Maya Cash-in] ${data.remarks}`,
         location: data.location,
+        reference_number: data.reference_number
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -268,6 +273,7 @@ export const insertBankPrepaidReload = (data, result) => {
         current_balance: data.current_balance,
         remarks: `[Prepaid Reload] ${data.remarks}`,
         location: data.location,
+        reference_number: data.reference_number
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -303,6 +309,7 @@ export const insertTransferMoney = (data, result) => {
         current_balance: data.current_balance,
         remarks: `[Transfer Money] ${data.remarks}`,
         location: data.location,
+        reference_number: data.reference_number
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -340,6 +347,7 @@ export const insertStorePayment = (data, result) => {
         current_balance: data.current_balance,
         remarks: `[Store Payment] ${data.remarks}`,
         location: data.location,
+        reference_number: data.reference_number
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -376,6 +384,7 @@ export const insertAdjustment = (data, result) => {
         current_balance: data.current_balance,
         remarks: `[Adjustment] ${data.remarks}`,
         location: data.location,
+        reference_number: data.reference_number
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -397,7 +406,7 @@ export const insertAdjustment = (data, result) => {
                     result(err, null);
                 } else {
                     result(null, results);
-                    console.log('[Savings Acct] New Adjustment successfully posted to database')
+                    console.log(`[Savings Acct] New Adjustment ${adjustment_data.credit == 1 ? "(Credit)" : "(Debit)"} successfully posted to database`)
                 }
             });
         }
@@ -413,6 +422,7 @@ export const insertEarnInterest = (data, result) => {
         current_balance: data.current_balance,
         remarks: `[Earn Interest] ${data.remarks}`,
         location: data.location,
+        reference_number: data.reference_number
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -449,6 +459,7 @@ export const insertTaxWithheld = (data, result) => {
         current_balance: data.current_balance,
         remarks: `[Tax Witheld] ${data.remarks}`,
         location: data.location,
+        reference_number: data.reference_number
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -485,6 +496,7 @@ export const insertSalaryIncome = (data, result) => {
         current_balance: data.current_balance,
         remarks: `[Salary / Income] ${data.remarks}`,
         location: data.location,
+        reference_number: data.reference_number
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -507,5 +519,45 @@ export const insertSalaryIncome = (data, result) => {
                 }
             })
         }
+    })
+}
+
+export const insertShopeeOLBanking = (data, result) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
+        bank_id: data.bank_id,
+        date_time: data.date_time,
+        bank_transact_type_id: data.bank_transact_type_id,
+        amount: data.amount,
+        current_balance: data.current_balance,
+        remarks: `[Shopee - Online Banking] ${data.remarks}`,
+        location: data.location,
+        reference_number: data.reference_number
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const sa_shopee_ol_banking_data = {
+                sa_transact_id: results.insertId,
+                date_time: data.date_time,
+                description: data.remarks,
+                seller_name: data.seller_name,
+                merch_subtotal: data.merch_subtotal,
+                fee: data.fee,
+                shipping_fee: data.shipping_fee,
+                sub_total: data.sub_total
+            };
+
+            dbConnection.query("INSERT INTO bank_shopee_online_banking SET ?", sa_shopee_ol_banking_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[Savings Acct] New Shopee - Online Banking successfully posted to database')
+                }
+            })
+        }
+
     })
 }

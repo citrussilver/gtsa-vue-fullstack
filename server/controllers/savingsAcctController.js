@@ -13,7 +13,8 @@ import {
     insertAdjustment,
     insertEarnInterest,
     insertTaxWithheld,
-    insertSalaryIncome
+    insertSalaryIncome,
+    insertShopeeOLBanking
 } from '../models/savingsAcctModel.js';
 
 // Get All Savings Acct Transactions
@@ -189,4 +190,15 @@ export const newSalaryIncome = (req, res) => {
             res.json(results);
         }
     });
+}
+
+export const newShopeeOLBanking = (req, res) => {
+    const data = req.body;
+    insertShopeeOLBanking(data, (err, results) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.json(results);
+        }
+    })
 }
