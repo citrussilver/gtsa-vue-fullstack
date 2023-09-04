@@ -16,9 +16,9 @@ const ccFormDetails = reactive(
     header: 'New Credit Card Transaction',
     transactType: [
       { val: 0, title: '-- Select Transaction Type --' },
-      { val: 1, title: 'Online Payment' },
-      { val: 2, title: 'Non-online Payment' },
-      { val: 3, title: 'Loan - Credit to Cash Promo' },
+      { val: consts.cc_transacts.online_payment, title: 'Online Payment' },
+      { val: consts.cc_transacts.non_online_payment, title: 'Non-online Payment' },
+      { val: consts.cc_transacts.loan_promo, title: 'Loan - Credit to Cash Promo' },
     ],
   }
 )
