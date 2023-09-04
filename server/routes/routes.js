@@ -58,7 +58,9 @@ import {
 import {
     showMayaAccts,
     newMayaOnlineShopPay,
-    newQrPay
+    newQrPay,
+    newMayaRefund,
+    newMayaAdjustment
 } from '../controllers/mayaController.js';
 
 import { showAllOwnMobileNos } from '../controllers/ownMobileNosController.js';
@@ -117,6 +119,8 @@ router.post('/api/gcash/save-received-money', newReceivedMoney);
 
 router.post('/api/maya/save-ol-shop-pay', newMayaOnlineShopPay);
 router.post('/api/maya/save-qr-pay', newQrPay);
+router.post('/api/maya/save-refund', newMayaRefund);
+router.post('/api/maya/save-adjustment', newMayaAdjustment);
 
 router.post('/api/cc/save-cc-op', newCcOnlinePay);
 router.post('/api/cc/save-cc-nop', newCcNonOnlinePay);

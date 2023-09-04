@@ -1,7 +1,9 @@
 import {
     getMayaAccts,
     insertOnlineShopPay,
-    insertQrPay
+    insertQrPay,
+    insertMayaRefund,
+    insertMayaAdjustment
 } from '../models/mayaModel.js'
 
 export const showMayaAccts = (req, res) => {
@@ -34,4 +36,26 @@ export const newQrPay = (req, res) => {
             res.json(results);
         }
     });
+}
+
+export const newMayaRefund = (req, res) => {
+    const data = req.body;
+    insertMayaRefund(data, (err, results) => {
+        if (err){
+            res.send(err);
+        } else{
+            res.json(results);
+        }
+    });
+}
+
+export const newMayaAdjustment = (req, res) => {
+    const data = req.body;
+    insertMayaAdjustment(data, (err, results) => {
+        if(err){
+            res.send(err);
+        } else{
+            res.json(results);
+        }
+    })
 }

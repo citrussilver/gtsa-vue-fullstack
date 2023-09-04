@@ -106,7 +106,7 @@
               <input type="datetime-local" class="form-control pay-mobile-res" v-model="gCashObject.paymentDateTime">
             </div>
           </div>
-          <div class="form-group" v-if="(formDetails.componentId === consts.bank_component_id && commonProps.transactType === consts.bank_transacts.adjustment || formDetails.componentId === consts.gcash_component_id && commonProps.transactType === consts.gcash_transacts.adjustment)">
+          <div class="form-group" v-if="(formDetails.componentId === consts.bank_component_id && commonProps.transactType === consts.bank_transacts.adjustment) || (formDetails.componentId === consts.gcash_component_id && commonProps.transactType === consts.gcash_transacts.adjustment) || (formDetails.componentId === consts.maya_component_id && commonProps.transactType === consts.maya_transacts.adjustment)">
             <label class="col-form-label white">Credit or Debit?</label><br>
             <select class="custom-select" v-model="commonProps.credit" style="width: 6rem;">
               <option value="1" selected>Credit</option>
@@ -158,14 +158,17 @@
                 <option value="Dasca">Dasca</option>
               </select>
           </div>
+
           <div class="form-group" v-if="(formDetails.componentId === consts.cc_component_id) || (formDetails.componentId === consts.gcash_component_id && commonProps.transactType === consts.gcash_transacts.pay_qr) || (formDetails.componentId === consts.maya_component_id && commonProps.transactType === consts.maya_transacts.qr_pay)">
             <label class="control-label white">Description</label><br>
             <input type="text" class="form-control" v-model="commonProps.description"/>
           </div>
+
           <div class="form-group" v-if="formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 12">
             <label class="control-label white">Sender</label><br>
             <input type="text" class="form-control" v-model="gCashObject.moneySender" required/>
           </div>
+
           <!-- Amount -->
           <div class="form-group" v-if="commonProps.transactType != consts.bank_transacts.shopee_online_banking">
             <label class="control-label white">{{ (formDetails.componentId === consts.gcash_component_id && commonProps.transactType === 4) ? 'Sale / Income Received:' : 'Amount'}}</label>
@@ -785,6 +788,10 @@ const handleSubmit = async () => {
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-ol-shop-pay`, newMayaData, 'Maya', 'Online Payment')
 
+      } else if(commonProps.transactType === consts.maya_transacts.refund) {
+
+        axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-refund`, newMayaData, 'Maya', 'Refund')
+
       } else if (commonProps.transactType === consts.maya_transacts.qr_pay) {
 
         newMayaData.store_name = commonProps.storeName
@@ -792,6 +799,14 @@ const handleSubmit = async () => {
         newMayaData.remarks = newMayaData.description
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-qr-pay`, newMayaData, 'Maya', 'QR Pay')
+
+      } else if (commonProps.transactType === consts.maya_transacts.adjustment) {
+
+        newMayaData.credit = commonProps.credit
+        newMayaData.transact_type_id = commonProps.credit == 1 ? consts.adjustment_types.credit : consts.adjustment_types.debit
+
+        axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-adjustment`, newMayaData, 'Maya', 'New Adjustment')
+
       }
     }
 
