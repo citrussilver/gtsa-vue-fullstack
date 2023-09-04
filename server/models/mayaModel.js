@@ -82,3 +82,72 @@ export const insertQrPay = (data, result) => {
         }
     });
 }
+
+export const insertMayaRefund = (data, result) => {
+    dbConnection.query("INSERT INTO maya_transactions SET ?", {
+        maya_id: data.maya_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        current_maya_balance: data.current_maya_balance,
+        amount: data.amount,
+        remarks: `[Refund] ${data.remarks}`,
+        ref_no: data.ref_no
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const refund_data = {
+                maya_transact_id: results.insertId,
+                date_time: data.date_time,
+                amount: data.amount,
+                description: data.remarks
+            };
+
+            dbConnection.query("INSERT INTO maya_refund SET ?", refund_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[Maya] New Refund successfully posted to database')
+                }
+            });
+        }
+    });
+}
+
+export const insertMayaAdjustment = (data, result) => {
+    dbConnection.query("INSERT INTO maya_transactions SET ?", {
+        maya_id: data.maya_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        current_maya_balance: data.current_maya_balance,
+        amount: data.amount,
+        remarks: `[Adjustment] ${data.remarks}`,
+        ref_no: data.ref_no
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const adjustment_data = {
+                maya_transact_id: results.insertId,
+                date_time: data.date_time,
+                credit: data.credit,
+                amount: data.amount,
+                remarks: data.remarks,
+            };
+
+            dbConnection.query("INSERT INTO maya_adjustments SET ?", adjustment_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log(`[Maya] New Adjustment ${adjustment_data.credit == 1 ? "(Credit)" : "(Debit)"} successfully posted to database`)
+                }
+            });
+        }
+    });
+}
