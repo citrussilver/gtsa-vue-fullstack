@@ -13,7 +13,7 @@ const bankFormDetails = reactive(
   {
     componentId: consts.bank_component_id,
     cardBorder: 'card border-success',
-    header: 'New Bank Transaction',
+    header: 'Bank Transaction',
     transactType: [
       { val: 0, title: '-- Select Transaction Type --' },
       { val: consts.bank_transacts.deposit, title: 'Deposit' },

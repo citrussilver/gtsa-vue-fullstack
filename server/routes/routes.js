@@ -63,7 +63,13 @@ import {
     newMayaAdjustment
 } from '../controllers/mayaController.js';
 
+import {
+    newLazadaOrder
+} from '../controllers/lazadaController.js';
+
 import { showAllOwnMobileNos } from '../controllers/ownMobileNosController.js';
+
+import { showDeliveryLocations } from '../controllers/deliveryLocationsController.js'
 
 // import {
 //     createSessionHandler,
@@ -79,6 +85,7 @@ router.get('/api/sa/get-sa1-transactions', showSa1Transacts);
 router.get('/api/sa/get-sa2-transactions', showSa2Transacts);
 
 router.get('/api/misc/get-own-mobile-nos', showAllOwnMobileNos);
+router.get('/api/misc/get-delivery-loc', showDeliveryLocations);
 
 router.get('/api/cc/get-cc-accounts', showAllCcs);
 router.get('/api/cc/get-cc-transacts', showCcTransacts);
@@ -125,6 +132,8 @@ router.post('/api/maya/save-adjustment', newMayaAdjustment);
 router.post('/api/cc/save-cc-op', newCcOnlinePay);
 router.post('/api/cc/save-cc-nop', newCcNonOnlinePay);
 router.post('/api/cc/save-cc-loan', newCcPromoLoan);
+
+router.post('/api/lzd/save-lzd-order', newLazadaOrder);
 
 router.post('/api/auth/login', handlelogin);
 router.post('/signup', validateRegister, signUpUser);

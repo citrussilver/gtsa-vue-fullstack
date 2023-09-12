@@ -14,7 +14,7 @@
       componentId: consts.maya_component_id,
       name: 'Maya',
       cardBorder: 'card border-success',
-      header: 'New Maya Transaction',
+      header: 'Maya Transaction',
       transactType: [
         { val: 0, title: '-- Select Transaction Type --' },
         { val: consts.maya_transacts.online_payment, title: 'Online Payment' },

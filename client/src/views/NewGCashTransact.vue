@@ -14,7 +14,7 @@ const gCashFormDetails = reactive(
     componentId: consts.gcash_component_id,
     name: 'GCash',
     cardBorder: 'card border-primary mb-3',
-    header: 'New GCash Transaction',
+    header: 'GCash Transaction',
     transactType: [
       { val: 0, title: '-- Select Transaction Type --' },
       { val: consts.gcash_transacts.load_sale, title: 'Load Sale' },
