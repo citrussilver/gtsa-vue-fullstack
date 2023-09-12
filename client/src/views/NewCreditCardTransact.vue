@@ -13,7 +13,7 @@ const ccFormDetails = reactive(
   {
     componentId: consts.cc_component_id,
     cardBorder: 'card border-danger',
-    header: 'New Credit Card Transaction',
+    header: 'Credit Card Transaction',
     transactType: [
       { val: 0, title: '-- Select Transaction Type --' },
       { val: consts.cc_transacts.online_payment, title: 'Online Payment' },

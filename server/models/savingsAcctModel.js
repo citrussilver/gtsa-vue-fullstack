@@ -545,6 +545,8 @@ export const insertShopeeOLBanking = (data, result) => {
                 merch_subtotal: data.merch_subtotal,
                 fee: data.fee,
                 shipping_fee: data.shipping_fee,
+                shipping_discount: data.shipping_discount,
+                voucher_discount: data.voucher_discount,
                 sub_total: data.sub_total
             };
 

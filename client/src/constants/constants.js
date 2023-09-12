@@ -3,6 +3,7 @@ export default {
     gcash_component_id: 2,
     maya_component_id: 3,
     cc_component_id: 4,
+    lazada_component_id: 5,
     bank_transacts: {
         deposit: 1,
         withdraw: 2,
@@ -42,6 +43,9 @@ export default {
         qr_pay: 2,
         adjustment: 8,
         refund: 10
+    },
+    lazada_transacts: {
+        online_shopping: 1
     },
     adjustment_types: {
         credit: 71,
