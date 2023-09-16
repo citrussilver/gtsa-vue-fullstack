@@ -4,6 +4,7 @@ export default {
     maya_component_id: 3,
     cc_component_id: 4,
     lazada_component_id: 5,
+    shopee_component_id: 6,
     bank_transacts: {
         deposit: 1,
         withdraw: 2,
@@ -45,6 +46,9 @@ export default {
         refund: 10
     },
     lazada_transacts: {
+        online_shopping: 1
+    },
+    shopee_transacts: {
         online_shopping: 1
     },
     adjustment_types: {
