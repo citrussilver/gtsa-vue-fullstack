@@ -25,6 +25,7 @@
                         <option :value="consts.bank_component_id">Bank</option>
                         <option :value="consts.gcash_component_id">GCash</option>
                         <option :value="consts.maya_component_id">Maya</option>
+                        <option :value="consts.shopee_component_id">Shopee Wallet</option>
                       </select>
                     </div>
 
@@ -74,9 +75,26 @@
                       </div>
                     </div>
 
+                    <div class="form-group" v-if="dataPayload.payment_method === consts.shopee_component_id">
+                      <label class="col-form-label white">Current Shopee Wallet Balance</label>
+                      <div class="form-group">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">₱</span>
+                          </div>
+                          <input 
+                            type="text" 
+                            class="form-control border-success" 
+                            style="background-color: #303030; color: white;" 
+                            v-model="shopeeObject.walletBalance" disabled
+                          >
+                        </div>
+                      </div>
+                    </div>                    
+
                     <div class="form-group">
-                      <label class="control-label white">Order No</label><br>
-                      <input type="text" class="form-control" v-model="dataPayload.order_no" required/>
+                      <label class="control-label white">Order ID</label><br>
+                      <input type="text" class="form-control" v-model="dataPayload.order_id" required/>
                     </div>
 
                     <div class="form-group" >
@@ -142,6 +160,20 @@
                     </div>
 
                     <div class="form-group">
+                      <label class="control-label white">Voucher</label>
+                      <DiscountIcon/>
+                      <br>
+                      <div class="form-group">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">₱</span>
+                          </div>
+                          <input type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="dataPayload.voucher_discount" required>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
                       <label class="control-label white">Coins</label>
                       <DiscountIcon/>
                       <br>
@@ -155,21 +187,7 @@
                       </div>
                     </div>
 
-                    <div class="form-group">
-                      <label class="control-label white">Instant</label>
-                      <DiscountIcon/>
-                      <br>
-                      <div class="form-group">
-                        <div class="input-group mb-3">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text">₱</span>
-                          </div>
-                          <input type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="dataPayload.instant_discount" required>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                       <label class="control-label white">Cashback</label>
                       <DiscountIcon/>
                       <br>
@@ -181,7 +199,7 @@
                           <input type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="dataPayload.cashback" required>
                         </div>
                       </div>
-                    </div>
+                    </div> -->
 
                     <div class="form-group">
                       <label class="control-label white">Grand Subtotal:</label><br>
@@ -190,19 +208,19 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text">₱</span>
                           </div>
-                          <input disabled type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" :value="dataPayload.sub_total = (dataPayload.merch_subtotal + dataPayload.shipping_fee) - dataPayload.shipping_fee_discount - dataPayload.store_discount - dataPayload.coins - dataPayload.instant_discount - dataPayload.cashback" required>
+                          <input disabled type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" :value="dataPayload.sub_total = (dataPayload.merch_subtotal + dataPayload.shipping_fee) - dataPayload.shipping_fee_discount - dataPayload.store_discount - dataPayload.voucher_discount - dataPayload.coins" required>
                         </div>
                       </div>
                     </div>
 
                     <div class="form-group" v-if="dataPayload.payment_method === consts.gcash_component_id">
-                      <label class="control-label white">Ref. No.</label><br>
-                      <input type="text" class="form-control" v-model="gCashObject.refNo" required/>
+                        <label class="control-label white">GCash Ref. No.</label><br>
+                        <input type="text" class="form-control" v-model="gCashObject.refNo" required/>
                     </div>
 
-                    <div class="form-group" v-if="dataPayload.payment_method === consts.maya_component_id">
-                      <label class="control-label white">Ref. ID.</label><br>
-                      <input type="text" class="form-control" v-model="mayaObject.refNo" required/>
+                    <div class="form-group" v-if="dataPayload.payment_method === consts.maya_component_id || bankObject.location === 'Maya App'">
+                        <label class="control-label white">Maya Ref. ID.</label><br>
+                        <input type="text" class="form-control" v-model="mayaObject.refNo" required/>
                     </div>
 
                     <div id="btn-container"><button type="submit" class="btn btn-outline-success styled-button">Submit</button></div>
@@ -226,8 +244,9 @@ import { invokerInitializer, handleAxios } from '../helpers/helpers.service.js'
 
 import { getGCashInfo } from '../composables/getGCashInfo.js'
 import { getMayaInfo } from '../composables/getMayaInfo.js'
+import { getShopeeWalletInfo } from '../composables/getShopeeWalletInfo.js'
 import { getSavingsAccs } from '../composables/getBanksInfo.js'
-import { getCreditCards  } from '../composables/getCcsInfo.js'
+// import { getCreditCards  } from '../composables/getCcsInfo.js'
 import { getDeliveryLocations } from '../composables/getDeliveryLocations.js'
 
 import consts from '../constants/constants.js'
@@ -247,15 +266,15 @@ let dataPayload = reactive(
     date_time: '',
     delivery_location: '',
     payment_method: 1,
-    order_no: '',
+    order_id: '',
     store_name: '',
     description: '',
     merch_subtotal: 1,
-    shipping_fee: 35,
+    shipping_fee: 40,
     shipping_fee_discount: 0,
     store_discount: 0,
+    voucher_discount: 0,
     coins: 0,
-    instant_discount: 0,
     cashback: 0,
     sub_total: 0,
   }
@@ -300,6 +319,11 @@ let mayaObject = reactive({
   attachment: 'Photo'
 })
 
+let shopeeObject = reactive({
+  shopeeWalletId: 1,
+  walletBalance: 1,
+})
+
 let initialIndex = 0
 
 let gCashData = ref([])
@@ -307,6 +331,8 @@ let gCashData = ref([])
 let mayaData = ref([])
 
 let savingsAcctData = ref([])
+
+let shopeeWalletData = ref([])
 
 let deliveryLocationsData = ref([])
 
@@ -326,6 +352,10 @@ const fetchMayaAcc = () => {
   mayaObject.mayaBalance = mayaData.value[0].balance
 }
 
+const fetchShopeeWallet = () => {
+  shopeeObject.walletBalance = shopeeWalletData.value[0].balance
+}
+
 const handleGCashInitialization = async () => {
   gCashData.value = await invokerInitializer(getGCashInfo)
   fetchGCashAcc()
@@ -334,6 +364,11 @@ const handleGCashInitialization = async () => {
 const handleMayaInitialization = async () => {
   mayaData.value = await invokerInitializer(getMayaInfo)
   fetchMayaAcc()
+}
+
+const handleShopeeWalletInitialization = async () => {
+  shopeeWalletData.value = await invokerInitializer(getShopeeWalletInfo)
+  fetchShopeeWallet()
 }
 
 const trackSelection = (val, flag) => {
@@ -359,21 +394,19 @@ const digitOnlyInput = (event) => {
 const handleSubmit = async () => {
   try {
 
-    let newLazadaData = {...dataPayload}
+    let newShopeeData = {...dataPayload}
 
     if(dataPayload.payment_method == consts.gcash_component_id) {
-      newLazadaData.current_gcash_balance = parseFloat(gCashObject.gcBalance)
-      newLazadaData.ref_no = gCashObject.refNo
+      newShopeeData.current_gcash_balance = parseFloat(gCashObject.gcBalance)
     }
 
     if(dataPayload.payment_method == consts.maya_component_id) {
-      newLazadaData.current_maya_balance = parseFloat(mayaObject.mayaBalance)
-      newLazadaData.ref_no = mayaObject.refNo
+      newShopeeData.current_maya_balance = parseFloat(mayaObject.mayaBalance)
     }
 
-    // console.log(newLazadaData)
+    // console.log(newShopeeData)
 
-    axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/lzd/save-lzd-order`, newLazadaData, 'Lazada Transactions', 'Lazada Order')
+    axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/shp/save-shp-order`, newShopeeData, 'Shopee Transactions', 'Shopee Order')
     
     bankObject.bankId = 1
     bankObject.receipientAcctNo = ''
@@ -398,6 +431,7 @@ onMounted(async () => {
   trackSelection(initialIndex, 'sa')
   handleGCashInitialization()
   handleMayaInitialization()
+  handleShopeeWalletInitialization()
   deliveryLocationsData.value = await invokerInitializer(getDeliveryLocations)
 })
 

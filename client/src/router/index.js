@@ -7,6 +7,7 @@ import NewCreditCardTransact from '../views/NewCreditCardTransact.vue'
 import NewGCashTransact from '../views/NewGCashTransact.vue'
 import NewMayaTransact from '../views/NewMayaTransact.vue'
 import NewLazadaTransact from '../views/NewLazadaTransact.vue'
+import NewShopeeTransact from '../views/NewShopeeTransact.vue'
 import TransactsList from '../views/TransactsList.vue'
 
 import { computed } from 'vue'
@@ -65,6 +66,11 @@ const routes = [
     path: '/new-lzd-tr',
     name: 'NewLazadaTransact',
     component: NewLazadaTransact,
+  },
+  {
+    path: '/new-shp-tr',
+    name: 'NewShopeeTransact',
+    component: NewShopeeTransact,
   },
   {
     path: '/view-recs',
