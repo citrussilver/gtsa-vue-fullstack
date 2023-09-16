@@ -7,6 +7,7 @@
     <router-link class="common-link" :to="{ name: 'NewGCashTransact' }"><li>New GCash Transaction</li></router-link>
     <router-link class="common-link" :to="{ name: 'NewMayaTransact' }"><li>New Maya Transaction</li></router-link>
     <router-link class="common-link" :to="{ name: 'NewLazadaTransact' }"><li>New Lazada Transaction</li></router-link>
+    <router-link class="common-link" :to="{ name: 'NewShopeeTransact' }"><li>New Shopee Transaction</li></router-link>
     <router-link class="common-link" :to="{ name: 'TransactsList'}"><li>View Records</li></router-link>
   </ul>
 </div>

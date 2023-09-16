@@ -67,6 +67,11 @@ import {
     newLazadaOrder
 } from '../controllers/lazadaController.js';
 
+import {
+    showShopeeWallet,
+    newShopeeOrder
+} from '../controllers/shopeeController.js';
+
 import { showAllOwnMobileNos } from '../controllers/ownMobileNosController.js';
 
 import { showDeliveryLocations } from '../controllers/deliveryLocationsController.js'
@@ -89,6 +94,8 @@ router.get('/api/misc/get-delivery-loc', showDeliveryLocations);
 
 router.get('/api/cc/get-cc-accounts', showAllCcs);
 router.get('/api/cc/get-cc-transacts', showCcTransacts);
+
+router.get('/api/shp/get-shpw', showShopeeWallet);
 
 router.get('/api/gcash/get-gcash-accounts', showGCashAccts);
 router.get('/api/gcash/get-gcash-transactions', showGCashTransacts);
@@ -134,6 +141,8 @@ router.post('/api/cc/save-cc-nop', newCcNonOnlinePay);
 router.post('/api/cc/save-cc-loan', newCcPromoLoan);
 
 router.post('/api/lzd/save-lzd-order', newLazadaOrder);
+
+router.post('/api/shp/save-shp-order', newShopeeOrder);
 
 router.post('/api/auth/login', handlelogin);
 router.post('/signup', validateRegister, signUpUser);

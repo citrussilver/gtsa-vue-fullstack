@@ -23,6 +23,7 @@
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewGCashTransact' }">New GCash Transaction</router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewMayaTransact' }">New Maya Transaction</router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewLazadaTransact' }">New Lazada Transaction</router-link></li>
+            <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewShopeeTransact' }">New Shopee Transaction</router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'TransactsList' }">View Records</router-link></li>
           </ul>
         </div>
