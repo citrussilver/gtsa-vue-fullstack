@@ -163,6 +163,7 @@
               <div id="cl-notice"></div>
             </div>
           </div>
+          
           <div class="form-group" v-if="(formDetails.componentId === consts.bank_component_id || formDetails.componentId === consts.gcash_component_id) && commonProps.transactType === 3">
             <label class="control-label white">Biller / Merchant</label>
             <select class="custom-select" v-model="commonProps.billerMerchant">

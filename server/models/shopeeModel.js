@@ -21,6 +21,7 @@ export const insertShopeeOrder = (data, result) => {
         delivery_location: data.delivery_location,
         order_id: data.order_id,
         description: data.description,
+        remarks: data.remarks,
         store_name: data.store_name,
         merch_subtotal: data.merch_subtotal,
         shipping_fee: data.shipping_fee,
@@ -28,6 +29,7 @@ export const insertShopeeOrder = (data, result) => {
         store_discount: data.store_discount,
         voucher_discount: data.voucher_discount,
         coins: data.coins,
+        bundle_deals_savings: data.bundle_deals_savings,
         sub_total: data.sub_total,
     }, (err, results) => {
         if(err) {
@@ -66,7 +68,8 @@ export const insertShopeeOrder = (data, result) => {
                     transact_type_id: 1,
                     current_maya_balance: data.current_maya_balance,
                     amount: data.sub_total,
-                    remarks: `[Online Payment - Shopee] ${data.description}`
+                    remarks: `[Online Payment - Shopee] ${data.description}`,
+                    ref_no: data.ref_no
                 };
 
                 dbConnection.query("INSERT INTO maya_transactions SET ?", maya_data, (err, results) => {
@@ -76,6 +79,29 @@ export const insertShopeeOrder = (data, result) => {
                     } else {
                         result(null, results);
                         default_log+= '[Maya] Payment to Shopee successfully posted to database';
+                    }
+                });
+            }
+
+            if(data.payment_method == 4) {
+                const cc_data = {
+                    credit_card_id: data.credit_card_id,
+                    date_time: data.date_time,
+                    transact_type_id: 1,
+                    description: data.description,
+                    current_credit_limit: data.current_credit_limit,
+                    amount: data.sub_total,
+                    remarks: `[Online Payment - Shopee] ${data.remarks}`,
+                    ref_no: data.ref_no
+                };
+
+                dbConnection.query("INSERT INTO credit_card_transactions SET ?", cc_data, (err, results) => {
+                    if(err) {
+                        console.log(err);
+                        result(err, null);
+                    } else {
+                        result(null, results);
+                        default_log+= '[Credit Card] Payment to Shopee successfully posted to database';
                     }
                 });
             }
