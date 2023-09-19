@@ -26,6 +26,13 @@
                         <option :value="consts.gcash_component_id">GCash</option>
                         <option :value="consts.maya_component_id">Maya</option>
                         <option :value="consts.shopee_component_id">Shopee Wallet</option>
+                        <option :value="consts.cc_component_id">Credit card</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group" v-if="dataPayload.payment_method === consts.bank_component_id">
+                      <select class="custom-select" v-model="bankObject.bankId" @change="trackSelection($event.target.selectedIndex, 'sa')">
+                        <option v-for="(bank, index) in savingsAcctData" :key="index" :value="bank.bank_id">{{ bank.bank_name }} - {{ bank.bank_abbrev }}</option>
                       </select>
                     </div>
 
@@ -90,7 +97,32 @@
                           >
                         </div>
                       </div>
-                    </div>                    
+                    </div>
+
+                    <div class="form-group" v-if="dataPayload.payment_method === consts.cc_component_id">
+                      <select class="custom-select" v-model="ccObject.ccId" @change="trackSelection($event.target.selectedIndex, 'cc')">
+                        <option v-for="(creditCard, index) in creditCardsData" :key="index" :value="creditCard.credit_card_id">{{ creditCard.last_4_digits }} - {{ creditCard.cc_name }}</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group" v-if="dataPayload.payment_method === consts.cc_component_id">
+                      <label class="col-form-label white">Current Available Credit Limit</label>
+                      <div class="form-group">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">₱</span>
+                          </div>
+                          <input 
+                            type="text" 
+                            class="form-control border-danger" 
+                            style="background-color: #303030; color: white;" 
+                            v-model="ccObject.availCreditLimit" 
+                            disabled
+                          >
+                        </div>
+                        <div id="cl-notice"></div>
+                      </div>
+                    </div>
 
                     <div class="form-group">
                       <label class="control-label white">Order ID</label><br>
@@ -105,6 +137,11 @@
                     <div class="form-group">
                       <label class="control-label white">Description</label><br>
                       <textarea class="form-control" rows="3" v-model="dataPayload.description"/>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label white">Remarks</label><br>
+                      <textarea class="form-control" rows="3" v-model="dataPayload.remarks"/>
                     </div>
 
                     <div class="form-group">
@@ -187,6 +224,19 @@
                       </div>
                     </div>
 
+                    <div class="form-group">
+                      <label class="control-label white">Bundle Deals Savings</label>
+                      <br>
+                      <div class="form-group">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">₱</span>
+                          </div>
+                          <input type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="dataPayload.bundle_deals_savings" required>
+                        </div>
+                      </div>
+                    </div>
+
                     <!-- <div class="form-group">
                       <label class="control-label white">Cashback</label>
                       <DiscountIcon/>
@@ -208,7 +258,7 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text">₱</span>
                           </div>
-                          <input disabled type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" :value="dataPayload.sub_total = (dataPayload.merch_subtotal + dataPayload.shipping_fee) - dataPayload.shipping_fee_discount - dataPayload.store_discount - dataPayload.voucher_discount - dataPayload.coins" required>
+                          <input disabled type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" :value="dataPayload.sub_total = (dataPayload.merch_subtotal + dataPayload.shipping_fee) - dataPayload.shipping_fee_discount - dataPayload.store_discount - dataPayload.voucher_discount - dataPayload.coins - dataPayload.bundle_deals_savings" required>
                         </div>
                       </div>
                     </div>
@@ -218,9 +268,14 @@
                         <input type="text" class="form-control" v-model="gCashObject.refNo" required/>
                     </div>
 
-                    <div class="form-group" v-if="dataPayload.payment_method === consts.maya_component_id || bankObject.location === 'Maya App'">
+                    <div class="form-group" v-if="dataPayload.payment_method === consts.maya_component_id">
                         <label class="control-label white">Maya Ref. ID.</label><br>
                         <input type="text" class="form-control" v-model="mayaObject.refNo" required/>
+                    </div>
+
+                    <div class="form-group" v-if="dataPayload.payment_method === consts.cc_component_id">
+                        <label class="control-label white">CC Reference Number</label><br>
+                        <input type="text" class="form-control" v-model="ccObject.refNo" required/>
                     </div>
 
                     <div id="btn-container"><button type="submit" class="btn btn-outline-success styled-button">Submit</button></div>
@@ -246,7 +301,7 @@ import { getGCashInfo } from '../composables/getGCashInfo.js'
 import { getMayaInfo } from '../composables/getMayaInfo.js'
 import { getShopeeWalletInfo } from '../composables/getShopeeWalletInfo.js'
 import { getSavingsAccs } from '../composables/getBanksInfo.js'
-// import { getCreditCards  } from '../composables/getCcsInfo.js'
+import { getCreditCards  } from '../composables/getCcsInfo.js'
 import { getDeliveryLocations } from '../composables/getDeliveryLocations.js'
 
 import consts from '../constants/constants.js'
@@ -269,6 +324,7 @@ let dataPayload = reactive(
     order_id: '',
     store_name: '',
     description: '',
+    remarks: '',
     merch_subtotal: 1,
     shipping_fee: 40,
     shipping_fee_discount: 0,
@@ -276,6 +332,7 @@ let dataPayload = reactive(
     voucher_discount: 0,
     coins: 0,
     cashback: 0,
+    bundle_deals_savings: 0,
     sub_total: 0,
   }
 )
@@ -324,6 +381,12 @@ let shopeeObject = reactive({
   walletBalance: 1,
 })
 
+let ccObject = reactive(
+  {
+    ccId: 1,
+  }
+)
+
 let initialIndex = 0
 
 let gCashData = ref([])
@@ -333,6 +396,8 @@ let mayaData = ref([])
 let savingsAcctData = ref([])
 
 let shopeeWalletData = ref([])
+
+let creditCardsData = ref([])
 
 let deliveryLocationsData = ref([])
 
@@ -356,6 +421,11 @@ const fetchShopeeWallet = () => {
   shopeeObject.walletBalance = shopeeWalletData.value[0].balance
 }
 
+const fetchCc = (val) => {
+  ccObject.availCreditLimit = creditCardsData.value[val].avail_credit_limit
+  return ccObject.availCreditLimit
+}
+
 const handleGCashInitialization = async () => {
   gCashData.value = await invokerInitializer(getGCashInfo)
   fetchGCashAcc()
@@ -371,6 +441,15 @@ const handleShopeeWalletInitialization = async () => {
   fetchShopeeWallet()
 }
 
+const handleCCInitialization = async () => {
+  creditCardsData.value = await invokerInitializer(getCreditCards)
+  trackSelection(initialIndex, 'cc')
+}
+
+const handleLocationInitialization = async () => {
+  deliveryLocationsData.value = await invokerInitializer(getDeliveryLocations)
+}
+
 const trackSelection = (val, flag) => {
   // console.log(val, flag)
 
@@ -382,9 +461,9 @@ const trackSelection = (val, flag) => {
     fetchSavingsAcc(val)
   }
 
-  // if(flag === 'cc') {
-  //   fetchCc(val)
-  // }
+  if(flag === 'cc') {
+    fetchCc(val)
+  }
 }
 
 const digitOnlyInput = (event) => {
@@ -398,10 +477,18 @@ const handleSubmit = async () => {
 
     if(dataPayload.payment_method == consts.gcash_component_id) {
       newShopeeData.current_gcash_balance = parseFloat(gCashObject.gcBalance)
+      newShopeeData.ref_no = gCashObject.refNo
     }
 
     if(dataPayload.payment_method == consts.maya_component_id) {
       newShopeeData.current_maya_balance = parseFloat(mayaObject.mayaBalance)
+      newShopeeData.ref_no = mayaObject.refNo
+    }
+
+    if(dataPayload.payment_method == consts.cc_component_id) {
+      newShopeeData.credit_card_id = ccObject.ccId
+      newShopeeData.current_credit_limit = parseFloat(ccObject.availCreditLimit)
+      newShopeeData.ref_no = ccObject.refNo
     }
 
     // console.log(newShopeeData)
@@ -432,7 +519,8 @@ onMounted(async () => {
   handleGCashInitialization()
   handleMayaInitialization()
   handleShopeeWalletInitialization()
-  deliveryLocationsData.value = await invokerInitializer(getDeliveryLocations)
+  handleCCInitialization()
+  handleLocationInitialization()
 })
 
 
