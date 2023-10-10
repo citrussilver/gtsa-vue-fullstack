@@ -28,6 +28,7 @@ export const insertCcOnlinePay = (data, result) => {
         date_time: data.date_time,
         transact_type_id: data.transact_type_id,
         description: data.description,
+        current_credit_limit: data.current_credit_limit,
         amount: data.amount,
         remarks: `[Online Payment - ${data.online_shop_website}] ${data.remarks}`
     }, (err, results) => {
