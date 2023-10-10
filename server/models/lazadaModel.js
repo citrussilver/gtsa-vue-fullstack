@@ -12,6 +12,7 @@ export const insertLazadaOrder = (data, result) => {
         store_name: data.store_name,
         merch_subtotal: data.merch_subtotal,
         shipping_fee: data.shipping_fee,
+        lazada_voucher: data.lazada_voucher,
         shipping_fee_discount: data.shipping_fee_discount,
         store_discount: data.store_discount,
         coins: data.coins,

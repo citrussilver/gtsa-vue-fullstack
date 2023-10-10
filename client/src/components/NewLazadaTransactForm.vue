@@ -151,6 +151,20 @@
                     </div>
 
                     <div class="form-group">
+                      <label class="control-label white">Lazada Voucher</label>
+                      <DiscountIcon/>
+                      <br>
+                      <div class="form-group">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">₱</span>
+                          </div>
+                          <input type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="dataPayload.lazada_voucher" required>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
                       <label class="control-label white">Shipping Fee</label>
                       <DiscountIcon/>
                       <br>
@@ -294,7 +308,8 @@ let dataPayload = reactive(
     description: '',
     remarks: '',
     merch_subtotal: 1,
-    shipping_fee: 35,
+    shipping_fee: 38,
+    lazada_voucher: 0,
     shipping_fee_discount: 0,
     store_discount: 0,
     coins: 0,

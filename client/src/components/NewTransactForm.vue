@@ -792,6 +792,7 @@ const handleSubmit = async () => {
         date_time: commonProps.dateTime,
         transact_type_id: commonProps.transactType,
         description: commonProps.description,
+        current_credit_limit: ccProps.availCreditLimit,
         amount: commonProps.amount,
         remarks: commonProps.remarks,
       }
