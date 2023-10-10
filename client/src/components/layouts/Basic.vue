@@ -12,7 +12,7 @@
           </div>
         </article>
         <footer class="custom-footer">
-          <p>2021, 2022, 2023 GCSA</p>
+          <p>2021-2023 GCSA</p>
         </footer>
     </div>
 </template>

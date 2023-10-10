@@ -87,7 +87,7 @@
         </p>
         <details>
           <summary>Available Credit Limit</summary>
-          {{ cc.avail_credit_limit }}
+          {{ cc.avail_credit_limit_wc }}
         </details>
       </div>
       <div class="grid-tile-item purple-1">
