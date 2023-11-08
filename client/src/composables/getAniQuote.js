@@ -11,10 +11,9 @@ export let aniQuote = reactive(
 // animechan vercel
 export const generateAniQuote = async () => {
 
-    // url is having problems many months ago
-    // const response = await fetch('https://animechan.vercel.app/api/random')
-    // const data = await response.json()
-    // console.log(data)
+    const response = await fetch('https://animechan.xyz/api/random')
+    const data = await response.json()
+    
     aniQuote.quote = data.quote
     aniQuote.character = data.character
     aniQuote.anime = data.anime;

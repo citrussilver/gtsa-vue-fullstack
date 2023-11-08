@@ -805,7 +805,7 @@ const handleSubmit = async () => {
       } else if (commonProps.transactType === 2){
         newCCData.store_name = commonProps.storeName
 
-        axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/cc/new-cc-nop`, newCCData, 'Credit Card', 'Non-Online Payment')
+        axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/cc/save-cc-nop`, newCCData, 'Credit Card', 'Non-Online Payment')
 
       } else {
         if(!newCCData.description) {
