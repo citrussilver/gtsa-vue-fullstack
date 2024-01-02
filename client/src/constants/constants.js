@@ -9,6 +9,7 @@ export default {
         deposit: 1,
         withdraw: 2,
         bills_payment: 3,
+        credit_card_payment: 14,
         gcash_cash_in: 4,
         maya_cash_in: 11,
         reload_prepaid_card: 5,

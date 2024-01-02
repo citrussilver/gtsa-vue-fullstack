@@ -609,6 +609,13 @@ const handleSubmit = async () => {
 
         newBankData.biller_merchant = commonProps.billerMerchant
 
+        console.log(commonProps.billerMerchant )
+
+        if(commonProps.billerMerchant == 'BPI - BEC MC') {
+          // credit card bills payment
+          newBankData.bank_transact_type_id = consts.bank_transacts.credit_card_payment
+        }
+
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-billspay`, newBankData, 'Savings Account', 'Bills Payment')
 
       } else if(commonProps.transactType === consts.bank_transacts.gcash_cash_in) {
@@ -737,6 +744,7 @@ const handleSubmit = async () => {
       } else if(commonProps.transactType === consts.gcash_transacts.adjustment) {
 
         newGCashData.credit = commonProps.credit
+        newGCashData.transact_type_id = commonProps.credit == 1 ? consts.adjustment_types.credit : consts.adjustment_types.debit
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/gcash/save-gc-adjustment`, newGCashData, 'GCash', 'New Adjustment')
         
