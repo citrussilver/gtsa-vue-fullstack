@@ -1,12 +1,12 @@
 <template>
   <div>
-    <NewTransactForm :formDetails="bankFormDetails"  />
+    <NewBankTransactForm :formDetails="bankFormDetails"  />
   </div>
 </template>
 
 <script setup>
 import { reactive } from 'vue'
-import NewTransactForm from '../components/NewTransactForm.vue'
+import NewBankTransactForm from '../components/NewBankTransactForm.vue'
 import consts from '../constants/constants.js'
 
 const bankFormDetails = reactive(
@@ -30,6 +30,15 @@ const bankFormDetails = reactive(
       { val: consts.bank_transacts.salary_income, title: 'Salary / Income' },
       { val: consts.bank_transacts.shopee_online_banking, title: 'Shopee Online Banking'}
     ],
+    billerMerchant: [
+      { val: 1, name: consts.bank_billers.bpi.bluemaster_card },
+      { val: 2, name: consts.bank_billers.bpi.aiaph },
+      { val: 3, name: consts.bank_billers.bpi.col },
+      { val: 4, name: consts.bank_billers.unionbank.visa_platinum },
+      { val: 5, name: consts.national_billers.prime },
+      { val: 6, name: consts.national_billers.meralco },
+      { val: 7, name: consts.national_billers.dasca }
+    ]
   }
 )
 </script>
