@@ -108,16 +108,16 @@ export const insertBankCashWithdraw = (data, result) => {
 }
 
 // Insert Savings Acct Transaction
-export const insertSavingsAcctTransaction = (data, result) => {
-    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", data, (err, results) => {
-        if(err) {
-            console.log(err);
-            result(err, null);
-        } else {
-            result(null, results);
-        }
-    });
-}
+// export const insertSavingsAcctTransaction = (data, result) => {
+//     dbConnection.query("INSERT INTO savings_acct_transactions SET ?", data, (err, results) => {
+//         if(err) {
+//             console.log(err);
+//             result(err, null);
+//         } else {
+//             result(null, results);
+//         }
+//     });
+// }
 
 
 // Insert Bank Bills Payment

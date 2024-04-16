@@ -136,3 +136,40 @@ export const insertCcPromoLoan = (data, result) => {
         }
     });
 }
+
+export const insertCcRefund = (data, result) => {
+    dbConnection.query("INSERT INTO credit_card_transactions SET ?", {
+        credit_card_id: data.credit_card_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        description: data.description,
+        current_credit_limit: data.current_credit_limit,
+        amount: data.amount,
+        remarks: `[Refund - ${data.store_name}] ${data.remarks}`,
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+
+            const refund_data = {
+                cc_transact_id: results.insertId,
+                credit_card_id: data.credit_card_id,
+                date_time: data.date_time,
+                amount: data.amount,
+                store_name: data.store_name,
+                remarks: data.remarks,
+            }
+
+            dbConnection.query("INSERT INTO credit_card_refunds SET ?", refund_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log(`[Credit Card] Refund from ${refund_data.store_name} successfully posted to database`)
+                }
+            });
+        }
+    });
+}

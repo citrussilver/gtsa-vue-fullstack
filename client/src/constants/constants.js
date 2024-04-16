@@ -21,6 +21,22 @@ export default {
         salary_income: 10,
         shopee_online_banking: 13
     },
+    
+    bank_billers: {
+        bpi: {
+            bluemaster_card: 'BPI - BEC MC',
+            aiaph: 'BPI - AIAPH',
+            col: 'BPI - COL'
+        },
+        unionbank: {
+            visa_platinum: 'UB - Visa Platinum'
+        }
+    },
+    national_billers: {
+        prime: 'Primewater',
+        meralco: 'Meralco',
+        dasca: 'Dasca'
+    },
     gcash_transacts: {
         load_sale: 1,
         bills_payment: 3,
@@ -37,7 +53,8 @@ export default {
     cc_transacts: {
         online_payment: 1,
         non_online_payment: 2,
-        loan_promo: 3
+        loan_promo: 3,
+        cc_refund: 4
     },
     maya_transacts: {
         cash_in: 0,
@@ -55,5 +72,17 @@ export default {
     adjustment_types: {
         credit: 71,
         debit: 72
-    }
+    },
+    online_stores: [
+        { val: 1, name: 'Google Play'},
+        { val: 2, name: 'Steam'},
+        { val: 3, name: 'GOG'},
+        { val: 4, name: 'Grab'},
+        { val: 5, name: 'Patreon'},
+        { val: 6, name: 'Gumroad'},
+        { val: 7, name: 'From Japan'},
+        { val: 8, name: 'Shopee'},
+        { val: 9, name: 'Lazada'},
+        { val: 10, name: 'Others'}
+    ]
  }
