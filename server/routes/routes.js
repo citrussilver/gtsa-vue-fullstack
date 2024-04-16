@@ -13,7 +13,6 @@ import {
     showSa1Transacts,
     showSa2Transacts,
     showAllSavingsAccs,
-    newSavingsAcctTransaction,
     newBankCashDeposit,
     newBankCashWithdraw,
     newBankBillsPayment,
@@ -34,7 +33,8 @@ import {
     showCcTransacts,
     newCcOnlinePay,
     newCcNonOnlinePay,
-    newCcPromoLoan
+    newCcPromoLoan,
+    newCcRefund
 } from '../controllers/ccController.js' ;
 
 import {
@@ -104,7 +104,7 @@ router.get('/api/gcash/get-gcash-customers', showGCashCustomers)
 
 router.get('/api/maya/get-maya-accounts', showMayaAccts);
 
-router.post('/api/new-sa-transaction', newSavingsAcctTransaction);
+// router.post('/api/new-sa-transaction', newSavingsAcctTransaction);
 router.post('/api/sa/save-sa-depo', newBankCashDeposit);
 router.post('/api/sa/save-sa-wdraw', newBankCashWithdraw);
 router.post('/api/sa/save-sa-billspay', newBankBillsPayment);
@@ -139,6 +139,7 @@ router.post('/api/maya/save-adjustment', newMayaAdjustment);
 router.post('/api/cc/save-cc-op', newCcOnlinePay);
 router.post('/api/cc/save-cc-nop', newCcNonOnlinePay);
 router.post('/api/cc/save-cc-loan', newCcPromoLoan);
+router.post('/api/cc/save-cc-refund', newCcRefund);
 
 router.post('/api/lzd/save-lzd-order', newLazadaOrder);
 

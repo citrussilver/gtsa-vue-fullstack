@@ -170,6 +170,7 @@
                 <option v-if="formDetails.componentId === consts.bank_component_id" value="BPI - BEC MC">BPI - BEC MC</option>
                 <option v-if="formDetails.componentId === consts.bank_component_id" value="BPI - AIAPH">BPI - AIAPH</option>
                 <option v-if="formDetails.componentId === consts.bank_component_id" value="BPI - COL">BPI - COL</option>
+                <option v-if="formDetails.componentId === consts.bank_component_id" value="UB - Visa Platinum">UB - Visa Platinum</option>
                 <option value="Primewater">Primewater</option>
                 <option value="Meralco">Meralco</option>
                 <option value="Dasca">Dasca</option>
@@ -233,6 +234,7 @@
                 <option value="Grab">Grab</option>
                 <option value="Patreon">Patreon</option>
                 <option value="Gumroad">Gumroad</option>
+                <option value="From Japan">From Japan</option>
                 <option value="Others">Others</option>
             </select>
             <input v-else type="text" class="form-control" v-model="commonProps.storeName">

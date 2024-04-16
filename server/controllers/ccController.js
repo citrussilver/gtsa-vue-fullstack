@@ -3,7 +3,8 @@ import {
     getCcTransacts,
     insertCcOnlinePay,
     insertCcNonOnlinePay,
-    insertCcPromoLoan
+    insertCcPromoLoan,
+    insertCcRefund
 } from '../models/ccModel.js'
 
 export const showAllCcs = (req, res) => {
@@ -51,6 +52,18 @@ export const newCcNonOnlinePay = (req, res) => {
 export const newCcPromoLoan = (req, res) => {
     const data = req.body;
     insertCcPromoLoan(data, (err, results) => {
+        if (err){
+            res.send(err);
+        } else{
+            res.json(results);
+        }
+    });
+}
+
+export const newCcRefund = (req, res) => {
+    const data = req.body;
+
+    insertCcRefund(data, (err, results) => {
         if (err){
             res.send(err);
         } else{

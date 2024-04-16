@@ -48,16 +48,16 @@ export const showAllSavingsAccs = (req, res) => {
     });
 }
 
-export const newSavingsAcctTransaction = (req, res) => {
-    const data = req.body;
-    insertSavingsAcctTransaction(data, (err, results) => {
-        if (err){
-            res.send(err);
-        } else{
-            res.json(results);
-        }
-    });
-}
+// export const newSavingsAcctTransaction = (req, res) => {
+//     const data = req.body;
+//     insertSavingsAcctTransaction(data, (err, results) => {
+//         if (err){
+//             res.send(err);
+//         } else{
+//             res.json(results);
+//         }
+//     });
+// }
 
 // Insert Bank Cash Deposit
 export const newBankCashDeposit = (req, res) => {

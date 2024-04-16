@@ -1,12 +1,12 @@
 <template>
   <div>
-    <NewTransactForm :formDetails="ccFormDetails"  />
+    <NewCreditCardTransactForm :formDetails="ccFormDetails"  />
   </div>
 </template>
 
 <script setup>
 import { reactive } from 'vue'
-import NewTransactForm from '../components/NewTransactForm.vue'
+import NewCreditCardTransactForm from '../components/NewCreditCardTransactForm.vue'
 import consts from '../constants/constants.js'
 
 const ccFormDetails = reactive(
@@ -19,7 +19,9 @@ const ccFormDetails = reactive(
       { val: consts.cc_transacts.online_payment, title: 'Online Payment' },
       { val: consts.cc_transacts.non_online_payment, title: 'Non-online Payment' },
       { val: consts.cc_transacts.loan_promo, title: 'Loan - Credit to Cash Promo' },
+      { val: consts.cc_transacts.cc_refund, title: 'Refund' }
     ],
+    onlineStoreWebsite: consts.online_stores
   }
 )
 </script>
