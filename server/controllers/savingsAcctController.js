@@ -14,7 +14,8 @@ import {
     insertEarnInterest,
     insertTaxWithheld,
     insertSalaryIncome,
-    insertShopeeOLBanking
+    insertShopeeOLBanking,
+    insertShopeePayCashIn
 } from '../models/savingsAcctModel.js';
 
 // Get All Savings Acct Transactions
@@ -195,6 +196,17 @@ export const newSalaryIncome = (req, res) => {
 export const newShopeeOLBanking = (req, res) => {
     const data = req.body;
     insertShopeeOLBanking(data, (err, results) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.json(results);
+        }
+    })
+}
+
+export const newShopeePayCashIn = (req, res) => {
+    const data = req.body;
+    insertShopeePayCashIn(data, (err, results) => {
         if (err) {
             res.send(err);
         } else {

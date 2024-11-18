@@ -563,3 +563,40 @@ export const insertShopeeOLBanking = (data, result) => {
 
     })
 }
+
+export const insertShopeePayCashIn = (data, result) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
+        bank_id: data.bank_id,
+        date_time: data.date_time,
+        bank_transact_type_id: data.bank_transact_type_id,
+        amount: data.amount,
+        current_balance: data.current_balance,
+        remarks: `[ShopeePay Cash-in] ${data.remarks}`,
+        location: data.location,
+        reference_number: data.reference_number
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const sa_shopee_pay_cash_in_data = {
+                sa_transact_id: results.insertId,
+                date_time: data.date_time,
+                remarks: data.remarks,
+                reference_number: data.reference_number,
+                order_sn: data.order_sn,
+                amount: data.amount
+            };
+
+            dbConnection.query("INSERT INTO bank_shopee_pay_cash_in SET ?", sa_shopee_pay_cash_in_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log('[Savings Acct] New ShopeePay Cash-in successfully posted to database')
+                }
+            });
+        }
+    });
+}

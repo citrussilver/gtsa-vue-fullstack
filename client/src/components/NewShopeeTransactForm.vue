@@ -168,6 +168,18 @@
                       </div>
                     </div>
 
+                    <div class="form-group" v-if="dataPayload.payment_method != consts.cc_component_id">
+                      <label class="control-label white">Handling Fee:</label><br>
+                      <div class="form-group">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">₱</span>
+                          </div>
+                          <input type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="dataPayload.handling_fee" required>
+                        </div>
+                      </div>
+                    </div>
+
                     <div class="form-group">
                       <label class="control-label white">Shipping Fee</label>
                       <DiscountIcon/>
@@ -258,7 +270,7 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text">₱</span>
                           </div>
-                          <input disabled type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" :value="dataPayload.sub_total = (dataPayload.merch_subtotal + dataPayload.shipping_fee) - dataPayload.shipping_fee_discount - dataPayload.store_discount - dataPayload.voucher_discount - dataPayload.coins - dataPayload.bundle_deals_savings" required>
+                          <input disabled type="number" class="form-control" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" :value="dataPayload.sub_total = (dataPayload.merch_subtotal + dataPayload.shipping_fee) - dataPayload.shipping_fee_discount - dataPayload.store_discount - dataPayload.voucher_discount - dataPayload.coins - dataPayload.bundle_deals_savings + dataPayload.handling_fee" required>
                         </div>
                       </div>
                     </div>
@@ -328,6 +340,7 @@ let dataPayload = reactive(
     merch_subtotal: 1,
     shipping_fee: 40,
     shipping_fee_discount: 0,
+    handling_fee: 0,
     store_discount: 0,
     voucher_discount: 0,
     coins: 0,

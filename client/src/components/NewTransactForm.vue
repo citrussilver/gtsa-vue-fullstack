@@ -174,6 +174,7 @@
                 <option value="Primewater">Primewater</option>
                 <option value="Meralco">Meralco</option>
                 <option value="Dasca">Dasca</option>
+                <option value="Dasca">Others</option>
               </select>
           </div>
 
@@ -222,6 +223,7 @@
                 <option value="Spotify">Spotify</option>
                 <option value="Lalamove">Lalamove</option>
                 <option value="Mobapay">Mobapay</option>
+                <option value="Angkas">Angkas</option>
               </select>
           </div>
 

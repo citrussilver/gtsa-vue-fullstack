@@ -19,7 +19,9 @@ export default {
         earn_interest: 8,
         tax_withheld: 9,
         salary_income: 10,
-        shopee_online_banking: 13
+        shopee_online_banking: 13,
+        bank_charge: 15,
+        shopee_pay_cash_in: 16
     },
     
     bank_billers: {
@@ -35,7 +37,8 @@ export default {
     national_billers: {
         prime: 'Primewater',
         meralco: 'Meralco',
-        dasca: 'Dasca'
+        dasca: 'Dasca',
+        others: 'Others'
     },
     gcash_transacts: {
         load_sale: 1,
