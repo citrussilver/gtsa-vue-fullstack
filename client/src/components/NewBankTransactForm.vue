@@ -40,7 +40,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" v-if="dataPayload.bank_transact_type_id == consts.bank_transacts.bills_payment">
                         <label class="control-label white">Biller / Merchant</label>
                         <select class="custom-select" v-model="commonProps.billerMerchant" @change="trackSelection(commonProps.billerMerchant, 'biller')">
                             <option v-for="biller in formDetails.billerMerchant" :key="biller.val" :value="biller.name">{{ biller.name }}</option>
@@ -66,8 +66,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label white">Transaction Ref No</label><br>
+                        <label v-if="dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_online_banking || dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_pay_cash_in">Reference ID</label>
+                        <label v-else class="control-label white">Transaction Ref No</label><br>
                         <input type="text" class="form-control" v-model="dataPayload.reference_number" required/>
+                    </div>
+
+                    <div class="form-group" v-if="dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_online_banking || dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_pay_cash_in">
+                      <label>Order SN</label>
+                      <input type="text" class="form-control" v-model="commonProps.shopeePayCashInOrderSn" required/>
                     </div>
 
                     <div class="form-group">
@@ -79,7 +85,7 @@
                             <option value="Maya App">Maya App</option>
                             <option value="ATM">ATM</option>
                             <option value="Store Card Terminal">Store Card Terminal</option>
-                            <option v-if="commonProps.transactType === consts.bank_transacts.shopee_online_banking" value="Shopee">Shopee</option>
+                            <option value="Shopee">Shopee</option>
                             <option value="Automatic Activity">Automatic Activity</option>
                         </select>
                     </div>
@@ -172,6 +178,8 @@ let commonProps = reactive(
     shippingFeeDiscount: 0,
     voucherDiscount: 0,
     shopeeOLBSubTotal: 1,
+    shopeePayCashInAmount: 1,
+    shopeePayCashInOrderSn: '',
     remarks: ''
   }
 )
@@ -207,7 +215,7 @@ const handleSaInitialization = async () => {
 }
 
 const trackSelection = (val, flag) => {
-  // console.log(val, flag)
+  console.log(val, flag)
 
   if(flag === 'sa') {
     fetchSavingsAcc(val)
@@ -340,6 +348,19 @@ const handleSubmit = async () => {
             newSaTransactData.amount = commonProps.shopeeOLBSubTotal 
 
             axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-shopee-online-banking`, newSaTransactData, 'Savings Account', 'Shopee - Online Banking')
+        }
+
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_pay_cash_in) {
+
+          // shopeePay Cash-in Logic
+
+          // for use in savings acct table
+          newSaTransactData.amount = dataPayload.amount
+
+          // properties are manually added which are unique only to this transaction
+          newSaTransactData.order_sn = commonProps.shopeePayCashInOrderSn
+
+          axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-shopee-pay-cash-in`, newSaTransactData, 'Savings Account', 'ShopeePay Cash-in')
         }
 
         if(axiosReqConfirmed.value == true) {

@@ -28,7 +28,9 @@ const bankFormDetails = reactive(
       { val: consts.bank_transacts.earn_interest, title: 'Earn Interest' },
       { val: consts.bank_transacts.tax_withheld, title: 'Tax Withheld' },
       { val: consts.bank_transacts.salary_income, title: 'Salary / Income' },
-      { val: consts.bank_transacts.shopee_online_banking, title: 'Shopee Online Banking'}
+      { val: consts.bank_transacts.shopee_online_banking, title: 'Shopee Online Banking'},
+      { val: consts.bank_transacts.bank_charge, title: 'Bank Charge'},
+      { val: consts.bank_transacts.shopee_pay_cash_in, title: 'ShopeePay Cash-In' }
     ],
     billerMerchant: [
       { val: 1, name: consts.bank_billers.bpi.bluemaster_card },
@@ -37,7 +39,8 @@ const bankFormDetails = reactive(
       { val: 4, name: consts.bank_billers.unionbank.visa_platinum },
       { val: 5, name: consts.national_billers.prime },
       { val: 6, name: consts.national_billers.meralco },
-      { val: 7, name: consts.national_billers.dasca }
+      { val: 7, name: consts.national_billers.dasca },
+      { val: 8, name: consts.national_billers.others }
     ]
   }
 )
