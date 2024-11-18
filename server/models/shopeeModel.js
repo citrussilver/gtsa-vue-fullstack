@@ -26,6 +26,7 @@ export const insertShopeeOrder = (data, result) => {
         merch_subtotal: data.merch_subtotal,
         shipping_fee: data.shipping_fee,
         shipping_fee_discount: data.shipping_fee_discount,
+        handling_fee: data.payment_method != 4 ? 2 : 0,
         store_discount: data.store_discount,
         voucher_discount: data.voucher_discount,
         coins: data.coins,
