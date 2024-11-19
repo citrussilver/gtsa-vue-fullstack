@@ -211,7 +211,7 @@ export const insertGCashCashIn = (data, result) => {
     });
 }
 
-export const insertMayaCashIn = (data, result) => {
+export const insertSaMayaCashIn = (data, result) => {
     dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
         bank_id: data.bank_id,
         date_time: data.date_time,
@@ -234,7 +234,7 @@ export const insertMayaCashIn = (data, result) => {
                 transact_type_id: 0, // Maya Cash-in for now
                 current_maya_balance: data.current_maya_balance,
                 amount: data.amount,
-                ref_no: data.maya_ref_no,
+                reference_id: data.reference_id,
                 remarks: `[Maya Cash-in from Savings Account] ${data.remarks}`,
             };
 

@@ -200,12 +200,13 @@ export const insertSelfBuyLoad = (data, result) => {
             result(err, null);
         } else {
             const self_buy_load_data = {
-                gcash_transact_id: results.insertId,
+                transact_id: results.insertId,
                 date_time: data.date_time,
                 mobile_number: data.own_mobile_number,
                 network: data.network,
                 remarks: data.remarks,
-                amount: data.amount
+                amount: data.amount,
+                source: 'GCash'
             };
 
             dbConnection.query("INSERT INTO self_buy_load SET ?", self_buy_load_data, (err, results) => {

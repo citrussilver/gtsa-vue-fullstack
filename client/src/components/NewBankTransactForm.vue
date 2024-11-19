@@ -276,7 +276,7 @@ const handleSubmit = async () => {
 
             newSaTransactData.current_maya_balance = mayaObject.mayaBalance
             newSaTransactData.maya_id = mayaObject.mayaId
-            newSaTransactData.maya_ref_no = mayaObject.refNo
+            newSaTransactData.reference_id = mayaObject.refNo
 
             axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-maya-cash-in`, newSaTransactData, 'Savings Account', 'Maya Cash-in')
 

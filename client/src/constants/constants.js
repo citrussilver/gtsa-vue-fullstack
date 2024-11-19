@@ -60,9 +60,11 @@ export default {
         cc_refund: 4
     },
     maya_transacts: {
-        cash_in: 0,
+        cash_in: 3,
         online_payment: 1,
         qr_pay: 2,
+        self_buy_load: 5,
+        bills_payment: 4,
         adjustment: 8,
         refund: 10
     },
@@ -81,11 +83,15 @@ export default {
         { val: 2, name: 'Steam'},
         { val: 3, name: 'GOG'},
         { val: 4, name: 'Grab'},
+        { val: 12, name: 'Grab Pay' },
+        { val: 13, name: 'CodaShop' },
         { val: 5, name: 'Patreon'},
         { val: 6, name: 'Gumroad'},
         { val: 7, name: 'From Japan'},
         { val: 8, name: 'Shopee'},
         { val: 9, name: 'Lazada'},
-        { val: 10, name: 'Others'}
+        { val: 10, name: 'Others'},
+        { val: 11, name: 'Food Panda' },        
+        { val: 12, name: 'Angkas' }
     ]
  }
