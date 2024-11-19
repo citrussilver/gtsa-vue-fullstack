@@ -1,9 +1,12 @@
 import {
     getMayaAccts,
     insertOnlineShopPay,
+    insertMayaBillsPay,
     insertQrPay,
     insertMayaRefund,
-    insertMayaAdjustment
+    insertMayaAdjustment,
+    insertSelfBuyLoad,
+    insertMayaCashIn
 } from '../models/mayaModel.js'
 
 export const showMayaAccts = (req, res) => {
@@ -58,4 +61,39 @@ export const newMayaAdjustment = (req, res) => {
             res.json(results);
         }
     })
+}
+
+export const newMayaSelfBuyLoad = (req, res) => {
+    const data = req.body;
+    insertSelfBuyLoad(data, (err, results) => {
+        if (err){
+            res.send(err);
+        } else{
+            res.json(results);
+        }
+    });
+}
+
+export const newMayaCashIn = (req, res) => {
+    const data = req.body;
+
+    insertMayaCashIn(data, (err, results) => {
+        if (err){
+            res.send(err);
+        } else{
+            res.json(results);
+        }
+    });
+}
+
+export const newMayaBillsPay = (req, res) => {
+    const data = req.body;
+
+    insertMayaBillsPay(data, (err, results) => {
+        if (err){
+            res.send(err);
+        } else{
+            res.json(results);
+        }
+    });
 }

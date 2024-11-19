@@ -17,7 +17,7 @@ import {
     newBankCashWithdraw,
     newBankBillsPayment,
     newGCashCashIn,
-    newMayaCashIn,
+    newSaMayaCashIn,
     newBankPrepaidReload,
     newTransferMoney,
     newStorePayment,
@@ -59,9 +59,12 @@ import {
 import {
     showMayaAccts,
     newMayaOnlineShopPay,
+    newMayaCashIn,
+    newMayaBillsPay,
     newQrPay,
     newMayaRefund,
-    newMayaAdjustment
+    newMayaAdjustment,
+    newMayaSelfBuyLoad
 } from '../controllers/mayaController.js';
 
 import {
@@ -110,7 +113,7 @@ router.post('/api/sa/save-sa-depo', newBankCashDeposit);
 router.post('/api/sa/save-sa-wdraw', newBankCashWithdraw);
 router.post('/api/sa/save-sa-billspay', newBankBillsPayment);
 router.post('/api/sa/save-gc-cash-in', newGCashCashIn);
-router.post('/api/sa/save-maya-cash-in', newMayaCashIn);
+router.post('/api/sa/save-maya-cash-in', newSaMayaCashIn);
 router.post('/api/sa/save-sa-prepaid-reload', newBankPrepaidReload);
 router.post('/api/sa/save-sa-transfer-money', newTransferMoney);
 router.post('/api/sa/save-sa-store-payment', newStorePayment);
@@ -133,10 +136,13 @@ router.post('/api/gcash/save-gc-refund', newGCashRefund);
 router.post('/api/gcash/save-pay-qr', newPayQr);
 router.post('/api/gcash/save-received-money', newReceivedMoney);
 
+router.post('/api/maya/save-maya-cash-in', newMayaCashIn);
+router.post('/api/maya/save-bills-pay', newMayaBillsPay);
 router.post('/api/maya/save-ol-shop-pay', newMayaOnlineShopPay);
 router.post('/api/maya/save-qr-pay', newQrPay);
 router.post('/api/maya/save-refund', newMayaRefund);
 router.post('/api/maya/save-adjustment', newMayaAdjustment);
+router.post('/api/maya/save-maya-self-load', newMayaSelfBuyLoad);
 
 router.post('/api/cc/save-cc-op', newCcOnlinePay);
 router.post('/api/cc/save-cc-nop', newCcNonOnlinePay);

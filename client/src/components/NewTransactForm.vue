@@ -44,6 +44,7 @@
             </div>
           </div>
 
+          <!-- for deletion -->
           <div class="form-group" v-if="formDetails.componentId === consts.maya_component_id">
             <label class="col-form-label white">Current Maya Balance</label>
             <div class="form-group">
@@ -224,6 +225,7 @@
                 <option value="Lalamove">Lalamove</option>
                 <option value="Mobapay">Mobapay</option>
                 <option value="Angkas">Angkas</option>
+                <option value="Other">Other</option>
               </select>
           </div>
 
@@ -378,7 +380,7 @@
 
           <div class="form-group" v-if="formDetails.componentId === consts.maya_component_id || bankObject.location === 'Maya App'">
             <label class="control-label white">{{ bankObject.location == 'Maya App' ? 'Maya ' : '' }}Ref. ID.</label><br>
-            <input type="text" class="form-control" v-model="mayaObject.refNo" required/>
+            <input type="text" class="form-control" v-model="mayaObject.refId" required/>
           </div>
 
           <div class="form-group" v-if="formDetails.componentId === consts.bank_component_id && (!bankObject.location != 'Maya App' || !bankObject.location != 'GCash App') ">
@@ -469,7 +471,7 @@ let mayaObject = reactive({
   ownMobileNo: '09755512192', 
   network: 'TM', 
   paymentDateTime: '', 
-  refNo: '', 
+  refId: '', 
   moneySender: '',
   message: '', 
   attachment: 'Photo'
@@ -634,7 +636,7 @@ const handleSubmit = async () => {
 
         newBankData.current_maya_balance = mayaObject.mayaBalance
         newBankData.maya_id = mayaObject.mayaId
-        newBankData.maya_ref_no = mayaObject.refNo
+        newBankData.reference_id = mayaObject.refNo
 
         axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-maya-cash-in`, newBankData, 'Savings Account', 'Maya Cash-in')
 
