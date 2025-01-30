@@ -40,14 +40,14 @@
                         </div>
                     </div>
 
-                    <div class="form-group" v-if="dataPayload.transact_type_id == consts.maya_transacts.bills_payment">
+                    <div class="form-group" v-if="dataPayload.transact_type_id == consts.maya_transacts.bills_payment.id">
                         <label class="control-label white">Biller / Merchant</label>
                         <select class="custom-select" v-model="commonProps.billerMerchant" @change="trackSelection(commonProps.billerMerchant, 'biller')">
                             <option v-for="biller in formDetails.billerMerchant" :key="biller.val" :value="biller.name">{{ biller.name }}</option>
                         </select>
                     </div>
 
-                    <div class="form-group" v-if="dataPayload.transact_type_id === consts.maya_transacts.adjustment">
+                    <div class="form-group" v-if="dataPayload.transact_type_id === consts.maya_transacts.adjustment.id">
                         <label class="col-form-label white">Credit or Debit?</label><br>
                         <select class="custom-select" v-model="commonProps.credit" style="width: 6rem;">
                           <option value="1" selected>Credit</option>
@@ -55,12 +55,12 @@
                         </select>
                     </div>
 
-                    <div class="form-group" v-if="dataPayload.transact_type_id === consts.maya_transacts.qr_pay">
+                    <div class="form-group" v-if="dataPayload.transact_type_id === consts.maya_transacts.qr_pay.id">
                         <label class="control-label white">Description</label><br>
                         <input type="text" class="form-control" v-model="dataPayload.description"/>
                     </div>
 
-                    <div class="flex-group" v-if="dataPayload.transact_type_id === consts.maya_transacts.self_buy_load" style="width: 5rem;">
+                    <div class="flex-group" v-if="dataPayload.transact_type_id === consts.maya_transacts.self_buy_load.id">
                       <!-- <div class="form-group" v-if="dataPayload.transact_type === 1">
                         <label class="col-form-label white">Customer</label><br>
                         <select class="custom-select customer-select-style" v-model="gCashObject.customer" @change="trackSelection(gCashObject.customer, 'gcash')">
@@ -72,7 +72,7 @@
                           {{ dataPayload.transact_type_id === 5 ? 'Own Mobile Numbers' : 'Mobile Number' }}
                         </label><br>
                         <input type="number" 
-                          v-if="(formDetails.componentId === consts.gcash_component_id  && dataPayload.transact_type_id != 5 )" 
+                          v-if="(dataPayload.transact_type_id != 5 )" 
                           class="form-control customer-select-style" 
                           pattern=" 0+\.[0-9]*[1-9][0-9]*$" 
                           @keydown="digitOnlyInput" 
@@ -84,7 +84,7 @@
                       </div>
                     </div>
 
-                    <div class="flex-group" v-if="dataPayload.transact_type_id === consts.maya_transacts.self_buy_load" style="width: 5rem;">
+                    <div class="flex-group" v-if="dataPayload.transact_type_id === consts.maya_transacts.self_buy_load.id" style="width: 5rem;">
                       <div class="form-group">
                         <label class="col-form-label white">Network</label><br>
                         <select class="custom-select" v-model="mayaObject.network" style="width: 6.5rem;">
@@ -94,7 +94,7 @@
                           <option value="Smart">Smart</option>
                         </select>
                       </div>
-                      <!-- <div class="form-group" v-if="dataPayload.transact_type_id === consts.maya_transacts.load_sale">
+                      <!-- <div class="form-group" v-if="dataPayload.transact_type_id === consts.maya_transacts.load_sale.id">
                         <label class="col-form-label white">Payment Date / Time</label>
                         <input type="datetime-local" class="form-control pay-mobile-res" v-model="gCashObject.paymentDateTime">
                       </div> -->
@@ -112,24 +112,24 @@
                       </div>
                     </div>
 
-                    <div class="form-group" v-if="dataPayload.transact_type_id === consts.maya_transacts.qr_pay || dataPayload.transact_type_id === consts.maya_transacts.online_payment">
-                        <label class="control-label white">{{ dataPayload.transact_type_id === consts.maya_transacts.qr_pay ? 'Store Name:' : 'Online Shop Website:'}}</label>
-                        <select v-if="dataPayload.transact_type_id === consts.maya_transacts.online_payment" class="custom-select" v-model="shopObject.onlineStoreWebsite" @change="trackSelection($event.target.selectedIndex, 'online_shop_web')">
+                    <div class="form-group" v-if="[consts.maya_transacts.qr_pay.id, consts.maya_transacts.online_payment.id].includes(dataPayload.transact_type_id)">
+                        <label class="control-label white">{{ dataPayload.transact_type_id === consts.maya_transacts.qr_pay.id ? 'Store Name:' : 'Online Shop Website:'}}</label>
+                        <select v-if="dataPayload.transact_type_id === consts.maya_transacts.online_payment.id" class="custom-select" v-model="shopObject.onlineStoreWebsite" @change="trackSelection($event.target.selectedIndex, 'online_shop_web')">
                             <option v-for="onlineStore in formDetails.onlineStoreWebsite" :key="onlineStore.val" :value="onlineStore.name">{{ onlineStore.name }}</option>
                         </select>
-                        <div v-if="dataPayload.transact_type_id === consts.maya_transacts.refund">
+                        <div v-if="dataPayload.transact_type_id === consts.maya_transacts.refund.id">
                           <br/>
                         </div>
-                        <label class="control-label white">{{ dataPayload.transact_type_id === consts.maya_transacts.refund ? 'Store Name:' : ''}}</label>
-                        <input v-if="dataPayload.transact_type_id === consts.maya_transacts.qr_pay || dataPayload.transact_type_id === consts.maya_transacts.refund" type="text" class="form-control" v-model="shopObject.storeName">
+                        <label class="control-label white">{{ dataPayload.transact_type_id === consts.maya_transacts.refund.id ? 'Store Name:' : ''}}</label>
+                        <input v-if="[consts.maya_transacts.qr_pay.id, consts.maya_transacts.refund.id].includes(dataPayload.transact_type_id)" type="text" class="form-control" v-model="shopObject.storeName">
                     </div>
 
-                    <!-- <div class="form-group" v-if="dataPayload.transact_type_id === consts.maya_transacts.qr_pay">
+                    <!-- <div class="form-group" v-if="dataPayload.transact_type_id === consts.maya_transacts.qr_pay.id">
                         <label class="control-label white">Store Name:</label><br>
                         <input type="text" class="form-control" v-model="commonProps.storeName"/>
                     </div> -->
 
-                    <div class="form-group" v-if="dataPayload.transact_type_id != consts.maya_transacts.qr_pay">
+                    <div class="form-group" v-if="dataPayload.transact_type_id != consts.maya_transacts.qr_pay.id">
                         <label class="control-label white">Remarks</label><br>
                         <textarea class="form-control" rows="3" v-model="dataPayload.remarks"/>
                     </div>
@@ -151,9 +151,9 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import config from '../config'
+import { invokerInitializer } from '../helpers/helpers.service.js'
 
-import { invokerInitializer, handleAxios } from '../helpers/helpers.service.js'
+import { createTransaction } from '../http/transact-api.js'
 
 import { getMayaInfo } from '../composables/getMayaInfo.js'
 
@@ -278,52 +278,68 @@ const handleSubmit = async () => {
     try {
         let newMayaData = {...dataPayload}
 
-        if(dataPayload.transact_type_id == consts.maya_transacts.cash_in) {
+        newMayaData.account_type = 'Maya'
 
-          axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-maya-cash-in`, newMayaData, 'Maya', 'Cash-In')
+        if(dataPayload.transact_type_id == consts.maya_transacts.cash_in.id) {
+
+          newMayaData.transaction = consts.maya_transacts.cash_in.name
+
+          axiosReqConfirmed.value = await createTransaction(consts.maya_transacts.cash_in.route, newMayaData)
         }
 
-        if(dataPayload.transact_type_id == consts.maya_transacts.online_payment) {
-            
-            newMayaData.online_shop_website = shopObject.onlineStoreWebsite
+        if(dataPayload.transact_type_id == consts.maya_transacts.online_payment.id) {
+          
+          newMayaData.online_shop_website = shopObject.onlineStoreWebsite
 
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-ol-shop-pay`, newMayaData, 'Maya', 'Online Payment')
+          newMayaData.transaction = consts.maya_transacts.online_payment.name
+
+          axiosReqConfirmed.value = await createTransaction(consts.maya_transacts.online_payment.route, newMayaData)
         }
 
-        if(dataPayload.transact_type_id == consts.maya_transacts.bills_payment) {
+        if(dataPayload.transact_type_id == consts.maya_transacts.bills_payment.id) {
 
           newMayaData.biller_merchant = commonProps.billerMerchant
 
-          axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-bills-pay`, newMayaData, 'Maya', 'Bills Payment')
+          newMayaData.transaction = consts.maya_transacts.bills_payment.name
+
+          axiosReqConfirmed.value = await createTransaction(consts.maya_transacts.bills_payment.route, newMayaData)
         }
 
-        if(dataPayload.transact_type_id == consts.maya_transacts.self_buy_load) {
+        if(dataPayload.transact_type_id == consts.maya_transacts.self_buy_load.id) {
 
           newMayaData.mobile_number = mayaObject.ownMobileNo
           newMayaData.network = mayaObject.network
 
-          // console.log(newMayaData)
+          newMayaData.transaction = consts.maya_transacts.self_buy_load.name
 
-          axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-maya-self-load`, newMayaData, 'Maya', 'Self Buy Load')
+          axiosReqConfirmed.value = await createTransaction(consts.maya_transacts.self_buy_load.route, newMayaData)
         }
 
-        if(dataPayload.transact_type_id === consts.maya_transacts.refund) {
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-refund`, newMayaData, 'Maya', 'Refund')
+        if(dataPayload.transact_type_id === consts.maya_transacts.refund.id) {
+
+          newMayaData.transaction = consts.maya_transacts.refund.name
+
+          axiosReqConfirmed.value = await createTransaction(consts.maya_transacts.refund.route, newMayaData)
         }
 
-        if (dataPayload.transact_type_id === consts.maya_transacts.qr_pay) {
-            newMayaData.store_name = commonProps.storeName
-            newMayaData.description = dataPayload.description
+        if (dataPayload.transact_type_id === consts.maya_transacts.qr_pay.id) {
+          
+          newMayaData.store_name = commonProps.storeName
+          newMayaData.description = dataPayload.description
 
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-qr-pay`, newMayaData, 'Maya', 'QR Pay')
+          newMayaData.transaction = consts.maya_transacts.qr_pay.name
+
+          axiosReqConfirmed.value = await createTransaction(consts.maya_transacts.qr_pay.route, newMayaData)
         }
 
-        if (dataPayload.transact_type_id === consts.maya_transacts.adjustment) {
+        if (dataPayload.transact_type_id === consts.maya_transacts.adjustment.id) {
+          
+          newMayaData.credit = commonProps.credit
+          newMayaData.transact_type_id = commonProps.credit == 1 ? consts.adjustment_types.credit : consts.adjustment_types.debit
 
-            newMayaData.credit = commonProps.credit
-            newMayaData.transact_type_id = commonProps.credit == 1 ? consts.adjustment_types.credit : consts.adjustment_types.debit
+          newMayaData.transaction = consts.maya_transacts.adjustment.name
 
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/maya/save-adjustment`, newMayaData, 'Maya', 'New Adjustment')
+          axiosReqConfirmed.value = await createTransaction(consts.maya_transacts.adjustment.route, newMayaData)
         }
 
         if(axiosReqConfirmed.value == true) {
@@ -374,13 +390,6 @@ onMounted(async () => {
   color: #DE0000;
 }
 
-#cl-notice::after {
-  color: #fff;
-  text-shadow: 0 0 5px #cf1c01, 0 0 5px #cf1c01, 0 0 5px #cf1c01, 0 0 5px #cf1c01;
-  content: '*please check regularly on banking app';
-  font-size: 0.7rem;
-}
-
 .send-money-type {
   width: 9rem;
 }
@@ -423,10 +432,6 @@ onMounted(async () => {
 
   #after-content {
     color: orange;
-  }
-  
-  #cl-notice::after {
-    font-size: 1rem;
   }
 
   .send-money-type {

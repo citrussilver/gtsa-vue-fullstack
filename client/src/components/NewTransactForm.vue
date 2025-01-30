@@ -418,7 +418,7 @@ import { useRouter } from 'vue-router'
 
 import config from '../config'
 
-import { invokerInitializer, handleAxios } from '../helpers/helpers.service.js'
+import { invokerInitializer } from '../helpers/helpers.service.js'
 
 import { getGCashInfo } from '../composables/getGCashInfo.js'
 import { getMayaInfo } from '../composables/getMayaInfo.js'

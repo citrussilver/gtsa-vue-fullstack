@@ -42,16 +42,45 @@
                         </div>
                     </div>
 
+                    <div class="form-group" v-if="dataPayload.transact_type_id === consts.cc_transacts.loan_promo.id">
+                      <label class="control-label white">Term</label>
+                      <select class="custom-select" v-model="ccObject.term">
+                          <option value="Monthly">Monthly</option>
+                          <option value="6 Months">6 Months</option>
+                          <option value="12 Months">12 Months</option>
+                        </select>
+                    </div>
+                    <div class="form-group" v-if="dataPayload.transact_type_id === consts.cc_transacts.loan_promo.id">
+                      <label class="control-label white">Term Payment</label><br>
+                      <input type="number" class="form-control" min="1" step="any" pattern=" 0+\.[0-9]*[1-9][0-9]*$" @keypress="digitOnlyInput" v-model="ccObject.termPay"/>
+                    </div>
+                    <div class="form-group" v-if="dataPayload.transact_type_id === consts.cc_transacts.loan_promo.id">
+                      <label class="control-label white">Transaction No.</label><br>
+                      <input type="text" class="form-control" placeholder="Ask the agent about Transaction No." v-model="ccObject.loanTransactNo"/>
+                    </div>
+                    <div class="form-group" v-if="dataPayload.transact_type_id === consts.cc_transacts.loan_promo.id">
+                      <label class="control-label white">Agent Name</label><br>
+                      <input type="text" class="form-control" v-model="ccObject.loanAgentName"/>
+                    </div>
+                    <div class="form-group" v-if="dataPayload.transact_type_id === consts.cc_transacts.loan_promo.id">
+                      <label class="control-label white">Loan Thru</label>
+                      <select class="custom-select" v-model="ccObject.loanThru">
+                          <option value="phone">Phone</option>
+                          <option value="branch">Branch</option>
+                        </select>
+                    </div>
+
                     <div class="form-group">
-                        <label class="control-label white">{{ dataPayload.transact_type_id === consts.cc_transacts.non_online_payment ? 'Store Name:' : 'Online Shop Website:'}}</label>
-                        <select v-if="dataPayload.transact_type_id === consts.cc_transacts.online_payment || dataPayload.transact_type_id === consts.cc_transacts.cc_refund" class="custom-select" v-model="shopObject.onlineStoreWebsite">
+                        <label class="control-label white" v-if="dataPayload.transact_type_id === consts.cc_transacts.non_online_payment.id">Store Name:</label>
+                        <label class="control-label white" v-else>Online Shop Website:</label>
+                        <select v-if="[consts.cc_transacts.online_payment.id, consts.cc_transacts.cc_refund.id].includes(dataPayload.transact_type_id)" class="custom-select" v-model="shopObject.onlineStoreWebsite">
                             <option v-for="onlineStore in formDetails.onlineStoreWebsite" :key="onlineStore.val" :value="onlineStore.name">{{ onlineStore.name }}</option>
                         </select>
-                        <div v-if="dataPayload.transact_type_id === consts.cc_transacts.cc_refund">
+                        <div v-if="dataPayload.transact_type_id === consts.cc_transacts.cc_refund.id">
                           <br/>
                         </div>
-                        <label class="control-label white">{{ dataPayload.transact_type_id === consts.cc_transacts.cc_refund ? 'Store Name:' : ''}}</label>
-                        <input v-if="dataPayload.transact_type_id === consts.cc_transacts.non_online_payment || dataPayload.transact_type_id === consts.cc_transacts.cc_refund" type="text" class="form-control" v-model="shopObject.storeName">
+                        <label class="control-label white">{{ dataPayload.transact_type_id === consts.cc_transacts.cc_refund.id ? 'Store Name:' : ''}}</label>
+                        <input v-if="[consts.cc_transacts.non_online_payment.id, consts.cc_transacts.cc_refund.id].includes(dataPayload.transact_type_id)" type="text" class="form-control" v-model="shopObject.storeName">
                     </div>
 
                     <!-- Amount -->
@@ -95,9 +124,9 @@ import { onBeforeMount, onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import config from '../config'
+import { invokerInitializer } from '../helpers/helpers.service.js'
 
-import { invokerInitializer, handleAxios } from '../helpers/helpers.service.js'
+import { createTransaction } from '../http/transact-api.js'
 
 import { getCreditCards  } from '../composables/getCcsInfo.js'
 
@@ -181,21 +210,27 @@ const handleSubmit = async () => {
 
         let newCCTransactData = {...dataPayload}
 
-        if(dataPayload.transact_type_id == consts.cc_transacts.online_payment) {
+        newCCTransactData.account_type = 'Credit Card'
+
+        if(dataPayload.transact_type_id == consts.cc_transacts.online_payment.id) {
           
           newCCTransactData.online_shop_website = shopObject.onlineStoreWebsite
 
-          axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/cc/save-cc-op`, newCCTransactData, 'Credit Card', 'Online Payment')
+          newCCTransactData.transaction = consts.cc_transacts.online_payment.name
+
+          axiosReqConfirmed.value = await createTransaction('cc/save-cc-op', newCCTransactData)
         }
 
         if(dataPayload.transact_type_id == consts.cc_transacts.non_online_payment) {
 
           newCCTransactData.store_name = shopObject.storeName
 
-          axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/cc/save-cc-nop`, newCCTransactData, 'Credit Card', 'Non-Online Payment')
+          newCCTransactData.transaction = consts.cc_transacts.non_online_payment.name
+
+          axiosReqConfirmed.value = await createTransaction('cc/save-cc-nop', newCCTransactData)
         }
 
-        if(dataPayload.transact_type_id == consts.cc_transacts.loan_promo) {
+        if(dataPayload.transact_type_id == consts.cc_transacts.loan_promo.id) {
           if(!newCCTransactData.description) {
             newCCTransactData.description =  '[Credit-to-Cash Promo Loan]'
           }
@@ -205,17 +240,22 @@ const handleSubmit = async () => {
           newCCTransactData.loan_agent_name = loanObject.loanAgentName
           newCCTransactData.term = loanObject.term
           newCCTransactData.term_pay = loanObject.termPay
+          
+          newCCTransactData.transaction = consts.cc_transacts.loan_promo.name
 
-          axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/cc/save-cc-loan`, newCCTransactData, 'Credit Card', 'Credit-to-Cash Loan')
+          axiosReqConfirmed.value = await createTransaction('cc/save-cc-loan', newCCTransactData)
         }
 
-        if(dataPayload.transact_type_id == consts.cc_transacts.cc_refund) {
+        if(dataPayload.transact_type_id == consts.cc_transacts.cc_refund.id) {
 
           dataPayload.store_name = `${shopObject.onlineStoreWebsite}: ${shopObject.storeName}`
 
           dataPayload.post_credit_limit = dataPayload.current_credit_limit + dataPayload.amount
 
-          axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/cc/save-cc-refund`, newCCTransactData, 'Credit Card', 'Refund')
+          newCCTransactData.transaction = consts.cc_transacts.cc_refund.name
+
+
+          axiosReqConfirmed.value = await createTransaction('cc/save-cc-refund', newCCTransactData)
         }
 
         if(axiosReqConfirmed.value == true) {

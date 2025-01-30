@@ -22,6 +22,7 @@ export default {
 
 <style scoped>
 
+
 .common-link {
   color: #fff;
   text-decoration: none;

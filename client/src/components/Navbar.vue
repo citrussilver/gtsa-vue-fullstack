@@ -18,7 +18,11 @@
         <div class="links" :class="{'open': isAddClass}">
           <ul class="nav-links mobile-nav">
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'Home' }">Dashboard</router-link></li>
-            <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewBankTransact' }">New Bank Transaction</router-link></li>
+            <li class="li-link" @click="closeBurger">
+              <router-link class="common-link" :to="{ name: 'NewBankTransact' }">
+                New Bank Transaction
+                <span class="material-symbols-outlined">account_balance_wallet</span>
+              </router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewCreditCardTransact' }">New Credit Card Transaction</router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewGCashTransact' }">New GCash Transaction</router-link></li>
             <li class="li-link" @click="closeBurger"><router-link class="common-link" :to="{ name: 'NewMayaTransact' }">New Maya Transaction</router-link></li>
@@ -43,6 +47,8 @@ const navTitle = ref('GCash & Savings Account')
 //const navTitle = ref('E-Wallet & Savings Account')
 
 const isAddClass = ref(false)
+
+const emit = defineEmits(['stop-scroll'])
 
 const hamburgerClick = () => {
   isAddClass.value = !isAddClass.value

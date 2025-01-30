@@ -276,9 +276,9 @@ import { onBeforeMount, onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import config from '../config'
+import { invokerInitializer } from '../helpers/helpers.service.js'
 
-import { invokerInitializer, handleAxios } from '../helpers/helpers.service.js'
+import { createTransaction } from '../http/transact-api.js'
 
 import { getGCashInfo } from '../composables/getGCashInfo.js'
 import { getMayaInfo } from '../composables/getMayaInfo.js'
@@ -288,7 +288,7 @@ import { getDeliveryLocations } from '../composables/getDeliveryLocations.js'
 
 import consts from '../constants/constants.js'
 
-import DiscountIcon from '../components/DiscountIcon.vue'
+import DiscountIcon from '../components/icons/DiscountIcon.vue'
 
 const props = defineProps({
   formDetails: Object,
@@ -441,6 +441,8 @@ const handleSubmit = async () => {
 
     let newLazadaData = {...dataPayload}
 
+    newLazadaData.account_type = 'Lazada Transactions'
+
     if(dataPayload.payment_method == consts.gcash_component_id) {
       newLazadaData.current_gcash_balance = parseFloat(gCashObject.gcBalance)
       newLazadaData.ref_no = gCashObject.refNo
@@ -459,7 +461,9 @@ const handleSubmit = async () => {
 
     // console.log(newLazadaData)
 
-    axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/lzd/save-lzd-order`, newLazadaData, 'Lazada Transactions', 'Lazada Order')
+    newLazadaData.transaction = 'Lazada Order'
+
+    axiosReqConfirmed.value = await createTransaction(`lzd/save-lzd-order`, newLazadaData)
     
     bankObject.bankId = 1
     bankObject.receipientAcctNo = ''

@@ -15,11 +15,11 @@ const ccFormDetails = reactive(
     cardBorder: 'card border-danger',
     header: 'Credit Card Transaction',
     transactType: [
-      { val: 0, title: '-- Select Transaction Type --' },
-      { val: consts.cc_transacts.online_payment, title: 'Online Payment' },
-      { val: consts.cc_transacts.non_online_payment, title: 'Non-online Payment' },
-      { val: consts.cc_transacts.loan_promo, title: 'Loan - Credit to Cash Promo' },
-      { val: consts.cc_transacts.cc_refund, title: 'Refund' }
+      { val: consts.placeholders.default_id, title: consts.placeholders.transaction_type },
+      { val: consts.cc_transacts.online_payment.id, title: consts.cc_transacts.online_payment.name },
+      { val: consts.cc_transacts.non_online_payment.id, title: consts.cc_transacts.non_online_payment.name },
+      { val: consts.cc_transacts.loan_promo.id, title: consts.cc_transacts.loan_promo.name },
+      { val: consts.cc_transacts.cc_refund.id, title: consts.cc_transacts.cc_refund.name }
     ],
     onlineStoreWebsite: consts.online_stores
   }

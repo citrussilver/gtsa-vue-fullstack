@@ -40,7 +40,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group" v-if="dataPayload.bank_transact_type_id == consts.bank_transacts.bills_payment">
+                    <div class="form-group" v-if="dataPayload.bank_transact_type_id == consts.bank_transacts.bills_payment.id">
                         <label class="control-label white">Biller / Merchant</label>
                         <select class="custom-select" v-model="commonProps.billerMerchant" @change="trackSelection(commonProps.billerMerchant, 'biller')">
                             <option v-for="biller in formDetails.billerMerchant" :key="biller.val" :value="biller.name">{{ biller.name }}</option>
@@ -66,12 +66,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label v-if="dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_online_banking || dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_pay_cash_in">Reference ID</label>
+                        <label v-if="[consts.bank_transacts.shopee_online_banking.id, consts.bank_transacts.shopee_pay_cash_in.id].includes(dataPayload.transact_type_id)">Reference ID</label>
                         <label v-else class="control-label white">Transaction Ref No</label><br>
                         <input type="text" class="form-control" v-model="dataPayload.reference_number" required/>
                     </div>
 
-                    <div class="form-group" v-if="dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_online_banking || dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_pay_cash_in">
+                    <div class="form-group" v-if="[consts.bank_transacts.shopee_online_banking.id, consts.bank_transacts.shopee_pay_cash_in.id].includes(dataPayload.transact_type_id)">
                       <label>Order SN</label>
                       <input type="text" class="form-control" v-model="commonProps.shopeePayCashInOrderSn" required/>
                     </div>
@@ -90,7 +90,11 @@
                         </select>
                     </div>
 
-                    <div id="btn-container"><button type="submit" class="btn btn-outline-success styled-button">Submit</button></div>
+                    <div id="btn-container">
+                      <button type="submit" class="btn btn-outline-success styled-button">
+                        Submit
+                      </button>
+                    </div>
                 </div>
             </div>
         </form>
@@ -103,13 +107,15 @@ import { onBeforeMount, onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import config from '../config'
+import { invokerInitializer } from '../helpers/helpers.service.js'
 
-import { invokerInitializer, handleAxios } from '../helpers/helpers.service.js'
+import { createTransaction } from '../http/transact-api.js'
 
 import { getSavingsAccs } from '../composables/getBanksInfo.js'
 
 import consts from '../constants/constants.js'
+
+import CheckMarkIcon from './icons/CheckMarkIcon.vue'
 
 const props = defineProps({
   formDetails: Object,
@@ -236,106 +242,130 @@ const handleSubmit = async () => {
         
         let newSaTransactData = {...dataPayload}
 
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.deposit) {
+        newSaTransactData.account_type = 'Savings Account'
 
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-depo`, newSaTransactData, 'Savings Account', 'Cash Deposit')
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.deposit.id) {
+          
+          newSaTransactData.transaction = consts.bank_transacts.deposit.name
+
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.deposit.route, newSaTransactData)
         }
         
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.withdraw) {
-            
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-wdraw`, newSaTransactData, 'Savings Account', 'Cash Withdraw')
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.withdraw.id) {
+          
+          newSaTransactData.transaction = consts.bank_transacts.withdraw.name
+
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.withdraw.route, newSaTransactData)
 
         }
         
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.bills_payment) {
-            
-            newSaTransactData.biller_merchant = commonProps.billerMerchant
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.bills_payment.id) {
+          
+          newSaTransactData.biller_merchant = commonProps.billerMerchant
 
+          if([consts.bank_billers.bpi.bluemaster_card.id, consts.bank_billers.unionbank.visa_platinum.id].includes(commonProps.billerMerchant)) {
+              // credit card bills payment - 14
+              newSaTransactData.bank_transact_type_id = consts.bank_transacts.credit_card_payment
+          }
 
+          newSaTransactData.transaction = consts.bank_transacts.bills_payment.name
 
-            if(commonProps.billerMerchant == consts.bank_billers.bpi.bluemaster_card || consts.bank_billers.unionbank.visa_platinum) {
-                // credit card bills payment - 14
-                newSaTransactData.bank_transact_type_id = consts.bank_transacts.credit_card_payment
-            }
-
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-billspay`, newSaTransactData, 'Savings Account', 'Bills Payment')
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.bills_payment.route, newSaTransactData)
 
         } 
         
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.gcash_cash_in) {
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.gcash_cash_in.id) {
+          
+          newSaTransactData.current_gcash_balance = gCashObject.gcBalance
+          newSaTransactData.gcash_id = gCashObject.gCashId
+          newSaTransactData.gcash_ref_no = gCashObject.refNo
 
-            newSaTransactData.current_gcash_balance = gCashObject.gcBalance
-            newSaTransactData.gcash_id = gCashObject.gCashId
-            newSaTransactData.gcash_ref_no = gCashObject.refNo
+          newSaTransactData.transaction = consts.bank_transacts.gcash_cash_in.name
 
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-gc-cash-in`, newSaTransactData, 'Savings Account', 'GCash Cash-in')
-
-        }
-        
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.maya_cash_in) {
-
-            newSaTransactData.current_maya_balance = mayaObject.mayaBalance
-            newSaTransactData.maya_id = mayaObject.mayaId
-            newSaTransactData.reference_id = mayaObject.refNo
-
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-maya-cash-in`, newSaTransactData, 'Savings Account', 'Maya Cash-in')
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.gcash_cash_in.route, newSaTransactData)
 
         }
         
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.reload_prepaid_card) {
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.maya_cash_in.id) {
+          
+          newSaTransactData.current_maya_balance = mayaObject.mayaBalance
+          newSaTransactData.maya_id = mayaObject.mayaId
+          newSaTransactData.reference_id = mayaObject.refNo
 
-            newSaTransactData.receipient_acct_no = bankObject.receipientAcctNo
+          newSaTransactData.transaction = consts.bank_transacts.maya_cash_in.name
 
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-prepaid-reload`, newSaTransactData, 'Savings Account', 'Reload Prepaid')
-
-        }
-        
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.transfer_money) {
-
-            newSaTransactData.receipient_acct_no = bankObject.receipientAcctNo
-
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-transfer-money`, newSaTransactData, 'Savings Account', 'Transfer Money')
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.maya_cash_in.route, newSaTransactData)
 
         }
         
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.store_payment) {
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.reload_prepaid_card.id) {
+          newSaTransactData.receipient_acct_no = bankObject.receipientAcctNo
 
-            newSaTransactData.store_name = commonProps.storeName
+          newSaTransactData.transaction = consts.bank_transacts.reload_prepaid_card.name
 
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-store-payment`, newSaTransactData, 'Savings Account', 'Store payment')
-
-        }
-        
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.adjustment) {
-
-            // Adjustment
-            // properties are manually added which are unique only to this transaction
-            newSaTransactData.credit = commonProps.credit
-            newSaTransactData.bank_transact_type_id = commonProps.credit == 1 ? consts.adjustment_types.credit : consts.adjustment_types.debit
-
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-adjustment`, newSaTransactData, 'Savings Account', 'Adjustment')
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.reload_prepaid_card.route, newSaTransactData)
 
         }
         
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.earn_interest) {
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.transfer_money.id) {
+          
+          newSaTransactData.receipient_acct_no = bankObject.receipientAcctNo
 
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-earn-interest`, newSaTransactData, 'Savings Account', 'Earn Interest')
+          newSaTransactData.transaction = consts.bank_transacts.transfer_money.name
 
-        }
-        
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.tax_withheld) {
-
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-taxwh`, newSaTransactData, 'Savings Account', 'Tax Witheld')
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.transfer_money.route, newSaTransactData)
 
         }
         
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.salary_income) {
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.store_payment.id) {
+
+          newSaTransactData.store_name = commonProps.storeName
+
+          newSaTransactData.transaction = consts.bank_transacts.store_payment.name
+
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.store_payment.route, newSaTransactData)
+
+        }
+        
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.adjustment.id) {
+          
+          // Adjustment
+          // properties are manually added which are unique only to this transaction
+          newSaTransactData.credit = commonProps.credit
+          newSaTransactData.bank_transact_type_id = commonProps.credit == 1 ? consts.adjustment_types.credit : consts.adjustment_types.debit
+
+          newSaTransactData.transaction = consts.bank_transacts.adjustment.name
+
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.adjustment.route, newSaTransactData)
+
+        }
+        
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.earn_interest.id) {
+          
+          newSaTransactData.transaction = consts.bank_transacts.earn_interest.name
+          
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.earn_interest.route, newSaTransactData)
+
+        }
+        
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.tax_withheld.id) {
+
+          newSaTransactData.transaction = consts.bank_transacts.tax_withheld.name
+
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.tax_withheld.route, newSaTransactData)
+
+        }
+        
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.salary_income.id) {
             // Salary / Income
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-sa-sale-income`, newSaTransactData, 'Savings Account', 'Salary / Income')
+
+          newSaTransactData.transaction = consts.bank_transacts.salary_income.name
+
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.salary_income.route, newSaTransactData)
 
         }
         
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_online_banking) {
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_online_banking.id) {
 
             newSaTransactData.seller_name = commonProps.sellerName
             newSaTransactData.merch_subtotal = commonProps.merchSubtotal
@@ -345,12 +375,14 @@ const handleSubmit = async () => {
             newSaTransactData.voucher_discount = commonProps.voucherDiscount
             newSaTransactData.sub_total = commonProps.shopeeOLBSubTotal
             // for use in savings acct table
-            newSaTransactData.amount = commonProps.shopeeOLBSubTotal 
+            newSaTransactData.amount = commonProps.shopeeOLBSubTotal
 
-            axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-shopee-online-banking`, newSaTransactData, 'Savings Account', 'Shopee - Online Banking')
+            newSaTransactData.transaction = consts.bank_transacts.shopee_online_banking.name
+
+            axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.shopee_online_banking.route, newSaTransactData)
         }
 
-        if(dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_pay_cash_in) {
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_pay_cash_in.id) {
 
           // shopeePay Cash-in Logic
 
@@ -360,7 +392,9 @@ const handleSubmit = async () => {
           // properties are manually added which are unique only to this transaction
           newSaTransactData.order_sn = commonProps.shopeePayCashInOrderSn
 
-          axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/sa/save-shopee-pay-cash-in`, newSaTransactData, 'Savings Account', 'ShopeePay Cash-in')
+          newSaTransactData.transaction = consts.bank_transacts.shopee_pay_cash_in.name
+
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.shopee_pay_cash_in.route, newSaTransactData)
         }
 
         if(axiosReqConfirmed.value == true) {
