@@ -305,9 +305,9 @@ import { onBeforeMount, onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import config from '../config'
+import { invokerInitializer } from '../helpers/helpers.service.js'
 
-import { invokerInitializer, handleAxios } from '../helpers/helpers.service.js'
+import { createTransaction } from '../http/transact-api.js'
 
 import { getGCashInfo } from '../composables/getGCashInfo.js'
 import { getMayaInfo } from '../composables/getMayaInfo.js'
@@ -318,7 +318,7 @@ import { getDeliveryLocations } from '../composables/getDeliveryLocations.js'
 
 import consts from '../constants/constants.js'
 
-import DiscountIcon from '../components/DiscountIcon.vue'
+import DiscountIcon from './icons/DiscountIcon.vue'
 
 const props = defineProps({
   formDetails: Object,
@@ -488,6 +488,8 @@ const handleSubmit = async () => {
 
     let newShopeeData = {...dataPayload}
 
+    newShopeeData.account_type = 'Shopee Transactions'
+
     if(dataPayload.payment_method == consts.gcash_component_id) {
       newShopeeData.current_gcash_balance = parseFloat(gCashObject.gcBalance)
       newShopeeData.ref_no = gCashObject.refNo
@@ -506,7 +508,9 @@ const handleSubmit = async () => {
 
     // console.log(newShopeeData)
 
-    axiosReqConfirmed.value = await handleAxios(`${config.apiUrl}/shp/save-shp-order`, newShopeeData, 'Shopee Transactions', 'Shopee Order')
+    newShopeeData.transaction = 'Shopee Order'
+
+    axiosReqConfirmed.value = await createTransaction('shp/save-shp-order', newShopeeData)
     
     bankObject.bankId = 1
     bankObject.receipientAcctNo = ''

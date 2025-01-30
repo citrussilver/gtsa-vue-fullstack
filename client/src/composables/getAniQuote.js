@@ -11,10 +11,13 @@ export let aniQuote = reactive(
 // animechan vercel
 export const generateAniQuote = async () => {
 
-    // const response = await fetch('https://animechan.xyz/api/random')
-    // const data = await response.json()
+    console.log(import.meta.env.VITE_BASE_URL_2);
+
+    // const response = await fetch(`https://proxy.corsfix.com/?${import.meta.env.VITE_BASE_URL_2}/quotes/random`)
+    // const dataObj = await response.json()
+    // const data = dataObj.data
     
-    // aniQuote.quote = data.quote
-    // aniQuote.character = data.character
-    // aniQuote.anime = data.anime;
+    // aniQuote.quote = data.content
+    // aniQuote.character = data.character.name
+    // aniQuote.anime = data.anime.name;
 }
