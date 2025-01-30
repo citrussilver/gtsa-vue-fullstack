@@ -12,7 +12,7 @@
           </div>
         </article>
         <footer class="custom-footer">
-          <p>2021-2023 GCSA</p>
+          <p>{{ consts.app_year }}</p>
         </footer>
     </div>
 </template>
@@ -21,6 +21,8 @@
 import { ref } from 'vue'
 import Sidebar from '../Sidebar.vue'
 import Navbar from '../Navbar.vue'
+
+import consts from '../../constants/constants.js'
 
 const deactivateClass = ref(false)
 

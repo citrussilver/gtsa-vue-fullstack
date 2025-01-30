@@ -2,7 +2,7 @@
 
 :root {
     --background: #0096ff;
-    --green: #00bc8c;
+    --bootstrap-green: rgb(0, 188, 140);
     --blue-highlight: #3498db;
     --item-color: #303030;
     --item-header: #444444;
@@ -71,7 +71,7 @@ nav h1 {
 
 .table-style th {
     text-align: left;
-    background-color: var(--green);
+    background-color: var(--bootstrap-green);
     padding-top: 12px;
     padding-bottom: 12px;
 }
@@ -97,7 +97,7 @@ nav h1 {
     height: 2px;
     width: 0px;
     position: absolute;
-    background-color: var(--green);
+    background-color: var(--bootstrap-green);
     display: inline-block;
     transition: .3s width ease-in-out;
     position: relative;
@@ -106,7 +106,7 @@ nav h1 {
 
 .wrapper input[type=text]:focus + .line, input[type="email"]:focus + .line, input[type="password"]:focus + .line, textarea:focus + .line {
     width: 100%;
-    background-color: var(--green);
+    background-color: var(--bootstrap-green);
 }
 
 #flex-container {
@@ -135,4 +135,29 @@ nav h1 {
 .styled-button:active {
     box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
     transform: scale(0.90);
+}
+
+/* -----
+SVG Icons - svgicons.sparkk.fr
+----- */
+
+/* check mark */
+.svg-icon {
+    width: 1em;
+    height: 1em;
+}
+
+.svg-icon path,
+.svg-icon polygon,
+.svg-icon rect {
+    fill: var(--bootstrap-green);
+}
+
+.svg-icon circle {
+    stroke: var(--bootstrap-green);
+    stroke-width: 1;
+}
+
+.svg-icon:hover circle {
+    stroke: #fff;
 }

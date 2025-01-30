@@ -11,38 +11,38 @@ export const invokerInitializer = async (composableCallback) => {
   return response;
 }
 
-export const handleAxios = async (route, objData, type, specific) => {
+// export const handleAxios = async (route, objData, type, specific) => {
 
-  const res = await confirm(`Are you sure to save this ${specific} entry?`);
+//   const res = await confirm(`Are you sure to save this ${specific} entry?`);
 
-  if (res) {
+//   if (res) {
 
-    // console.log('YES')
+//     // console.log('YES')
     
-    await axios.post(`${route}`, objData)
-    .then(response => {
+//     await axios.post(`${route}`, objData)
+//     .then(response => {
 
-      toast({
-        message: `[${type}] New ${specific} successfully posted to database`,
-        duration: 3000,
-        type: 'is-warning',
-        position: "top-center",
-        dismissible: true,
-        pauseOnHover: true,
-        closeOnClick: true
-      })
-    })
-    .catch(err => {
-      console.log(err);
-    })
+//       toast({
+//         message: `[${type}] New ${specific} successfully posted to database`,
+//         duration: 3000,
+//         type: 'is-warning',
+//         position: "top-center",
+//         dismissible: true,
+//         pauseOnHover: true,
+//         closeOnClick: true
+//       })
+//     })
+//     .catch(err => {
+//       console.log(err);
+//     })
 
 
-  } else {
-    console.log('NO');
-  }
+//   } else {
+//     console.log('NO');
+//   }
 
-  return res;
-}
+//   return res;
+// }
 
 export const executeHash = () => {
   let length = 16;

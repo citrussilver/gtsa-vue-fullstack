@@ -16,7 +16,7 @@
       cardBorder: 'card border-primary mb-3',
       header: 'Lazada Transaction',
       transactType: [
-        { val: 0, title: '-- Select Transaction Type --' },
+        { val: consts.placeholders.default_id, title: consts.placeholders.transaction_type },
         { val: consts.lazada_transacts.online_shopping, title: 'Online Shopping' },
       ],
     }

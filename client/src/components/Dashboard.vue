@@ -323,7 +323,8 @@ let loading = ref(false)
   }
 
   .grid-tile-item:last-child {
-    grid-column-start: 3;
+    /* grid-column-start: 3; */
+    grid-column: 3/5;
     grid-row-start: 1;
     grid-row-end: 3;
   }
