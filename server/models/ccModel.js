@@ -173,3 +173,38 @@ export const insertCcRefund = (data, result) => {
         }
     });
 }
+
+export const insertCcAdjustment = (data, result) => {
+    dbConnection.query("INSERT INTO credit_card_transactions SET ?", {
+        credit_card_id: data.credit_card_id,
+        date_time: data.date_time,
+        transact_type_id: data.transact_type_id,
+        description: data.description,
+        amount: data.amount,
+        remarks: `[Adjustment] ${data.remarks}`,
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const adjustment_data = {
+                cc_transact_id: results.insertId,
+                credit_card_id: data.credit_card_id,
+                date_time: data.date_time,
+                credit: data.credit,
+                amount: data.amount,
+                remarks: data.remarks,
+            };
+
+            dbConnection.query("INSERT INTO credit_card_adjustments SET ?", adjustment_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+                    result(null, results);
+                    console.log(`[Credit Card] New Adjustment ${adjustment_data.credit == 1 ? "(Credit)" : "(Debit)"} successfully posted to database`)
+                }
+            });
+        }
+    });
+}

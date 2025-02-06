@@ -35,7 +35,8 @@ import {
     newCcOnlinePay,
     newCcNonOnlinePay,
     newCcPromoLoan,
-    newCcRefund
+    newCcRefund,
+    newCcAdjustment
 } from '../controllers/ccController.js' ;
 
 import {
@@ -148,6 +149,7 @@ router.post('/api/cc/save-cc-op', newCcOnlinePay);
 router.post('/api/cc/save-cc-nop', newCcNonOnlinePay);
 router.post('/api/cc/save-cc-loan', newCcPromoLoan);
 router.post('/api/cc/save-cc-refund', newCcRefund);
+router.post('/api/cc/save-cc-adjustment', newCcAdjustment);
 
 router.post('/api/lzd/save-lzd-order', newLazadaOrder);
 

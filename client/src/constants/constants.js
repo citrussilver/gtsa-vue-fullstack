@@ -187,19 +187,29 @@ export default {
     cc_transacts: {
         online_payment: {
             id: 1,
-            name: 'Online Payment'
+            name: 'Online Payment',
+            route: 'cc/save-cc-op'
         },
         non_online_payment: {
             id: 2,
-            name: 'Non-Online Payment'
+            name: 'Non-Online Payment',
+            route: 'cc/save-cc-nop'
         },
         loan_promo: {
             id: 3,
-            name: 'Credit-to-Cash Loan'
+            name: 'Credit-to-Cash Loan',
+            route: 'cc/save-cc-loan'
         },
         cc_refund: {
             id: 4,
-            name: 'Refund'
+            name: 'Refund',
+            route: 'cc/save-cc-refund'
+        },
+        adjustment: {
+            id: 5,
+            name: 'Adjustment',
+            route: 'cc/save-cc-adjustment'
+            
         }
     },
     maya_transacts: {
