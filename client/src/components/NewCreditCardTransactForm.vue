@@ -70,9 +70,17 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" v-if="dataPayload.transact_type_id === consts.cc_transacts.adjustment.id">
+                      <label class="col-form-label white">Credit or Debit?</label><br>
+                      <select class="custom-select" v-model="commonProps.credit" style="width: 6rem;">
+                        <option value="1" selected>Credit</option>
+                        <option value="0">Debit</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group" v-if="[consts.cc_transacts.online_payment.id, consts.cc_transacts.non_online_payment.id, consts.cc_transacts.cc_refund.id].includes(dataPayload.transact_type_id)">
                         <label class="control-label white" v-if="dataPayload.transact_type_id === consts.cc_transacts.non_online_payment.id">Store Name:</label>
-                        <label class="control-label white" v-else>Online Shop Website:</label>
+                        <label class="control-label white" v-if="dataPayload.transact_type_id === consts.cc_transacts.online_payment.id">Online Shop Website:</label>
                         <select v-if="[consts.cc_transacts.online_payment.id, consts.cc_transacts.cc_refund.id].includes(dataPayload.transact_type_id)" class="custom-select" v-model="shopObject.onlineStoreWebsite">
                             <option v-for="onlineStore in formDetails.onlineStoreWebsite" :key="onlineStore.val" :value="onlineStore.name">{{ onlineStore.name }}</option>
                         </select>
@@ -178,6 +186,12 @@ let shopObject = reactive(
   }
 )
 
+let commonProps = reactive(
+  {
+    credit: 1
+  }
+);
+
 let initialIndex = 0
 
 let creditCardsData = ref([])
@@ -218,7 +232,7 @@ const handleSubmit = async () => {
 
           newCCTransactData.transaction = consts.cc_transacts.online_payment.name
 
-          axiosReqConfirmed.value = await createTransaction('cc/save-cc-op', newCCTransactData)
+          axiosReqConfirmed.value = await createTransaction(consts.cc_transacts.online_payment.route, newCCTransactData)
         }
 
         if(dataPayload.transact_type_id == consts.cc_transacts.non_online_payment) {
@@ -227,7 +241,7 @@ const handleSubmit = async () => {
 
           newCCTransactData.transaction = consts.cc_transacts.non_online_payment.name
 
-          axiosReqConfirmed.value = await createTransaction('cc/save-cc-nop', newCCTransactData)
+          axiosReqConfirmed.value = await createTransaction(consts.cc_transacts.non_online_payment.route, newCCTransactData)
         }
 
         if(dataPayload.transact_type_id == consts.cc_transacts.loan_promo.id) {
@@ -243,7 +257,7 @@ const handleSubmit = async () => {
           
           newCCTransactData.transaction = consts.cc_transacts.loan_promo.name
 
-          axiosReqConfirmed.value = await createTransaction('cc/save-cc-loan', newCCTransactData)
+          axiosReqConfirmed.value = await createTransaction(consts.cc_transacts.loan_promo.route, newCCTransactData)
         }
 
         if(dataPayload.transact_type_id == consts.cc_transacts.cc_refund.id) {
@@ -255,7 +269,17 @@ const handleSubmit = async () => {
           newCCTransactData.transaction = consts.cc_transacts.cc_refund.name
 
 
-          axiosReqConfirmed.value = await createTransaction('cc/save-cc-refund', newCCTransactData)
+          axiosReqConfirmed.value = await createTransaction(consts.cc_transacts.cc_refund.route, newCCTransactData)
+        }
+
+        if(dataPayload.transact_type_id == consts.cc_transacts.adjustment.id) {
+          newCCTransactData.credit = commonProps.credit
+
+          newCCTransactData.transact_type_id = commonProps.credit == 1 ? consts.adjustment_types.credit : consts.adjustment_types.debit
+
+          newCCTransactData.transaction = consts.cc_transacts.adjustment.name
+
+          axiosReqConfirmed.value = await createTransaction(consts.cc_transacts.adjustment.route, newCCTransactData)
         }
 
         if(axiosReqConfirmed.value == true) {

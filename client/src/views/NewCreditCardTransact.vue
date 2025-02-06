@@ -19,7 +19,8 @@ const ccFormDetails = reactive(
       { val: consts.cc_transacts.online_payment.id, title: consts.cc_transacts.online_payment.name },
       { val: consts.cc_transacts.non_online_payment.id, title: consts.cc_transacts.non_online_payment.name },
       { val: consts.cc_transacts.loan_promo.id, title: consts.cc_transacts.loan_promo.name },
-      { val: consts.cc_transacts.cc_refund.id, title: consts.cc_transacts.cc_refund.name }
+      { val: consts.cc_transacts.cc_refund.id, title: consts.cc_transacts.cc_refund.name },
+      { val: consts.cc_transacts.adjustment.id, title: consts.cc_transacts.adjustment.name }
     ],
     onlineStoreWebsite: consts.online_stores
   }
