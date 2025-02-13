@@ -131,20 +131,19 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, reactive } from 'vue'
 import ArticleTitleSlot from './slots/ArticleTitleSlot.vue'
 import ArticleSubtitleSlot from './slots/ArticleSubtitleSlot.vue'
 
-import { invokerInitializer } from '../helpers/helpers.service.js'
+import { applyWatchOnRef } from '../helpers/helpers.service.js'
 
-import { getSavingsAccs } from '../composables/getBanksInfo.js'
-import { getCreditCards  } from '../composables/getCcsInfo.js'
-import { getGCashInfo } from '../composables/getGCashInfo'
-import { getMayaInfo } from '../composables/getMayaInfo.js'
+import useAniQuoteFetcher from '../composables/useAniQuoteFetcher.js'
+import useGCashFetcher from '../composables/useGCashFetcher.js'
+import useMayaFetcher from '../composables/useMayaAcctsFetcher.js'
+import useSavingsAcctFetcher from '../composables/useSavingsAcctFetcher.js'
+import useCcFetcher from '../composables/useCcFetcher.js'
 
-import { aniQuote, generateAniQuote } from '../composables/getAniQuote'
-
-let loading = ref(false)
+      let loading = ref(false)
 
       let gCashData = ref([])
 
@@ -154,27 +153,39 @@ let loading = ref(false)
 
       let creditCardsData = ref([])
 
-      const loadAniQuote = async () => {
-        try {
-          loading.value = true
-          await generateAniQuote()  
-          loading.value = false
-        } catch (error) {
-          console.log(error)
-        }
+      let aniQuote = reactive(
+          {
+              quote: '',
+              character: '',
+              anime: ''
+          }
+      )
+
+      const loadAniQuote = () => {
+        const { quote, character, anime, isLoading } = useAniQuoteFetcher();
+        loading.value = true
+        aniQuote.quote = quote
+        aniQuote.character = character
+        aniQuote.anime = anime
+        loading.value = false
       }
 
-      onMounted(async () => {
+      onMounted( () => {
 
-        gCashData.value = await invokerInitializer(getGCashInfo)
+        let { gCashInfo } = useGCashFetcher();
+        applyWatchOnRef(gCashInfo, gCashData)
 
-        mayaData.value = await invokerInitializer(getMayaInfo)
+        let { mayaInfo } = useMayaFetcher();
+        applyWatchOnRef(mayaInfo, mayaData);
         
         loadAniQuote()
+
+        let { saInfo } = useSavingsAcctFetcher();
+        applyWatchOnRef(saInfo, savingsAcctData)
         
-        savingsAcctData.value = await invokerInitializer(getSavingsAccs)
+        let { ccInfo } = useCcFetcher();
+        applyWatchOnRef(ccInfo, creditCardsData)
   
-        creditCardsData.value = await invokerInitializer(getCreditCards)
       })
 
 </script>

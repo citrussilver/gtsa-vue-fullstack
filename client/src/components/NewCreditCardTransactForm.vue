@@ -10,6 +10,7 @@
                         <input type="datetime-local" class="form-control" v-model="dataPayload.date_time" required>
                     </div>
 
+                    <!-- Credit Cards List -->
                     <div class="form-group">
                         <select class="custom-select" v-model="dataPayload.credit_card_id" @change="trackSelection($event.target.selectedIndex, 'cc')">
                             <option v-for="(creditCard, index) in creditCardsData" :key="index" :value="creditCard.credit_card_id">{{ creditCard.last_4_digits }} - {{ creditCard.cc_name }}</option>
@@ -23,6 +24,7 @@
                         </select>
                     </div>
 
+                    <!-- Credit Limit -->
                     <div class="form-group">
                         <label class="col-form-label white">Current Available Credit Limit</label>
                         <div class="form-group">
@@ -128,17 +130,17 @@
 </template>
 
 <script setup>
-import { onBeforeMount, onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, isProxy, toRaw } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { invokerInitializer } from '../helpers/helpers.service.js'
+import consts from '../constants/constants.js'
+
+import { applyWatchOnRef } from '../helpers/helpers.service.js'
 
 import { createTransaction } from '../http/transact-api.js'
 
-import { getCreditCards  } from '../composables/getCcsInfo.js'
-
-import consts from '../constants/constants.js'
+import useCcFetcher from '../composables/useCcFetcher.js'
 
 const props = defineProps({
   formDetails: Object,
@@ -197,13 +199,15 @@ let initialIndex = 0
 let creditCardsData = ref([])
 
 const fetchCc = (val) => {
-    ccObject.availCreditLimit = creditCardsData.value[val].avail_credit_limit
-    dataPayload.current_credit_limit = ccObject.availCreditLimit
-    return ccObject.availCreditLimit
+  console.log('>>fetchCC');
+  console.log(creditCardsData);
+  ccObject.availCreditLimit = creditCardsData.value[val].avail_credit_limit
+  dataPayload.current_credit_limit = ccObject.availCreditLimit
+  return ccObject.availCreditLimit
 }
 
-const handleCCInitialization = async () => {
-  creditCardsData.value = await invokerInitializer(getCreditCards)
+const handleCCInitialization = () => {
+  // creditCardsData.value = await invokerInitializer(getCreditCards)
   trackSelection(initialIndex, 'cc')
 }
 
@@ -292,10 +296,15 @@ const handleSubmit = async () => {
     }
 }
 
-onMounted(async () => {
-    creditCardsData.value = await invokerInitializer(getCreditCards)
-    trackSelection(initialIndex, 'cc')
-    handleCCInitialization()
+onMounted(() => {
+    let { ccInfo } = useCcFetcher();
+    applyWatchOnRef(ccInfo, creditCardsData)
+    // TODO:
+    // below console.log is most of the time empty, can't seem to get what the helper function applyWatchOnRef gets
+    console.log(creditCardsData.value);
+    
+    // if trackSelection() is executed below, no credit card accounts appears on dropdown list
+    // trackSelection(initialIndex, 'cc')
 })
 
 </script>

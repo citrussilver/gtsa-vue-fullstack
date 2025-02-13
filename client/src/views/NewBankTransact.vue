@@ -19,6 +19,7 @@ const bankFormDetails = reactive(
       { val: consts.bank_transacts.deposit.id, title: consts.bank_transacts.deposit.name },
       { val: consts.bank_transacts.withdraw.id, title: consts.bank_transacts.withdraw.name },
       { val: consts.bank_transacts.bills_payment.id, title: consts.bank_transacts.bills_payment.name },
+      { val: consts.bank_transacts.pay_credit_card.id, title: consts.bank_transacts.pay_credit_card.name },
       { val: consts.bank_transacts.gcash_cash_in.id, title: consts.bank_transacts.gcash_cash_in.name },
       { val: consts.bank_transacts.maya_cash_in.id, title: consts.bank_transacts.maya_cash_in.name },
       { val: consts.bank_transacts.reload_prepaid_card.id, title: consts.bank_transacts.reload_prepaid_card.name },
