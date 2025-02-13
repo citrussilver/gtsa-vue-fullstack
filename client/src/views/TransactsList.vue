@@ -11,7 +11,8 @@
                 <option value="1">Savings Acct 1 Transactions</option>
                 <option value="2">Savings Acct 2 Transactions</option>
                 <option value="3">GCash Transactions</option>
-                <option value="4">Credit Card Transactions</option>
+                <option value="4">Maya Transactions</option>
+                <option value="5">Credit Card Transactions</option>
             </select>
           </div>
           <div style="margin-left: 1rem;"></div>
@@ -24,9 +25,18 @@
           </div>
         </div>
 
-        <DataTable :tableDataConfig="componentData.savingAccTableConfig" v-if="choice == 1 || choice == 2"/>
+        <div v-if="choice == 1">
+          <vue3-datatable :rows="sa1Rows" :columns="sa1Cols">
+          </vue3-datatable>  
+        </div>
+
+        <div v-if="choice == 4">
+          <vue3-datatable :rows="mayaRows" :columns="mayaCols" />
+        </div>
+
+        <!-- <DataTable :tableDataConfig="componentData.savingAccTableConfig" v-if="choice == 1 || choice == 2"/>
         <DataTable :tableDataConfig="gCashTableConfig" v-if="choice == 3"/>
-        <DataTable :tableDataConfig="ccTableConfig" v-if="choice == 4"/>
+        <DataTable :tableDataConfig="ccTableConfig" v-if="choice == 4"/> -->
 
       </div>
     </div>
@@ -37,133 +47,202 @@
 <script setup>
 import { ref, reactive } from 'vue'
 
+import Vue3Datatable from '@bhplugin/vue3-datatable'
+import "@bhplugin/vue3-datatable/dist/style.css";
+
 import DataTable from '../components/DataTable.vue'
 
-import { getSa1Transacts, getSa2Transacts } from '../composables/getSaTransacts'
+import { invokerInitializer } from '../helpers/helpers.service.js'
+
+// import { getSa1Transacts, getSa2Transacts } from '../composables/getSaTransacts'
 import { getCcTransacts } from '../composables/getCcTransacts'
 import { getGCashTransacts, getFilterRemarksGCashTransacts } from '../composables/getGCashTransacts'
+import { applyWatchOnRef } from '../helpers/helpers.service.js'
+
+import useSa1Fetcher from '../composables/useSa1Fetcher.js';
+import useMayaTransactsFetcher from '../composables/useMayaTransactsFetcher.js'
 
 let choice = ref(0)
 let filterString = ref('')
 
+let sa1Data = ref([])
+
+let mayaTransactsData = ref([])
+
 const componentData = reactive({})
 
-componentData.savingAccTableConfig = {
-  data_table_title: 'Savings Account Transactions Data',
-  headers: [
-        'Date',
-        'Transact Type',
-        'Amount',
-        'Balance',
-        'Remarks',
-        'Post Balance',
-        'App / Location'
-  ],
-  columns: {
-    date: (data) => data.date_time,
-    transactType: (data) => data.transact_type,
-    amount: (data) => data.amount,
-    balance: (data) => data.current_balance,
-    remarks: (data) => data.remarks,
-    postBalance: (data) => data.post_transact_balance,
-    appLocation: (data) => data.location
-  },
-  column_count: () => Object.keys(componentData.savingAccTableConfig.columns).length,
-  total_records: 0,
-  report_data: [],
-  page_number_count: 6,
-  data_source: function() {
-      let res = getSa1Transacts()
-      return res
-  },
-  pagination_data: {
-      totalItems: 0,
-      currentPage: 1,
-      rowCount: 10,
-      maxPages: 6
-  },
-  operation_hash: ''
-}
+const sa1Cols =
+    ref([
+      { field: "sa_transact_id", title: "Sa Transact ID"},
+      { field: "date_time", title: "Date", type: "date" },
+      { field: "transact_type", title: "Transact Type" },
+      { field: "amount", title: "Amount" },
+      { field: "current_balance", title: "Balance" },
+      { field: "remarks", title: "Remarks" },
+      { field: "post_transact_balance", title: "Post Balance" },
+      { field: "location", title: "App / Location" },
+    ]) || [];
 
-componentData.gCashTableConfig = {
-  data_table_title: 'GCash Transactions Data',
-  headers: [
-    'Date',
-    'Transact Type',
-    'Amount',
-    'Balance',
-    'Post Balance',
-    'Remarks'
-  ],
-  columns: {
-    date: (data) => data.date_time,
-    transactType: (data) => data.transact_type,
-    amount: (data) => data.amount,
-    balance: (data) => data.current_gcash_balance,
-    postBalance: (data) => data.post_gcash_balance,
-    remarks: (data) => data.remarks,
-  },
-  total_records: 0,
-  report_data: [],
-  page_number_count: 6,
-  data_source: function() {
-      let res = getGCashTransacts()
-      console.log(res)
-      return res
-  },
-  pagination_data: {
-      totalItems: 0,
-      currentPage: 1,
-      rowCount: 10,
-      maxPages: 6
-  },
-  operation_hash: ''
-}
+    // const rows = ref([
+    //   {
+    //     date_time: 'Feb 13, 2025',
+    //     transact_type: 'Deposit',
+    //     amount: 19222,
+    //     current_balance: 1,
+    //     remarks: "Test",
+    //     post_transact_balance: 19223,
+    //     location: 'Test'
+    //   }
+    // ]);
 
-componentData.ccTableConfig = {
-    headers: [
-      'Date',
-      'Transact Type',
-      'Description',
-      'Amount',
-      'Remarks'
-    ],
-    columns: {
-      date: (data) => data.date_time,
-      transactType: (data) => data.transact_type,
-      description: (data) => data.description,
-      amount: (data) => data.amount,
-      remarks: (data) => data.remarks,
-    },
-    total_records: 0,
-    page_number_count: 6,
-    data_source: function() {
-        let res = getCcTransacts()
-        console.log(res)
-        return res
-    },
-    pagination_data: {
-        totalItems: 0,
-        currentPage: 1,
-        rowCount: 10,
-        maxPages: 6
-    },
-    operation_hash: ''
-}
+
+const mayaCols =
+    ref([
+      { field: "maya_transact_id", title: "Maya Transact ID"},
+      { field: "date_time", title: "Date", type: "date" },
+      { field: "transact_type", title: "Transact Type" },
+      { field: "current_maya_balance", title: "Maya Current Balance" },
+      { field: "amount", title: "Amount" },
+      { field: "post_maya_balance", title: "Maya Post Balance" },
+      { field: "remarks", title: "Remarks" },
+    ]) || [];
+    const sa1Rows = sa1Data
+
+const mayaRows = mayaTransactsData
+
+// componentData.savingAccTableConfig = {
+//   data_table_title: 'Savings Account Transactions Data',
+//   headers: [
+//         'Date',
+//         'Transact Type',
+//         'Amount',
+//         'Balance',
+//         'Remarks',
+//         'Post Balance',
+//         'App / Location'
+//   ],
+//   columns: {
+//     date: (data) => data.date_time,
+//     transactType: (data) => data.transact_type,
+//     amount: (data) => data.amount,
+//     balance: (data) => data.current_balance,
+//     remarks: (data) => data.remarks,
+//     postBalance: (data) => data.post_transact_balance,
+//     appLocation: (data) => data.location
+//   },
+//   column_count: () => Object.keys(componentData.savingAccTableConfig.columns).length,
+//   total_records: 0,
+//   report_data: [],
+//   page_number_count: 6,
+//   data_source: function() {
+//       // let res = getSa1Transacts()
+//       // console.log(res)
+//       // return res
+//   },
+//   pagination_data: {
+//       totalItems: 0,
+//       currentPage: 1,
+//       rowCount: 10,
+//       maxPages: 6
+//   },
+//   operation_hash: ''
+// }
+
+// componentData.gCashTableConfig = {
+//   data_table_title: 'GCash Transactions Data',
+//   headers: [
+//     'Date',
+//     'Transact Type',
+//     'Amount',
+//     'Balance',
+//     'Post Balance',
+//     'Remarks'
+//   ],
+//   columns: {
+//     date: (data) => data.date_time,
+//     transactType: (data) => data.transact_type,
+//     amount: (data) => data.amount,
+//     balance: (data) => data.current_gcash_balance,
+//     postBalance: (data) => data.post_gcash_balance,
+//     remarks: (data) => data.remarks,
+//   },
+//   total_records: 0,
+//   report_data: [],
+//   page_number_count: 6,
+//   data_source: function() {
+//       let res = getGCashTransacts()
+//       console.log(res)
+//       return res
+//   },
+//   pagination_data: {
+//       totalItems: 0,
+//       currentPage: 1,
+//       rowCount: 10,
+//       maxPages: 6
+//   },
+//   operation_hash: ''
+// }
+
+// componentData.ccTableConfig = {
+//     headers: [
+//       'Date',
+//       'Transact Type',
+//       'Description',
+//       'Amount',
+//       'Remarks'
+//     ],
+//     columns: {
+//       date: (data) => data.date_time,
+//       transactType: (data) => data.transact_type,
+//       description: (data) => data.description,
+//       amount: (data) => data.amount,
+//       remarks: (data) => data.remarks,
+//     },
+//     total_records: 0,
+//     page_number_count: 6,
+//     data_source: function() {
+//         let res = getCcTransacts()
+//         console.log(res)
+//         return res
+//     },
+//     pagination_data: {
+//         totalItems: 0,
+//         currentPage: 1,
+//         rowCount: 10,
+//         maxPages: 6
+//     },
+//     operation_hash: ''
+// }
 
 const checkChoice = (val) => {
-  console.log(val)
+  
   if(val == 1) {
+    
+    let { sa1Info } = useSa1Fetcher();
+    applyWatchOnRef(sa1Info, sa1Data)
 
-      // getSa1Transacts()
-      //setMobileHeaders("#table-style")
-  } else if(val == 2) {
-      getSa2Transacts()
-      //setMobileHeaders("#table-style")
-  } else if(val == 3) {
+  } 
+  
+  // if(val == 2) {
+  //     getSa2Transacts()
+  //     //setMobileHeaders("#table-style")
+  // } 
+  
+  if(val == 3) {
       getGCashTransacts()
       //setMobileHeaders("#table-style")
-  } else if(val == 4) {
+  }
+
+  if(val == 4) {
+
+    let { mayaTransacts } = useMayaTransactsFetcher();
+    applyWatchOnRef(mayaTransacts, mayaTransactsData);
+
+  }
+
+
+  
+  if(val == 5) {
       getCcTransacts()
       //setMobileHeaders("#table-style")
   }

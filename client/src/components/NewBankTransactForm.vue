@@ -10,6 +10,7 @@
                         <input type="datetime-local" class="form-control" v-model="dataPayload.date_time" required>
                     </div>
 
+                    <!-- Savings Accounts List -->
                     <div class="form-group">
                         <select class="custom-select" v-model="dataPayload.bank_id" @change="trackSelection($event.target.selectedIndex, 'sa')">
                         <option v-for="(bank, index) in savingsAcctData" :key="index" :value="bank.bank_id">{{ bank.bank_name }} - {{ bank.bank_abbrev }}</option>
@@ -21,6 +22,33 @@
                         <select class="custom-select cselect-style" v-model="dataPayload.bank_transact_type_id" @change="trackSelection(dataPayload.bank_transact_type_id, 'tt')">
                             <option v-for="transact in formDetails.transactType" :key="transact.val" :value="transact.val">{{transact.title}}</option>
                         </select>
+                    </div>
+
+                    <!-- Credit Cards List -->
+                    <div class="form-group" v-if="dataPayload.bank_transact_type_id == consts.bank_transacts.pay_credit_card.id">
+                        <select class="custom-select" v-model="dataPayload.credit_card_id" @change="trackSelection($event.target.selectedIndex, 'cc')" disabled>
+                            <option v-for="(creditCard, index) in creditCardsData" :key="index" :value="creditCard.credit_card_id">{{ creditCard.last_4_digits }} - {{ creditCard.cc_name }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Credit Limit -->
+                    <div class="form-group" v-if="dataPayload.bank_transact_type_id == consts.bank_transacts.pay_credit_card.id">
+                        <label class="col-form-label white">Current Available Credit Limit</label>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">₱</span>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    class="form-control border-danger" 
+                                    style="background-color: #303030; color: white;" 
+                                    v-model="ccObject.availCreditLimit" 
+                                    disabled
+                                >
+                            </div>
+                            <div id="cl-notice"></div>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -65,8 +93,9 @@
                         <textarea class="form-control" rows="3" v-model="dataPayload.remarks"/>
                     </div>
 
+                    <!-- Transaction Ref No -->
                     <div class="form-group">
-                        <label v-if="[consts.bank_transacts.shopee_online_banking.id, consts.bank_transacts.shopee_pay_cash_in.id].includes(dataPayload.transact_type_id)">Reference ID</label>
+                        <label v-if="[consts.bank_transacts.shopee_online_banking.id, consts.bank_transacts.shopee_pay_cash_in.id].includes(dataPayload.bank_transact_type_id)">Reference ID</label>
                         <label v-else class="control-label white">Transaction Ref No</label><br>
                         <input type="text" class="form-control" v-model="dataPayload.reference_number" required/>
                     </div>
@@ -112,6 +141,8 @@ import { invokerInitializer } from '../helpers/helpers.service.js'
 import { createTransaction } from '../http/transact-api.js'
 
 import { getSavingsAccs } from '../composables/getBanksInfo.js'
+
+import { getCreditCards  } from '../composables/getCcsInfo.js'
 
 import consts from '../constants/constants.js'
 
@@ -164,6 +195,13 @@ let mayaObject = reactive({
   attachment: 'Photo'
 })
 
+let ccObject = reactive(
+  {
+    ccId: 1,
+    availCreditLimit: 1,
+  }
+)
+
 // temporary
 let commonProps = reactive(
   {
@@ -205,6 +243,33 @@ let initialIndex = 0
 
 let savingsAcctData = ref([])
 
+let creditCardsData = ref([])
+
+const isCreditCardPayment = () => {
+  if(dataPayload.bank_transact_type_id == consts.bank_transacts.pay_credit_card.id) {
+
+    dataPayload.credit_card_id = 0
+    ccObject.availCreditLimit = 0
+
+    if(dataPayload.bank_id == consts.sa_accounts.bpi.id) {
+      dataPayload.credit_card_id = consts.credit_cards.bpi[1].id
+      dataPayload.biller_merchant = consts.credit_cards.bpi[1].biller
+    }
+
+    if(dataPayload.bank_id == consts.sa_accounts.ub.id) {
+      dataPayload.credit_card_id = consts.credit_cards.ub[0].id
+      dataPayload.biller_merchant = consts.credit_cards.ub[0].biller
+    }
+
+    console.log(`dataPayload.credit_card_id: ${dataPayload.credit_card_id}`);
+
+    if(dataPayload.credit_card_id > 0) {
+      fetchCc(dataPayload.credit_card_id-1)
+    }
+
+  }
+}
+
 const fetchSavingsAcc = (val) => {
   bankObject.saBalance = savingsAcctData.value[val].balance
   bankObject.location = savingsAcctData.value[val].bank_abbrev + ' App'
@@ -212,12 +277,26 @@ const fetchSavingsAcc = (val) => {
   dataPayload.current_balance = bankObject.saBalance
   dataPayload.location = bankObject.location
 
+  isCreditCardPayment()
+
   return bankObject.saBalance
 }
 
+const fetchCc = (val) => {
+    ccObject.availCreditLimit = creditCardsData.value[val].avail_credit_limit
+    dataPayload.current_credit_limit = ccObject.availCreditLimit    
+
+    return ccObject.availCreditLimit
+}
+
 const handleSaInitialization = async () => {
-    savingsAcctData.value = await invokerInitializer(getSavingsAccs)
+    savingsAcctData.value = await getSavingsAccs()
     trackSelection(initialIndex, 'sa')
+}
+
+const handleCCInitialization = async () => {
+  creditCardsData.value = await getCreditCards()
+  trackSelection(initialIndex, 'cc')
 }
 
 const trackSelection = (val, flag) => {
@@ -228,9 +307,16 @@ const trackSelection = (val, flag) => {
   }
 
   if(flag === 'biller') {
-    console.log('==== val ====')
     console.log(val)
   }
+
+  if(flag === 'tt') {
+    isCreditCardPayment()
+  }
+
+  if(flag === 'cc') {
+    fetchCc(val)
+  }  
 }
 
 const digitOnlyInput = (event) => {
@@ -263,14 +349,28 @@ const handleSubmit = async () => {
           
           newSaTransactData.biller_merchant = commonProps.billerMerchant
 
-          if([consts.bank_billers.bpi.bluemaster_card.id, consts.bank_billers.unionbank.visa_platinum.id].includes(commonProps.billerMerchant)) {
-              // credit card bills payment - 14
-              newSaTransactData.bank_transact_type_id = consts.bank_transacts.credit_card_payment
-          }
-
           newSaTransactData.transaction = consts.bank_transacts.bills_payment.name
 
           axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.bills_payment.route, newSaTransactData)
+
+        }
+
+        // Pay Credit card
+        if(dataPayload.bank_transact_type_id === consts.bank_transacts.pay_credit_card.id) {
+          
+          // biller_merchant will be decided on isCreditCardPayment() function
+
+          newSaTransactData.bank_transact_type_id = consts.bank_transacts.pay_credit_card.id
+
+          newSaTransactData.transaction = consts.bank_transacts.pay_credit_card.name
+
+          newSaTransactData.new_credit_limit = parseFloat(dataPayload.current_credit_limit) + parseFloat(dataPayload.amount)
+
+          newSaTransactData.new_credit_limit = roundNumber(newSaTransactData.new_credit_limit, 2)
+
+          console.log(newSaTransactData)
+
+          axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.pay_credit_card.route, newSaTransactData)
 
         } 
         
@@ -407,10 +507,17 @@ const handleSubmit = async () => {
 }
 
 onMounted(async () => {
-    savingsAcctData.value = await invokerInitializer(getSavingsAccs)
+  // testing omitting invokerInitializer
+    savingsAcctData.value = await getSavingsAccs()
     trackSelection(initialIndex, 'sa')
     handleSaInitialization()
+    handleCCInitialization()
 })
+
+const roundNumber = (number, decimals) => {
+    let newnumber = new Number(number+'').toFixed(parseInt(decimals))
+    return parseFloat(newnumber); 
+}
 
 </script>
 

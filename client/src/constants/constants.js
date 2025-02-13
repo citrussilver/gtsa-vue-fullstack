@@ -5,6 +5,20 @@ export default {
     cc_component_id: 4,
     lazada_component_id: 5,
     shopee_component_id: 6,
+    savings_acct_routes: {
+        accounts: '/sa/get-sa-accounts',
+        sa1_transactions: '/sa/get-sa1-transactions'
+    },
+    sa_accounts: {
+        bpi: {
+            id: 1,
+            last_4digits: '8228'
+        },
+        ub: {
+            id: 3,
+            last_4digits: '8444'
+        }
+    },
     bank_transacts: {
         deposit: { 
             id: 1,
@@ -21,9 +35,10 @@ export default {
             name: 'Bills Payment',
             route: 'sa/save-sa-billspay'
         },
-        credit_card_payment: {
+        pay_credit_card: {
             id: 14,
-            name: 'Credit Card Payment'
+            name: 'Pay Credit Card',
+            route: 'sa/pay-cc'
         },
         gcash_cash_in: {
             id: 4,
@@ -85,12 +100,11 @@ export default {
             route: 'sa/save-shopee-pay-cash-in'
         }
     },
-    
     bank_billers: {
         bpi: {
             bluemaster_card: {
                 id: 1,
-                name: 'BPI - BEC MC'
+                name: 'BPI - BEC MC / Blue Mastercard'
             },
             aiaph: {
                 id: 2,
@@ -125,6 +139,11 @@ export default {
             id: 8,
             name: 'Others'
         }
+    },
+    gcash_routes: {
+        accounts: '/gcash/get-gcash-accounts',
+        transactions: '/gcash/get-gcash-transactions',
+        customers: '/gcash/get-gcash-customers'
     },
     gcash_transacts: {
         load_sale: {
@@ -184,6 +203,20 @@ export default {
             route: 'gcash/save-received-money'
         }
     },
+    credit_cards: {
+        bpi: [
+            { id: 1, last_4digits: '0143', desc: 'e-credit Blue Mastercard'},
+            { id: 2, last_4digits: '7330', desc: 'Blue Mastercard', biller: 'BPI - BEC MC / Blue Mastercard'},
+        ],
+        ub: [
+            { id: 3, last_4digits: '5102', desc: 'Visa Platinum', biller: 'UB Visa Platinum'}
+        ]
+
+    },
+    cc_routes: {
+        accounts: '/cc/get-cc-accounts',
+        transactions: '/cc/get-cc-transacts'
+    },
     cc_transacts: {
         online_payment: {
             id: 1,
@@ -209,8 +242,11 @@ export default {
             id: 5,
             name: 'Adjustment',
             route: 'cc/save-cc-adjustment'
-            
         }
+    },
+    maya_routes: {
+        accounts: '/maya/get-maya-accounts',
+        transactions: '/maya/get-maya-transacts'
     },
     maya_transacts: {
         cash_in: {

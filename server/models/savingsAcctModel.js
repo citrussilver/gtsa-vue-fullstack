@@ -3,7 +3,7 @@ import dbConnection from '../config/database.js';
 // Get All Savings Acc Transactions
 export const getSa1Transacts = (result) => {
     // DESC LIMIT 30
-    dbConnection.query('SELECT sa_transact_id, date_time AS date_time_og, DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, bt.description as transact_type, FORMAT(amount,2) AS amount, FORMAT(current_balance,2) AS current_balance, remarks, FORMAT(post_transact_balance,2) AS post_transact_balance, location FROM savings_acct_transactions sa JOIN bank_transaction_type bt ON sa.bank_transact_type_id = bt.id WHERE bank_id = 1 ORDER BY date_time_og', (err, results) => {
+    dbConnection.query('SELECT sa_transact_id, date_time AS date_time_og, DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, bt.description as transact_type, FORMAT(amount,2) AS amount, FORMAT(current_balance,2) AS current_balance, remarks, FORMAT(post_transact_balance,2) AS post_transact_balance, location FROM savings_acct_transactions sa JOIN bank_transaction_type bt ON sa.bank_transact_type_id = bt.id WHERE bank_id = 1 ORDER BY date_time_og DESC LIMIT 50', (err, results) => {
         if(err) {
             console.log(err);
             result(err, null);
@@ -595,6 +595,50 @@ export const insertShopeePayCashIn = (data, result) => {
                 } else {
                     result(null, results);
                     console.log('[Savings Acct] New ShopeePay Cash-in successfully posted to database')
+                }
+            });
+        }
+    });
+}
+
+export const insertSaPayCC = (data, result) => {
+    dbConnection.query("INSERT INTO savings_acct_transactions SET ?", {
+        bank_id: data.bank_id,
+        date_time: data.date_time,
+        bank_transact_type_id: data.bank_transact_type_id,
+        amount: data.amount,
+        current_balance: data.current_balance,
+        remarks: `[Pay Credit Card] ${data.remarks}`,
+        location: data.location,
+        reference_number: data.reference_number
+    }, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            const cc_bills_pay_data = {
+                sa_transact_id: results.insertId,
+                date_time: data.date_time,
+                biller_merchant: data.biller_merchant,
+                remarks: data.remarks,
+                amount: data.amount
+            }
+
+            dbConnection.query("INSERT INTO bank_pay_credit_cards SET ?", cc_bills_pay_data, (err, results) => {
+                if(err) {
+                    console.log(err);
+                    result(err, null);
+                } else {
+
+                    dbConnection.query("UPDATE credit_cards SET avail_credit_limit = ? WHERE credit_card_id = ?", [data.new_credit_limit, data.credit_card_id], (err, results) => {
+                        if(err) {
+                            console.log(err);
+                            result(err, null);
+                        } else {
+                            result(null, results);
+                            console.log(`[Savings Acct] New Pay Credit Card to ${cc_bills_pay_data.biller_merchant} successfully posted to database`)
+                        }
+                    });
                 }
             });
         }

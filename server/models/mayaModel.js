@@ -1,6 +1,27 @@
 
 import dbConnection from '../config/database.js';
 
+export const getMayaTransacts = (result) => {
+    dbConnection.query(
+        `SELECT maya_transact_id, 
+        date_time AS date_time_og, 
+        DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, 
+        "under construction" as transact_type, 
+        FORMAT(current_maya_balance,2) AS current_maya_balance, 
+        FORMAT(amount,2) AS amount, 
+        FORMAT(post_maya_balance,2) AS post_maya_balance, 
+        remarks 
+        FROM maya_transactions mt 
+        ORDER BY date_time_og DESC LIMIT 20`, (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            result(null, results);
+        }
+    })
+}
+
 export const getMayaAccts = (result) => {
     dbConnection.query('SELECT id, account_nick, last_4_digits, balance, FORMAT(balance, 2) as balance_wc FROM maya_account', (err, results) => {
         if(err) {

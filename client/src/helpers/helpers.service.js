@@ -1,5 +1,14 @@
-import axios from 'axios'
-import { toast } from 'bulma-toast'
+
+import { watch } from 'vue'
+
+export const applyWatchOnRef = (composableVar, target) => {
+  watch(composableVar, data => {
+    console.log('>>applyWatchOnRef()');
+    // console.log(data);
+    target.value = data
+    console.log(target.value);
+  })
+}
 
 export const invokerInitializer = async (composableCallback) => {
   let response = []
@@ -10,39 +19,6 @@ export const invokerInitializer = async (composableCallback) => {
 
   return response;
 }
-
-// export const handleAxios = async (route, objData, type, specific) => {
-
-//   const res = await confirm(`Are you sure to save this ${specific} entry?`);
-
-//   if (res) {
-
-//     // console.log('YES')
-    
-//     await axios.post(`${route}`, objData)
-//     .then(response => {
-
-//       toast({
-//         message: `[${type}] New ${specific} successfully posted to database`,
-//         duration: 3000,
-//         type: 'is-warning',
-//         position: "top-center",
-//         dismissible: true,
-//         pauseOnHover: true,
-//         closeOnClick: true
-//       })
-//     })
-//     .catch(err => {
-//       console.log(err);
-//     })
-
-
-//   } else {
-//     console.log('NO');
-//   }
-
-//   return res;
-// }
 
 export const executeHash = () => {
   let length = 16;
