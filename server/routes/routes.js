@@ -26,7 +26,8 @@ import {
     newTaxWithheld,
     newSalaryIncome,
     newShopeeOLBanking,
-    newShopeePayCashIn
+    newShopeePayCashIn,
+    newSaPayCC
 } from '../controllers/savingsAcctController.js';
 
 import {
@@ -59,6 +60,7 @@ import {
 
 import {
     showMayaAccts,
+    showMayaTransacts,
     newMayaOnlineShopPay,
     newMayaCashIn,
     newMayaBillsPay,
@@ -108,6 +110,7 @@ router.get('/api/gcash/get-gcash-transactions:flStr', filterRemarksGCashTransact
 router.get('/api/gcash/get-gcash-customers', showGCashCustomers)
 
 router.get('/api/maya/get-maya-accounts', showMayaAccts);
+router.get('/api/maya/get-maya-transacts', showMayaTransacts)
 
 // router.post('/api/new-sa-transaction', newSavingsAcctTransaction);
 router.post('/api/sa/save-sa-depo', newBankCashDeposit);
@@ -124,6 +127,7 @@ router.post('/api/sa/save-sa-taxwh', newTaxWithheld);
 router.post('/api/sa/save-sa-sale-income', newSalaryIncome);
 router.post('/api/sa/save-shopee-online-banking', newShopeeOLBanking);
 router.post('/api/sa/save-shopee-pay-cash-in', newShopeePayCashIn);
+router.post('/api/sa/pay-cc', newSaPayCC);
 
 router.post('/api/gcash/save-loadsale', newLoadSale);
 router.post('/api/gcash/save-gc-billspay', newGCashBillsPayment);

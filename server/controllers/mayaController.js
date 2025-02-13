@@ -1,5 +1,6 @@
 import {
     getMayaAccts,
+    getMayaTransacts,
     insertOnlineShopPay,
     insertMayaBillsPay,
     insertQrPay,
@@ -11,6 +12,15 @@ import {
 
 export const showMayaAccts = (req, res) => {
     getMayaAccts((err, results) => {
+        if(err){
+            res.send(err);
+        } else {
+            res.json(results);
+        }
+    });
+}
+export const showMayaTransacts = (req, res) => {
+    getMayaTransacts((err, results) => {
         if(err){
             res.send(err);
         } else {
