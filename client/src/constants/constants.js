@@ -291,6 +291,9 @@ export default {
     shopee_transacts: {
         online_shopping: 1
     },
+    shopee_routes: {
+        wallet: '/shp/get-shpw'
+    },
     adjustment_types: {
         credit: 71,
         debit: 72
@@ -315,6 +318,9 @@ export default {
         default_id: 0,
         transaction_type: '-- Select Transaction Type --',
         biller_merch: '-- Select Biller / Merchant --'
+    },
+    misc_routes: {
+        delivery: '/misc/get-delivery-loc'
     },
     app_year: '2025 GCSA'
 }

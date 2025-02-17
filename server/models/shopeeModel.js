@@ -1,4 +1,5 @@
 import dbConnection from '../config/database.js';
+import constants from '../constants.js';
 
 export const getShopeeWallet = (result) => {
     dbConnection.query('SELECT id, account_name, coins, balance, FORMAT(balance, 2) AS balance_wc FROM shopee_wallets', (err, results) => {
@@ -26,12 +27,13 @@ export const insertShopeeOrder = (data, result) => {
         merch_subtotal: data.merch_subtotal,
         shipping_fee: data.shipping_fee,
         shipping_fee_discount: data.shipping_fee_discount,
-        handling_fee: data.payment_method != 4 ? 2 : 0,
+        handling_fee: data.handling_fee,
         store_discount: data.store_discount,
         voucher_discount: data.voucher_discount,
         coins: data.coins,
         bundle_deals_savings: data.bundle_deals_savings,
         sub_total: data.sub_total,
+        shopee_pay_tsn: data.shopee_pay_tsn
     }, (err, results) => {
         if(err) {
             console.log(err);
@@ -40,7 +42,7 @@ export const insertShopeeOrder = (data, result) => {
 
             let default_log = '[Shopee] New Shopee order successfully posted to database.\n'
 
-            if(data.payment_method == 2) {
+            if(data.payment_method == constants.gcash_transaction) {
                 // fill up gcash_transactions data
                 const gcash_data = {
                     gcash_id: 1,
@@ -57,12 +59,12 @@ export const insertShopeeOrder = (data, result) => {
                         result(err, null);
                     } else {
                         result(null, results);
-                        default_log+= '[GCash] Payment to Shopee successfully posted to database';
+                        default_log+= '[GCash] Payment to Shopee order successfully posted to database';
                     }
                 });
             }
 
-            if(data.payment_method == 3) {
+            if(data.payment_method == constants.maya_transaction) {
                 const maya_data = {
                     maya_id: 1,
                     date_time: data.date_time,
@@ -79,12 +81,12 @@ export const insertShopeeOrder = (data, result) => {
                         result(err, null);
                     } else {
                         result(null, results);
-                        default_log+= '[Maya] Payment to Shopee successfully posted to database';
+                        default_log+= '[Maya] Payment to Shopee order successfully posted to database';
                     }
                 });
             }
 
-            if(data.payment_method == 4) {
+            if(data.payment_method == constants.cc_transaction) {
                 const cc_data = {
                     credit_card_id: data.credit_card_id,
                     date_time: data.date_time,
@@ -103,6 +105,18 @@ export const insertShopeeOrder = (data, result) => {
                     } else {
                         result(null, results);
                         default_log+= '[Credit Card] Payment to Shopee successfully posted to database';
+                    }
+                });
+            }
+
+            if(data.payment_method == constants.shopee_transaction) {
+                dbConnection.query("UPDATE shopee_wallets SET balance = ? WHERE id = 1", [data.new_shopee_pay_balance], (err, results) => {
+                    if(err) {
+                        console.log(err);
+                        result(err, null);
+                    } else {
+                        result(null, results);
+                        default_log+= '[ShopeePay] wallet successfully updated to database';
                     }
                 });
             }
