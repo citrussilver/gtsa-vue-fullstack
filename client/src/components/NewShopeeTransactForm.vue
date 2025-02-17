@@ -21,7 +21,7 @@
 
                     <div class="form-group">
                       <label class="col-form-label white">Payment Method</label><br>
-                      <select style="width: 6rem;" class="custom-select" v-model="dataPayload.payment_method" @change="trackSelection(dataPayload.payment_method, 'test')">
+                      <select style="width: 6rem;" class="custom-select" v-model="dataPayload.payment_method" @change="trackSelection(dataPayload.payment_method, 'payment_method')">
                         <option :value="consts.bank_component_id">Bank</option>
                         <option :value="consts.gcash_component_id">GCash</option>
                         <option :value="consts.maya_component_id">Maya</option>
@@ -83,7 +83,7 @@
                     </div>
 
                     <div class="form-group" v-if="dataPayload.payment_method === consts.shopee_component_id">
-                      <label class="col-form-label white">Current Shopee Wallet Balance</label>
+                      <label class="col-form-label white">Shopee Wallet Balance</label>
                       <div class="form-group">
                         <div class="input-group mb-3">
                           <div class="input-group-prepend">
@@ -290,6 +290,11 @@
                         <input type="text" class="form-control" v-model="ccObject.refNo" required/>
                     </div>
 
+                    <div class="form-group" v-if="dataPayload.payment_method === consts.shopee_component_id">
+                        <label class="control-label white">Transaction SN</label><br>
+                        <input type="text" class="form-control" v-model="shopeeObject.transactionSN" required/>
+                    </div>
+
                     <div id="btn-container"><button type="submit" class="btn btn-outline-success styled-button">Submit</button></div>
 
                 </div>
@@ -315,6 +320,16 @@ import { getShopeeWalletInfo } from '../composables/getShopeeWalletInfo.js'
 import { getSavingsAccs } from '../composables/getBanksInfo.js'
 import { getCreditCards  } from '../composables/getCcsInfo.js'
 import { getDeliveryLocations } from '../composables/getDeliveryLocations.js'
+
+// composables new implementation
+import { applyWatchOnRef } from '../helpers/helpers.service.js'
+import useSavingsAcctFetcher from '../composables/useSavingsAcctFetcher.js'
+import useGCashFetcher from '../composables/useGCashFetcher.js'
+import useMayaFetcher from '../composables/useMayaAcctsFetcher.js'
+import useCcFetcher from '../composables/useCcFetcher.js'
+import useShopeePayWalletFetcher from '../composables/useShopeePayWalletFetcher.js'
+import useLocationFetcher from '../composables/useLocationFetcher.js'
+
 
 import consts from '../constants/constants.js'
 
@@ -392,6 +407,7 @@ let mayaObject = reactive({
 let shopeeObject = reactive({
   shopeeWalletId: 1,
   walletBalance: 1,
+  transactionSN: ''
 })
 
 let ccObject = reactive(
@@ -439,43 +455,27 @@ const fetchCc = (val) => {
   return ccObject.availCreditLimit
 }
 
-const handleGCashInitialization = async () => {
-  gCashData.value = await invokerInitializer(getGCashInfo)
-  fetchGCashAcc()
-}
-
-const handleMayaInitialization = async () => {
-  mayaData.value = await invokerInitializer(getMayaInfo)
-  fetchMayaAcc()
-}
-
-const handleShopeeWalletInitialization = async () => {
-  shopeeWalletData.value = await invokerInitializer(getShopeeWalletInfo)
-  fetchShopeeWallet()
-}
-
-const handleCCInitialization = async () => {
-  creditCardsData.value = await invokerInitializer(getCreditCards)
-  trackSelection(initialIndex, 'cc')
-}
-
-const handleLocationInitialization = async () => {
-  deliveryLocationsData.value = await invokerInitializer(getDeliveryLocations)
-}
-
 const trackSelection = (val, flag) => {
-  // console.log(val, flag)
+  console.log(val, flag)
 
-  if(flag === 'gc') {
-    fetchGCashAcc()
+  if(val === consts.bank_component_id || flag == 'sa') {
+    fetchSavingsAcc(initialIndex)
   }
 
-  if(flag === 'sa') {
-    fetchSavingsAcc(val)
+  if(val === consts.gcash_component_id) {
+    fetchGCashAcc(initialIndex)
   }
 
-  if(flag === 'cc') {
-    fetchCc(val)
+  if(val === consts.maya_component_id) {
+    fetchMayaAcc(initialIndex)
+  }
+
+  if(val === consts.cc_component_id) {
+    fetchCc(initialIndex)
+  }
+
+  if(val == consts.shopee_component_id) {
+    fetchShopeeWallet(initialIndex)
   }
 }
 
@@ -506,6 +506,13 @@ const handleSubmit = async () => {
       newShopeeData.ref_no = ccObject.refNo
     }
 
+    if(dataPayload.payment_method === consts.shopee_component_id) {
+      newShopeeData.current_shopee_pay_balance = parseFloat(shopeeObject.walletBalance)
+      newShopeeData.new_shopee_pay_balance = parseFloat(dataPayload.sub_total) + parseFloat(shopeeObject.walletBalance)
+      newShopeeData.shopee_pay_tsn = shopeeObject.transactionSN
+
+    }
+
     // console.log(newShopeeData)
 
     newShopeeData.transaction = 'Shopee Order'
@@ -530,14 +537,25 @@ const handleSubmit = async () => {
   }
 }
 
-onMounted(async () => {
-  savingsAcctData.value = await invokerInitializer(getSavingsAccs)
-  trackSelection(initialIndex, 'sa')
-  handleGCashInitialization()
-  handleMayaInitialization()
-  handleShopeeWalletInitialization()
-  handleCCInitialization()
-  handleLocationInitialization()
+onMounted( () => {
+
+  let { saInfo } = useSavingsAcctFetcher()
+  applyWatchOnRef(saInfo, savingsAcctData)
+
+  let { gCashInfo } = useGCashFetcher()
+  applyWatchOnRef(gCashInfo, gCashData)
+
+  let { mayaInfo } = useMayaFetcher()
+  applyWatchOnRef(mayaInfo, mayaData)
+
+  let { ccInfo } = useCcFetcher()
+  applyWatchOnRef(ccInfo, creditCardsData)
+
+  let { shopeePayWalletInfo } = useShopeePayWalletFetcher()
+  applyWatchOnRef(shopeePayWalletInfo, shopeeWalletData)
+
+  let { locationsList } = useLocationFetcher()
+  applyWatchOnRef(locationsList, deliveryLocationsData)
 })
 
 

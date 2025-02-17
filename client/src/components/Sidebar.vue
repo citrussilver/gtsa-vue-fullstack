@@ -2,23 +2,16 @@
 <div>
   <ul id="custom-sidebar">
     <router-link class="common-link" :to="{ name: 'Home' }"><li>Home</li></router-link>
-    <router-link class="common-link" :to="{ name: 'NewBankTransact' }"><li>New Bank Transaction</li></router-link>
-    <router-link class="common-link" :to="{ name: 'NewCreditCardTransact' }"><li>New Credit Card Transaction</li></router-link>
-    <router-link class="common-link" :to="{ name: 'NewGCashTransact' }"><li>New GCash Transaction</li></router-link>
-    <router-link class="common-link" :to="{ name: 'NewMayaTransact' }"><li>New Maya Transaction</li></router-link>
-    <router-link class="common-link" :to="{ name: 'NewLazadaTransact' }"><li>New Lazada Transaction</li></router-link>
-    <router-link class="common-link" :to="{ name: 'NewShopeeTransact' }"><li>New Shopee Transaction</li></router-link>
+    <router-link class="common-link" :to="{ name: 'NewBankTransact' }"><li>Bank Transaction</li></router-link>
+    <router-link class="common-link" :to="{ name: 'NewCreditCardTransact' }"><li>Credit Card Transaction</li></router-link>
+    <router-link class="common-link" :to="{ name: 'NewGCashTransact' }"><li>GCash Transaction</li></router-link>
+    <router-link class="common-link" :to="{ name: 'NewMayaTransact' }"><li>Maya Transaction</li></router-link>
+    <router-link class="common-link" :to="{ name: 'NewLazadaTransact' }"><li>Lazada Transaction</li></router-link>
+    <router-link class="common-link" :to="{ name: 'NewShopeeTransact' }"><li>Shopee Transaction</li></router-link>
     <router-link class="common-link" :to="{ name: 'TransactsList'}"><li>View Records</li></router-link>
   </ul>
 </div>
 </template>
-
-<script>
-
-export default {
-
-}
-</script>
 
 <style scoped>
 

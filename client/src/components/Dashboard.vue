@@ -90,6 +90,20 @@
           {{ cc.avail_credit_limit_wc }}
         </details>
       </div>
+      <div class="grid-tile-item union-bank" 
+        v-for="(shpw, index) in shopeeWalletData" 
+        key="index" 
+      >
+        <p class="tile-title">
+          <ArticleTitleSlot>
+            ShopeePay Wallet
+          </ArticleTitleSlot>
+        </p>
+        <details>
+          <summary>Balance</summary>
+          {{ shpw.balance }}
+        </details>
+      </div>
       <div class="grid-tile-item purple-1">
         <p class="tile-title">
           <ArticleTitleSlot>
@@ -142,8 +156,9 @@ import useGCashFetcher from '../composables/useGCashFetcher.js'
 import useMayaFetcher from '../composables/useMayaAcctsFetcher.js'
 import useSavingsAcctFetcher from '../composables/useSavingsAcctFetcher.js'
 import useCcFetcher from '../composables/useCcFetcher.js'
+import useShopeePayWalletFetcher from '../composables/useShopeePayWalletFetcher.js'
 
-      let loading = ref(false)
+      let loading = ref(true)
 
       let gCashData = ref([])
 
@@ -152,6 +167,8 @@ import useCcFetcher from '../composables/useCcFetcher.js'
       let savingsAcctData = ref([])
 
       let creditCardsData = ref([])
+
+      let shopeeWalletData = ref([])
 
       let aniQuote = reactive(
           {
@@ -163,11 +180,16 @@ import useCcFetcher from '../composables/useCcFetcher.js'
 
       const loadAniQuote = () => {
         const { quote, character, anime, isLoading } = useAniQuoteFetcher();
-        loading.value = true
-        aniQuote.quote = quote
-        aniQuote.character = character
-        aniQuote.anime = anime
-        loading.value = false
+
+        setTimeout(function(){
+          
+          aniQuote.quote = quote
+          aniQuote.character = character
+          aniQuote.anime = anime
+  
+          loading.value = false
+        }, 3000);
+        
       }
 
       onMounted( () => {
@@ -185,6 +207,9 @@ import useCcFetcher from '../composables/useCcFetcher.js'
         
         let { ccInfo } = useCcFetcher();
         applyWatchOnRef(ccInfo, creditCardsData)
+
+        let { shopeePayWalletInfo } = useShopeePayWalletFetcher()
+        applyWatchOnRef(shopeePayWalletInfo, shopeeWalletData)
   
       })
 

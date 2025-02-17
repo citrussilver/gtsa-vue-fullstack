@@ -593,8 +593,17 @@ export const insertShopeePayCashIn = (data, result) => {
                     console.log(err);
                     result(err, null);
                 } else {
-                    result(null, results);
-                    console.log('[Savings Acct] New ShopeePay Cash-in successfully posted to database')
+
+                    // temporarily there's only 1 shopee wallet to fixed to id 1 for now
+                    dbConnection.query("UPDATE shopee_wallets SET balance = ? WHERE id = 1", [data.new_shopee_pay_balance], (err, results) => {
+                        if(err) {
+                            console.log(err);
+                            result(err, null);
+                        } else {
+                            result(null, results);
+                            console.log('[Savings Acct] New ShopeePay Cash-in successfully posted to database')
+                        }
+                    });
                 }
             });
         }

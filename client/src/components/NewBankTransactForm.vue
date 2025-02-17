@@ -75,6 +75,24 @@
                         </select>
                     </div>
 
+                    <!-- ShopeePay Balance -->
+                    <div class="form-group" v-if="dataPayload.bank_transact_type_id === consts.bank_transacts.shopee_pay_cash_in.id">
+                      <label class="col-form-label white">Current Shopee Wallet Balance</label>
+                      <div class="form-group">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">₱</span>
+                          </div>
+                          <input 
+                            type="text" 
+                            class="form-control border-success" 
+                            style="background-color: #303030; color: white;" 
+                            v-model="shopeeObject.walletBalance" disabled
+                          >
+                        </div>
+                      </div>
+                    </div>
+
                     <!-- Amount -->
                     <div class="form-group">
                         <label class="control-label white">Amount</label>
@@ -132,11 +150,9 @@
 
 <script setup>
 
-import { onBeforeMount, onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
-
-import { invokerInitializer } from '../helpers/helpers.service.js'
 
 import { createTransaction } from '../http/transact-api.js'
 
@@ -147,6 +163,14 @@ import { getCreditCards  } from '../composables/getCcsInfo.js'
 import consts from '../constants/constants.js'
 
 import CheckMarkIcon from './icons/CheckMarkIcon.vue'
+
+// composables new implementation
+import { applyWatchOnRef } from '../helpers/helpers.service.js'
+import useSavingsAcctFetcher from '../composables/useSavingsAcctFetcher.js'
+// import useGCashFetcher from '../composables/useGCashFetcher.js'
+import useMayaFetcher from '../composables/useMayaAcctsFetcher.js'
+import useCcFetcher from '../composables/useCcFetcher.js'
+import useShopeePayWalletFetcher from '../composables/useShopeePayWalletFetcher.js'
 
 const props = defineProps({
   formDetails: Object,
@@ -202,6 +226,11 @@ let ccObject = reactive(
   }
 )
 
+let shopeeObject = reactive({
+  shopeeWalletId: 1,
+  walletBalance: 1,
+})
+
 // temporary
 let commonProps = reactive(
   {
@@ -245,6 +274,8 @@ let savingsAcctData = ref([])
 
 let creditCardsData = ref([])
 
+let shopeeWalletData = ref([])
+
 const isCreditCardPayment = () => {
   if(dataPayload.bank_transact_type_id == consts.bank_transacts.pay_credit_card.id) {
 
@@ -261,7 +292,7 @@ const isCreditCardPayment = () => {
       dataPayload.biller_merchant = consts.credit_cards.ub[0].biller
     }
 
-    console.log(`dataPayload.credit_card_id: ${dataPayload.credit_card_id}`);
+    // console.log(`dataPayload.credit_card_id: ${dataPayload.credit_card_id}`);
 
     if(dataPayload.credit_card_id > 0) {
       fetchCc(dataPayload.credit_card_id-1)
@@ -289,20 +320,14 @@ const fetchCc = (val) => {
     return ccObject.availCreditLimit
 }
 
-const handleSaInitialization = async () => {
-    savingsAcctData.value = await getSavingsAccs()
-    trackSelection(initialIndex, 'sa')
-}
-
-const handleCCInitialization = async () => {
-  creditCardsData.value = await getCreditCards()
-  trackSelection(initialIndex, 'cc')
+const fetchShopeeWallet = (val) => {
+  shopeeObject.walletBalance = shopeeWalletData.value[val].balance
 }
 
 const trackSelection = (val, flag) => {
   console.log(val, flag)
 
-  if(flag === 'sa') {
+  if(val === consts.bank_component_id || flag === 'sa') {
     fetchSavingsAcc(val)
   }
 
@@ -314,9 +339,13 @@ const trackSelection = (val, flag) => {
     isCreditCardPayment()
   }
 
-  if(flag === 'cc') {
+  if(val === consts.cc_component_id || flag === 'cc') {
     fetchCc(val)
-  }  
+  }
+
+  if(val == consts.bank_transacts.shopee_pay_cash_in.id || flag === 'tt') {
+    fetchShopeeWallet(initialIndex)
+  }
 }
 
 const digitOnlyInput = (event) => {
@@ -494,6 +523,8 @@ const handleSubmit = async () => {
 
           newSaTransactData.transaction = consts.bank_transacts.shopee_pay_cash_in.name
 
+          newSaTransactData.new_shopee_pay_balance = parseFloat(dataPayload.amount) + parseFloat(shopeeObject.walletBalance)
+
           axiosReqConfirmed.value = await createTransaction(consts.bank_transacts.shopee_pay_cash_in.route, newSaTransactData)
         }
 
@@ -507,11 +538,16 @@ const handleSubmit = async () => {
 }
 
 onMounted(async () => {
-  // testing omitting invokerInitializer
-    savingsAcctData.value = await getSavingsAccs()
-    trackSelection(initialIndex, 'sa')
-    handleSaInitialization()
-    handleCCInitialization()
+  
+
+    let { saInfo } = useSavingsAcctFetcher()
+    applyWatchOnRef(saInfo, savingsAcctData)
+
+    let { ccInfo } = useCcFetcher()
+    applyWatchOnRef(ccInfo, creditCardsData)
+
+    let { shopeePayWalletInfo } = useShopeePayWalletFetcher()
+    applyWatchOnRef(shopeePayWalletInfo, shopeeWalletData)
 })
 
 const roundNumber = (number, decimals) => {
