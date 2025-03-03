@@ -7,12 +7,17 @@ export default {
     shopee_component_id: 6,
     savings_acct_routes: {
         accounts: '/sa/get-sa-accounts',
-        sa1_transactions: '/sa/get-sa1-transactions'
+        sa1_transactions: '/sa/get-sa1-transactions',
+        sa3_transactions: '/sa/get-sa3-transactions'
     },
     sa_accounts: {
         bpi: {
             id: 1,
             last_4digits: '8228'
+        },
+        sb: {
+            id: 2,
+            last_4digits: '2762'
         },
         ub: {
             id: 3,
