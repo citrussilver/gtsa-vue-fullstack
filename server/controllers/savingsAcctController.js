@@ -1,6 +1,7 @@
 import { 
     getSa1Transacts,
     getSa2Transacts,
+    getSa3Transacts,
     getAllSavingsAccs, 
     insertBankCashDeposit, 
     insertBankCashWithdraw,  
@@ -32,6 +33,16 @@ export const showSa1Transacts = (req, res) => {
 
 export const showSa2Transacts = (req, res) => {
     getSa2Transacts((err, results) => {
+        if(err) {
+            res.send(err);
+        } else {
+            res.json(results);
+        }
+    });
+}
+
+export const showSa3Transacts = (req, res) => {
+    getSa3Transacts((err, results) => {
         if(err) {
             res.send(err);
         } else {

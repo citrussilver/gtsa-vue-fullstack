@@ -24,6 +24,17 @@ export const getSa2Transacts = (result) => {
     })
 }
 
+export const getSa3Transacts  = (result) => {
+    dbConnection.query('SELECT sa_transact_id, date_time AS date_time_og, DATE_FORMAT(date_time,"%a, %b %d, %Y  %H:%i") AS date_time, bt.description as transact_type, FORMAT(amount,2) AS amount, FORMAT(current_balance,2) AS current_balance, remarks, FORMAT(post_transact_balance,2) AS post_transact_balance, location FROM savings_acct_transactions sa JOIN bank_transaction_type bt ON sa.bank_transact_type_id = bt.id WHERE bank_id = 3 ORDER BY date_time_og DESC LIMIT 30', (err, results) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+        } else {
+            result(null, results);
+        }
+    })
+}
+
 export const getAllSavingsAccs = (result) => {
     dbConnection.query('SELECT bank_id, bank_name, bank_abbrev, balance, FORMAT(balance, 2) AS balance_wc FROM banks', (err, results) => {
         if(err) {

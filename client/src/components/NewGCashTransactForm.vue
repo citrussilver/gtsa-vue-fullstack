@@ -349,7 +349,7 @@ const handleSubmit = async () => {
         
         if(dataPayload.transact_type_id === consts.gcash_transacts.online_payment.id) {
             
-            newGCashData.online_shop_website = commonProps.onlineShopWebsite
+            newGCashData.online_shop_website = shopObject.storeName
 
             newGCashData.transaction = consts.gcash_transacts.online_payment.name
         
